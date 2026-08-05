@@ -8,7 +8,9 @@ Last updated: 2026-08-05
 - Stack: Vite, React 18, TypeScript, Recharts, Papa Parse, Vitest, Playwright
 - Data source: `data/bcp-link-results.csv`
 - Latest imported source: `/data/hs_dev/bcp-link测评结果汇总 - Sheet1.csv`; empty WebSailor rows were excluded, leaving 8 fully comparable models.
-- The directory is currently **not a Git repository**. `git status` fails because no `.git` directory exists.
+- GitHub private repository: `https://github.com/Samanthe-H/bcp-link-leaderboard`.
+- The local `main` branch tracks `origin/main` over SSH.
+- Cloudflare Pages production site: `https://bcp-link-leaderboard.pages.dev/`.
 - The latest theme/layout upgrade is complete. TypeScript, production build, unit tests, end-to-end tests, and desktop/mobile visual checks pass.
 
 ## 2. Features Completed Before The Latest Upgrade
@@ -95,7 +97,31 @@ npm test           PASS: 18 passed
 npm run test:e2e   PASS: 6 passed across desktop and mobile Chromium
 ```
 
-## 7. Palette References
+Deployment verification completed on 2026-08-05:
+
+```text
+GitHub repository visibility  PRIVATE
+GitHub default branch         main
+Cloudflare unauthenticated    HTTP 401
+Cloudflare authenticated      HTTP 200
+Production HTML               current BCP-Link dashboard assets loaded
+Production data               8 models; empty WebSailor rows excluded
+```
+
+## 7. Current Deployment
+
+- GitHub repository: `https://github.com/Samanthe-H/bcp-link-leaderboard`
+- Cloudflare Pages project: `bcp-link-leaderboard`
+- Production branch: `main`
+- Production URL: `https://bcp-link-leaderboard.pages.dev/`
+- The initial production release was deployed with Wrangler direct upload from `dist`; the root
+  `functions/` middleware and `_routes.json` were included.
+- `SITE_USERNAME` and `SITE_PASSWORD` are encrypted Cloudflare production secrets. Their values are
+  intentionally not stored in this repository or this handoff document.
+- Future result changes require `npm run build`, a Git push, and a new Pages deployment unless a
+  GitHub-based automatic deployment is configured later.
+
+## 8. Palette References
 
 - UI reference: `/root/.codex/attachments/fa42566f-368d-4650-abd5-4d78fe8e151b/codex-clipboard-627fae6b-61d9-4df2-bbd2-ef6aaf24e2d9.png`
 - Research Blue: `/root/.codex/attachments/4045c21f-5490-42f3-8bba-f8fbd3f18eae/Color Hunt Palette f9f7f7dbe2ef3f72af112d4e.png`
@@ -104,7 +130,7 @@ npm run test:e2e   PASS: 6 passed across desktop and mobile Chromium
 - Warm Neutral: `/root/.codex/attachments/9a0d6a14-c1af-4eb4-ac20-8059ffde195b/Color Hunt Palette f9f8f6efe9e3d9cfc7c9b59c.png`
 - Charcoal Amber: `/root/.codex/attachments/e2c42329-761a-4ab4-9d9a-990a9de28432/Color Hunt Palette 222831393e46ffd369eeeeee.png`
 
-## 8. Constraints To Preserve
+## 9. Constraints To Preserve
 
 - Research Blue remains the first-visit default.
 - BCP-Link must use the brighter chart color; BCP uses the darker or quieter companion color.
