@@ -11,7 +11,9 @@ Last updated: 2026-08-06
 - GitHub private repository: `https://github.com/Samanthe-H/bcp-link-leaderboard`.
 - The local `main` branch tracks `origin/main` over SSH.
 - Cloudflare Pages production site: `https://bcp-link-leaderboard.pages.dev/`.
-- The latest theme/layout upgrade is complete. TypeScript, production build, unit tests, end-to-end tests, and desktop/mobile visual checks pass.
+- The current data, theme, introduction, leaderboard, and comparison-chart work is complete.
+  TypeScript, production build, unit/component tests, end-to-end tests, and desktop/mobile visual
+  checks pass.
 
 ## 2. Features Completed Before The Latest Upgrade
 
@@ -50,8 +52,9 @@ Last updated: 2026-08-06
 
 ### Page Structure And Content
 
-- The About section uses `BCP-Link` as its heading, a one-line English benchmark subtitle, and one
-  framed single-column description panel in both languages.
+- The About section uses `BCP-Link` as its heading, the English subtitle `Evaluating whether search
+  agents can find and follow useful links.`, and one framed single-column description panel in both
+  languages.
 - The rendered section order is now:
   1. About BCP-Link
   2. Leaderboard
@@ -68,33 +71,46 @@ Last updated: 2026-08-06
 - The comparison section offers every leaderboard model through a multi-select model picker. It
   initially selects Tongyi-DeepResearch-30B-A3B, SearchAgent-Zero, WebExplorer-8B, and WebSailor-32B;
   at least one model remains selected.
+- Picker options follow the leaderboard Accuracy order and update automatically from the parsed CSV.
 - Selected models are rendered together in one grouped chart with BCP-Link as the left bar and BCP as
   the right bar; the metric selector applies to all selected models.
 - The shared chart uses a focused padded Y-axis domain; it starts at zero only when one compared value
   is zero.
+- Multiple models share one chart. The chart uses internal horizontal scrolling when its stable
+  minimum width exceeds the viewport, without causing page-level overflow.
 - Chart grid, axes, tooltip, cursor, BCP bars, and BCP-Link bars reference semantic CSS variables.
 - Intended series variables are `--chart-bcp` and `--chart-bcp-link`.
 
-## 4. Latest Upgrade Completion
+## 4. Current UI Completion
 
-The theme/layout upgrade is now complete.
+The current UI upgrade is complete.
 
 - `src/styles.css` defines semantic tokens and five `data-theme` palettes for the complete dashboard.
 - Rose Sage was removed. Sage Gold, Teal Amber, and Charcoal Amber now use their source gold/amber colors for the brand mark, active language state, callout rules, and BCP-Link series.
 - The sticky header, theme picker, palette swatches, segmented language control, focus/hover states, and 320px+ responsive layouts are styled.
 - Hard-coded interface colors were replaced with semantic variables; obsolete language-toggle and scoring-block rules were removed.
-- Recharts series have stable classes and 28px bars so CSS variables resolve correctly in SVG and paired bars remain visually grouped.
+- Recharts series have stable classes so CSS variables resolve correctly in SVG, BCP-Link remains
+  left of BCP within every model group, and tests verify the rendered SVG positions.
 - Metric values use fixed per-column precision: two decimals for Accuracy, Recall, Search Calls,
   Visit Calls, and Turns; four decimals for Link-following Visit Calls.
-- Component tests cover all themes, persistence, picker dismissal, exact section order, removed copy, Chinese UI with English metrics, and state preservation.
-- Playwright covers both desktop and Pixel 7 viewports, page overflow, paired-bar geometry, theme-driven chart fills, and all five palette screenshots.
-- Visual checks also covered open theme-menu bounds at 1440px, 412px, and 320px widths.
+- Component tests cover all themes, persistence, picker dismissal, exact section order, fixed metric
+  precision, the all-model comparison picker, the minimum-one-selection rule, Chinese UI with English
+  metrics, and state preservation.
+- Playwright covers both desktop and Pixel 7 viewports, page overflow, one/multiple comparison-model
+  selection, shared-chart bar counts, BCP-Link/BCP geometry, tooltip behavior, theme-driven chart
+  fills, and all five palette screenshots.
+- Visual checks cover the single-column benchmark introduction, shared comparison chart, desktop and
+  mobile layouts, model-menu containment, and internal chart scrolling.
 
 ## 5. Screenshot Artifacts
 
-- Desktop themes: `test-results/leaderboard-applies-all-fi-a42c7-t-and-captures-each-palette-desktop-chromium/`
-- Mobile themes: `test-results/leaderboard-applies-all-fi-a42c7-t-and-captures-each-palette-mobile-chromium/`
-- Chinese desktop/mobile states: the `leaderboard-supports-search...` Playwright result directories.
+- Desktop/mobile full pages: the `test-results/leaderboard-renders-real-.../` Playwright result
+  directories.
+- Theme captures: the `test-results/leaderboard-applies-all-.../` Playwright result directories.
+- Chinese desktop/mobile states: the `test-results/leaderboard-supports-search-.../` Playwright result
+  directories.
+- These ignored artifacts are regenerated by `npm run test:e2e`; directory suffixes can change with
+  Playwright test-title hashing.
 
 ## 6. Verification At Handoff
 
@@ -103,11 +119,11 @@ Commands run from `/data/hs_dev/bcp-link-leaderboard`:
 ```text
 npm run typecheck  PASS
 npm run build      PASS
-npm test           PASS: 18 passed
+npm test           PASS: 23 passed
 npm run test:e2e   PASS: 6 passed across desktop and mobile Chromium
 ```
 
-Deployment verification completed on 2026-08-05:
+Deployment verification completed on 2026-08-06:
 
 ```text
 GitHub repository visibility  PRIVATE
@@ -116,6 +132,8 @@ Cloudflare unauthenticated    HTTP 401
 Cloudflare authenticated      HTTP 200
 Production HTML               current BCP-Link dashboard assets loaded
 Production data               9 models; WebSailor-32B included
+Comparison picker             9 models available; 4 selected by default
+Comparison rendering          1/2/5/9 selected models render 2/4/10/18 bars
 ```
 
 ## 7. Current Deployment
@@ -124,6 +142,8 @@ Production data               9 models; WebSailor-32B included
 - Cloudflare Pages project: `bcp-link-leaderboard`
 - Production branch: `main`
 - Production URL: `https://bcp-link-leaderboard.pages.dev/`
+- Latest application deployment source: `72a08e2` (`Expose all leaderboard models in comparison`).
+- Latest immutable deployment URL: `https://95455171.bcp-link-leaderboard.pages.dev/`.
 - The initial production release was deployed with Wrangler direct upload from `dist`; the root
   `functions/` middleware and `_routes.json` were included.
 - `SITE_USERNAME` and `SITE_PASSWORD` are encrypted Cloudflare production secrets. Their values are
@@ -143,7 +163,10 @@ Production data               9 models; WebSailor-32B included
 ## 9. Constraints To Preserve
 
 - Research Blue remains the first-visit default.
-- BCP-Link must use the brighter chart color; BCP uses the darker or quieter companion color.
-- Language and theme switching must preserve search, sorting, and comparison metric state.
+- BCP-Link remains the left/brighter series; BCP remains the right/darker or quieter series.
+- Language and theme switching must preserve search, sorting, comparison metric, and selected-model
+  state.
+- The comparison picker must expose every parsed leaderboard model, keep at least one selected, and
+  render all selected models in one chart.
 - Chinese explanatory prose remains Chinese, while leaderboard columns and metric names remain English.
 - Existing CSV parsing, ranking behavior, Cloudflare Basic Auth, and private deployment behavior should not change.
