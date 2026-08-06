@@ -46,6 +46,8 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("heading", { name: /^Visit$/ })).toBeVisible();
     expect(container.querySelectorAll(".rule-principles article")).toHaveLength(3);
     expect(container.querySelectorAll(".evaluation-flow li")).toHaveLength(6);
+    expect(container.querySelectorAll(".flow-step-search")).toHaveLength(1);
+    expect(container.querySelectorAll(".flow-step-visit")).toHaveLength(2);
     expect(container.querySelector(".evaluation-flow")).toHaveTextContent("Second hop");
     expect(screen.queryByText("What is recorded")).not.toBeInTheDocument();
 

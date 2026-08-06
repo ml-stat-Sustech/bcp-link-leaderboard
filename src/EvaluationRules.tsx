@@ -80,7 +80,16 @@ export function EvaluationRules({ copy }: { copy: Translation }) {
         >
           <ol className="evaluation-flow">
             {copy.rules.flowSteps.map((step, index) => (
-              <li key={`${step.title}-${step.detail}`}>
+              <li
+                key={`${step.title}-${step.detail}`}
+                className={
+                  index === 1
+                    ? "flow-step flow-step-search"
+                    : index === 2 || index === 3
+                      ? "flow-step flow-step-visit"
+                      : "flow-step"
+                }
+              >
                 <span className="flow-index">{String(index + 1).padStart(2, "0")}</span>
                 <span className="flow-node" aria-hidden="true" />
                 <strong>{step.title}</strong>
