@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatMetricValue } from "../metrics";
+import { formatMetricValue, getComparisonDomain } from "../metrics";
 
 describe("formatMetricValue", () => {
   it("uses a consistent precision for every metric", () => {
@@ -13,5 +13,14 @@ describe("formatMetricValue", () => {
 
   it("preserves the missing-value marker", () => {
     expect(formatMetricValue("accuracy", null)).toBe("—");
+  });
+
+  it("uses a focused comparison domain unless a value is zero", () => {
+    const positiveDomain = getComparisonDomain(57.59, 59.76);
+    expect(positiveDomain[0]).toBeGreaterThan(0);
+    expect(positiveDomain[0]).toBeLessThan(57.59);
+    expect(positiveDomain[1]).toBeGreaterThan(59.76);
+
+    expect(getComparisonDomain(0, 0.1289)[0]).toBe(0);
   });
 });

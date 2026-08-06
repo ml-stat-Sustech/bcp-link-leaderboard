@@ -63,8 +63,11 @@ Last updated: 2026-08-06
 
 ### Chart Logic
 
-- Recharts now uses `barGap={4}`, `barCategoryGap="48%"`, and `maxBarSize={34}`.
-- Chart grid, axes, tooltip, cursor, legend, BCP bars, and BCP-Link bars reference semantic CSS variables.
+- The comparison section is limited to Tongyi-DeepResearch-30B-A3B, SearchAgent-Zero,
+  WebExplorer-8B, and WebSailor-32B.
+- Each model has a separate two-bar chart while all four charts share one metric selector.
+- Each chart uses a focused padded Y-axis domain; it starts at zero only when one compared value is zero.
+- Chart grid, axes, tooltip, cursor, BCP bars, and BCP-Link bars reference semantic CSS variables.
 - Intended series variables are `--chart-bcp` and `--chart-bcp-link`.
 
 ## 4. Latest Upgrade Completion

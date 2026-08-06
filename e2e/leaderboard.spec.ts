@@ -8,26 +8,23 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   ).toBeVisible();
   await expect(page.getByTestId("model-name")).toHaveCount(9);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
-  await expect(page.getByText("9 models with comparable Accuracy data")).toBeVisible();
+  await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();
   await expect(page.getByRole("heading", { name: "One environment, the same tools" })).toBeVisible();
   await expect(page.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
-  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(18);
-
-  const barBoxes = await page.locator(".recharts-bar-rectangle").evaluateAll((bars) =>
-    bars
-      .map((bar) => {
-        const box = bar.getBoundingClientRect();
-        return { x: box.x, width: box.width };
-      })
-      .sort((a, b) => a.x - b.x),
-  );
-  const withinPairGaps = barBoxes
-    .filter((_, index) => index % 2 === 0)
-    .map((bar, pairIndex) => barBoxes[pairIndex * 2 + 1].x - (bar.x + bar.width));
-  const betweenGroupGaps = barBoxes
-    .filter((_, index) => index % 2 === 1 && index < barBoxes.length - 1)
-    .map((bar, groupIndex) => barBoxes[groupIndex * 2 + 2].x - (bar.x + bar.width));
-  expect(Math.max(...withinPairGaps)).toBeLessThan(Math.min(...betweenGroupGaps));
+  const comparisonCharts = page.getByTestId("model-comparison-chart");
+  await expect(comparisonCharts).toHaveCount(4);
+  await expect(comparisonCharts.locator("h3")).toHaveText([
+    "Tongyi-DeepResearch-30B-A3B",
+    "SearchAgent-Zero",
+    "WebExplorer-8B",
+    "WebSailor-32B",
+  ]);
+  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(8);
+  for (let index = 0; index < 4; index += 1) {
+    await expect(comparisonCharts.nth(index).locator(".recharts-bar-rectangle")).toHaveCount(2);
+  }
+  const accuracyTicks = await comparisonCharts.locator(".recharts-yAxis text").allTextContents();
+  expect(accuracyTicks).not.toContain("0.00%");
 
   const hasPageOverflow = await page.evaluate(
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
@@ -65,9 +62,10 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   await expect(page.getByText("Showing 1 of 9 models")).toBeVisible();
 
   await page.getByRole("combobox", { name: "Comparison metric" }).selectOption("recall");
-  await expect(page.getByText("9 models with comparable Recall data")).toBeVisible();
-  await page.locator(".recharts-bar-rectangle").first().hover();
-  await expect(page.locator(".recharts-tooltip-wrapper")).toBeVisible();
+  await expect(page.getByText("4 models with comparable Recall data")).toBeVisible();
+  const firstComparisonChart = page.getByTestId("model-comparison-chart").first();
+  await firstComparisonChart.locator(".recharts-bar-rectangle").first().hover();
+  await expect(firstComparisonChart.locator(".recharts-tooltip-wrapper")).toBeVisible();
 
   await page.getByRole("button", { name: "Choose color theme" }).click();
   await page.getByRole("menuitemradio", { name: "Teal Amber" }).click();
@@ -97,7 +95,7 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
 
 test("applies all five themes to the chart and captures each palette", async ({ page }, testInfo) => {
   await page.goto("/");
-  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(18);
+  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(8);
 
   const themes = [
     ["Research Blue", "research-blue"],

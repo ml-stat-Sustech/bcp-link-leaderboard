@@ -148,7 +148,23 @@ describe("LeaderboardApp", () => {
     render(<LeaderboardApp csvText={TEST_CSV} />);
     expect(modelNames()).toEqual(["Beta", "Alpha", "Gamma"]);
     expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("3 models");
-    expect(screen.getByText("2 models with comparable Accuracy data")).toBeInTheDocument();
+    expect(screen.getByText("0 models with comparable Accuracy data")).toBeInTheDocument();
+  });
+
+  it("renders separate comparison charts for the four selected models", () => {
+    render(<LeaderboardApp />);
+
+    const charts = screen.getAllByTestId("model-comparison-chart");
+    expect(charts).toHaveLength(4);
+    expect(charts.map((chart) => chart.querySelector("h3")?.textContent)).toEqual([
+      "Tongyi-DeepResearch-30B-A3B",
+      "SearchAgent-Zero",
+      "WebExplorer-8B",
+      "WebSailor-32B",
+    ]);
+    expect(screen.getByText("4 models with comparable Accuracy data")).toBeInTheDocument();
+    expect(within(charts[0]).getByText("57.59%")).toBeVisible();
+    expect(within(charts[0]).getByText("59.76%")).toBeVisible();
   });
 
   it("filters by model name and sorts numeric columns", async () => {

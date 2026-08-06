@@ -27,3 +27,13 @@ export function formatMetricValue(
     maximumFractionDigits: metric.fractionDigits,
   }).format(value);
 }
+
+export function getComparisonDomain(first: number, second: number): [number, number] {
+  const minimum = Math.min(first, second);
+  const maximum = Math.max(first, second);
+  const midpoint = (minimum + maximum) / 2;
+  const spread = maximum - minimum;
+  const padding = Math.max(spread * 0.35, Math.abs(midpoint) * 0.03, 0.01);
+
+  return [minimum === 0 ? 0 : Math.max(0, minimum - padding), maximum + padding];
+}

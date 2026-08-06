@@ -18,7 +18,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -34,7 +33,7 @@ import {
   type Language,
   type Translation,
 } from "./i18n";
-import { formatMetricValue, METRIC_BY_KEY, METRICS } from "./metrics";
+import { formatMetricValue, getComparisonDomain, METRICS } from "./metrics";
 import {
   resolveInitialTheme,
   THEMES,
@@ -52,6 +51,19 @@ interface SortState {
 
 interface LeaderboardAppProps {
   csvText?: string;
+}
+
+const COMPARISON_MODEL_NAMES = [
+  "Tongyi-DeepResearch-30B-A3B",
+  "SearchAgent-Zero",
+  "WebExplorer-8B",
+  "WebSailor-32B",
+] as const;
+
+interface ComparisonDatum {
+  model: string;
+  bcp: number;
+  bcpLink: number;
 }
 
 function ThemePicker({
@@ -325,6 +337,106 @@ function LeaderboardTable({
   );
 }
 
+function ModelComparisonChart({
+  datum,
+  metric,
+  metricLabel,
+  language,
+  chartLabel,
+}: {
+  datum: ComparisonDatum;
+  metric: MetricKey;
+  metricLabel: string;
+  language: Language;
+  chartLabel: string;
+}) {
+  const headingId = useId();
+  const domain = getComparisonDomain(datum.bcp, datum.bcpLink);
+  const data = [{ metric: metricLabel, bcp: datum.bcp, bcpLink: datum.bcpLink }];
+
+  return (
+    <article
+      className="model-comparison-card"
+      data-testid="model-comparison-chart"
+      aria-labelledby={headingId}
+    >
+      <h3 id={headingId}>{datum.model}</h3>
+      <dl className="model-chart-values">
+        <div>
+          <dt><span className="series-swatch series-swatch-bcp" aria-hidden="true" />BCP</dt>
+          <dd>{formatMetricValue(metric, datum.bcp, language)}</dd>
+        </div>
+        <div>
+          <dt><span className="series-swatch series-swatch-bcp-link" aria-hidden="true" />BCP-Link</dt>
+          <dd>{formatMetricValue(metric, datum.bcpLink, language)}</dd>
+        </div>
+      </dl>
+      <div className="model-chart-canvas" role="img" aria-label={`${datum.model}: ${chartLabel}`}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={data}
+            barGap={10}
+            barCategoryGap="42%"
+            margin={{ top: 12, right: 12, bottom: 4, left: 2 }}
+          >
+            <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false} />
+            <XAxis
+              dataKey="metric"
+              tick={false}
+              tickLine={false}
+              axisLine={{ stroke: "var(--border-strong)" }}
+              height={12}
+            />
+            <YAxis
+              domain={domain}
+              allowDataOverflow={false}
+              tickCount={4}
+              width={72}
+              tick={{ fill: "var(--muted)", fontSize: 11 }}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(value: number) => formatMetricValue(metric, value, language)}
+            />
+            <Tooltip
+              cursor={{ fill: "var(--chart-cursor)" }}
+              labelFormatter={() => ""}
+              formatter={(value) => formatMetricValue(metric, Number(value), language)}
+              contentStyle={{
+                border: "1px solid var(--border-strong)",
+                borderRadius: 6,
+                boxShadow: "0 8px 24px rgba(16, 24, 40, 0.10)",
+                color: "var(--text)",
+                background: "var(--surface)",
+              }}
+              labelStyle={{ display: "none" }}
+            />
+            <Bar
+              className="chart-series-bcp"
+              dataKey="bcp"
+              name="BCP"
+              fill="var(--chart-bcp)"
+              radius={[3, 3, 0, 0]}
+              barSize={52}
+              maxBarSize={56}
+              isAnimationActive={false}
+            />
+            <Bar
+              className="chart-series-bcp-link"
+              dataKey="bcpLink"
+              name="BCP-Link"
+              fill="var(--chart-bcp-link)"
+              radius={[3, 3, 0, 0]}
+              barSize={52}
+              maxBarSize={56}
+              isAnimationActive={false}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </article>
+  );
+}
+
 function ComparisonChart({
   models,
   language,
@@ -336,27 +448,17 @@ function ComparisonChart({
 }) {
   const [selectedMetric, setSelectedMetric] = useState<MetricKey>("accuracy");
   const selectId = useId();
-  const metricMeta = METRIC_BY_KEY[selectedMetric];
   const metricText = copy.metrics[selectedMetric];
 
-  const chartData = useMemo(
-    () =>
-      models
-        .filter((model) => {
-          const bcp = model.bcp?.[selectedMetric] ?? null;
-          const bcpLink = model.bcpLink?.[selectedMetric] ?? null;
-          return bcp !== null && bcpLink !== null;
-        })
-        .map((model) => ({
-          model: model.model,
-          bcp: model.bcp![selectedMetric]!,
-          bcpLink: model.bcpLink![selectedMetric]!,
-        }))
-        .sort((a, b) => b.bcpLink - a.bcpLink),
-    [models, selectedMetric],
-  );
-
-  const chartMinWidth = Math.max(720, chartData.length * 164);
+  const chartData = useMemo(() => {
+    const modelsByName = new Map(models.map((model) => [model.model, model]));
+    return COMPARISON_MODEL_NAMES.flatMap((modelName) => {
+      const model = modelsByName.get(modelName);
+      const bcp = model?.bcp?.[selectedMetric] ?? null;
+      const bcpLink = model?.bcpLink?.[selectedMetric] ?? null;
+      return bcp === null || bcpLink === null ? [] : [{ model: modelName, bcp, bcpLink }];
+    });
+  }, [models, selectedMetric]);
 
   return (
     <section id="comparison" className="content-section comparison-section" aria-labelledby="comparison-heading">
@@ -389,90 +491,17 @@ function ComparisonChart({
       </div>
 
       {chartData.length > 0 ? (
-        <div className="chart-shell" data-testid="comparison-chart">
-          <div
-            className="chart-scroll"
-            tabIndex={0}
-            aria-label={copy.comparison.chartLabel(metricText.label)}
-          >
-            <div className="chart-canvas" style={{ minWidth: chartMinWidth }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={chartData}
-                  barGap={4}
-                  barCategoryGap="48%"
-                  margin={{ top: 20, right: 24, bottom: 74, left: 12 }}
-                >
-                  <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false} />
-                  <XAxis
-                    dataKey="model"
-                    interval={0}
-                    angle={-24}
-                    textAnchor="end"
-                    height={88}
-                    tick={{ fill: "var(--text-subtle)", fontSize: 12 }}
-                    tickLine={false}
-                    axisLine={{ stroke: "var(--border-strong)" }}
-                    tickFormatter={(value: string) =>
-                      value.length > 24 ? `${value.slice(0, 22)}…` : value
-                    }
-                  />
-                  <YAxis
-                    width={58}
-                    tick={{ fill: "var(--muted)", fontSize: 12 }}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value: number) =>
-                      metricMeta.format === "percent"
-                        ? `${value}%`
-                        : formatMetricValue(selectedMetric, value, language)
-                    }
-                  />
-                  <Tooltip
-                    cursor={{ fill: "var(--chart-cursor)" }}
-                    formatter={(value) =>
-                      formatMetricValue(selectedMetric, Number(value), language)
-                    }
-                    contentStyle={{
-                      border: "1px solid var(--border-strong)",
-                      borderRadius: 6,
-                      boxShadow: "0 8px 24px rgba(16, 24, 40, 0.10)",
-                      color: "var(--text)",
-                      background: "var(--surface)",
-                    }}
-                    labelStyle={{ fontWeight: 650, marginBottom: 8 }}
-                  />
-                  <Legend
-                    verticalAlign="top"
-                    align="right"
-                    height={36}
-                    iconType="square"
-                    wrapperStyle={{ color: "var(--text-subtle)", fontSize: 13 }}
-                  />
-                  <Bar
-                    className="chart-series-bcp"
-                    dataKey="bcp"
-                    name="BCP"
-                    fill="var(--chart-bcp)"
-                    radius={[3, 3, 0, 0]}
-                    barSize={28}
-                    maxBarSize={34}
-                    isAnimationActive={false}
-                  />
-                  <Bar
-                    className="chart-series-bcp-link"
-                    dataKey="bcpLink"
-                    name="BCP-Link"
-                    fill="var(--chart-bcp-link)"
-                    radius={[3, 3, 0, 0]}
-                    barSize={28}
-                    maxBarSize={34}
-                    isAnimationActive={false}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+        <div className="comparison-grid" data-testid="comparison-chart">
+          {chartData.map((datum) => (
+            <ModelComparisonChart
+              key={datum.model}
+              datum={datum}
+              metric={selectedMetric}
+              metricLabel={metricText.label}
+              language={language}
+              chartLabel={copy.comparison.chartLabel(metricText.label)}
+            />
+          ))}
         </div>
       ) : (
         <div className="chart-empty" role="status">

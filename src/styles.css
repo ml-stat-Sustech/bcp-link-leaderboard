@@ -780,8 +780,7 @@ h2 {
   color: var(--placeholder);
 }
 
-.table-shell,
-.chart-shell {
+.table-shell {
   overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--border-strong);
@@ -792,8 +791,7 @@ h2 {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-.table-scroll,
-.chart-scroll {
+.table-scroll {
   overflow-x: auto;
   scrollbar-color: var(--border-strong) var(--surface-soft);
 }
@@ -993,17 +991,78 @@ thead .model-column {
   pointer-events: none;
 }
 
-.chart-shell {
-  min-height: 390px;
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
 }
 
-.chart-scroll {
-  overflow-y: hidden;
+.model-comparison-card {
+  min-width: 0;
+  padding: 20px 20px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
 }
 
-.chart-canvas {
+.model-comparison-card h3 {
+  min-height: 23px;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.model-chart-values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0 0;
+}
+
+.model-chart-values > div {
+  min-width: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.model-chart-values dt {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-subtle);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.model-chart-values dd {
+  margin-top: 4px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.series-swatch {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+  border-radius: 2px;
+}
+
+.series-swatch-bcp {
+  background: var(--chart-bcp);
+}
+
+.series-swatch-bcp-link {
+  background: var(--chart-bcp-link);
+}
+
+.model-chart-canvas {
   width: 100%;
-  height: 390px;
+  height: 250px;
+  margin-top: 8px;
+  overflow: hidden;
 }
 
 .chart-series-bcp .recharts-bar-rectangle,
@@ -1013,14 +1072,6 @@ thead .model-column {
 
 .chart-series-bcp-link .recharts-bar-rectangle,
 .chart-series-bcp-link.recharts-bar-rectangle {
-  fill: var(--chart-bcp-link);
-}
-
-.recharts-legend-item:first-child .recharts-legend-icon {
-  fill: var(--chart-bcp);
-}
-
-.recharts-legend-item:last-child .recharts-legend-icon {
   fill: var(--chart-bcp-link);
 }
 
@@ -1263,6 +1314,10 @@ thead .model-column {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+
   table {
     min-width: 1160px;
   }
@@ -1341,8 +1396,7 @@ thead .model-column {
     font-size: 21px;
   }
 
-  .table-shell,
-  .chart-shell {
+  .table-shell {
     margin-inline: -10px;
     border-right: 0;
     border-left: 0;
