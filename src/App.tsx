@@ -436,10 +436,7 @@ function LeaderboardTable({
               {visibleModels.map((model) => {
                 const rank = ranks.get(model.model) ?? null;
                 return (
-                  <tr
-                    key={model.model}
-                    className={rank === 1 ? "leader-row leader-row-first" : "leader-row"}
-                  >
+                  <tr key={model.model} className="leader-row">
                     <td className="rank-column rank-value">
                       {rank !== null && rank <= 3 ? (
                         <span className={`rank-medal rank-${rank}`}>{rank}</span>

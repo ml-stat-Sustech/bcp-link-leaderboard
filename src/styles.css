@@ -33,7 +33,6 @@
   --raised-bg: rgba(255, 255, 255, 0.88);
   --surface-soft: #e9eff6;
   --surface-hover: #f3f7fb;
-  --leader-highlight: #eef5fc;
   --text: #112d4e;
   --text-subtle: #40536a;
   --muted: #65758a;
@@ -86,7 +85,6 @@
   --raised-bg: rgba(249, 250, 244, 0.88);
   --surface-soft: #e4e9df;
   --surface-hover: #f1f5eb;
-  --leader-highlight: #e8f0dc;
   --text: #122018;
   --text-subtle: #405247;
   --muted: #607067;
@@ -135,7 +133,6 @@
   --raised-bg: rgba(255, 255, 255, 0.89);
   --surface-soft: #dfeaec;
   --surface-hover: #eef6f6;
-  --leader-highlight: #fff6e7;
   --text: #18373c;
   --text-subtle: #3f6066;
   --muted: #62777b;
@@ -184,7 +181,6 @@
   --raised-bg: rgba(255, 255, 255, 0.89);
   --surface-soft: #e5e9eb;
   --surface-hover: #f2f4f5;
-  --leader-highlight: #f0f3f4;
   --text: #2f363a;
   --text-subtle: #515d62;
   --muted: #6d777b;
@@ -233,7 +229,6 @@
   --raised-bg: rgba(255, 255, 255, 0.9);
   --surface-soft: #e3e4e6;
   --surface-hover: #f1f2f3;
-  --leader-highlight: #fff7df;
   --text: #222831;
   --text-subtle: #4d535b;
   --muted: #687078;
@@ -1049,10 +1044,6 @@ tbody tr:hover > * {
   background-color: var(--surface-hover);
 }
 
-.leader-row-first > * {
-  background-color: var(--leader-highlight);
-}
-
 .rank-column {
   position: sticky;
   left: 0;
@@ -1084,12 +1075,8 @@ thead .model-column {
   top: 0;
   z-index: 8;
   height: 82px;
+  text-align: center;
   background: var(--surface-soft);
-}
-
-.leader-row-first .rank-column,
-.leader-row-first .model-column {
-  background: var(--leader-highlight);
 }
 
 tbody tr:hover .rank-column,

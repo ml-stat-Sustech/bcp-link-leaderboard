@@ -126,6 +126,12 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       modelWidthToken: getComputedStyle(document.documentElement)
         .getPropertyValue("--model-width")
         .trim(),
+      rankHeaderTextAlign: getComputedStyle(document.querySelector("thead .rank-column")!).textAlign,
+      modelHeaderTextAlign: getComputedStyle(document.querySelector("thead .model-column")!).textAlign,
+      firstRowBackground: getComputedStyle(document.querySelector("tbody tr:nth-child(1) > :last-child")!)
+        .backgroundColor,
+      secondRowBackground: getComputedStyle(document.querySelector("tbody tr:nth-child(2) > :last-child")!)
+        .backgroundColor,
       accuracyWidth,
       linkWidth,
       searchHeaderWhiteSpace: getComputedStyle(
@@ -165,6 +171,9 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.visitWidth).toBeGreaterThanOrEqual(visualDetails.accuracyWidth);
   expect(visualDetails.modelWidthToken).toBe(testInfo.project.name.startsWith("mobile") ? "210px" : "235px");
   expect(visualDetails.modelWidth).toBeLessThan(270);
+  expect(visualDetails.rankHeaderTextAlign).toBe("center");
+  expect(visualDetails.modelHeaderTextAlign).toBe("center");
+  expect(visualDetails.firstRowBackground).toBe(visualDetails.secondRowBackground);
   expect(visualDetails.searchHeaderWhiteSpace).toBe("nowrap");
   expect(visualDetails.visitHeaderWhiteSpace).toBe("nowrap");
   expect(visualDetails.linkWidth).toBeGreaterThan(visualDetails.accuracyWidth);
