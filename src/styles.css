@@ -1062,7 +1062,7 @@ tbody tr:hover .model-column {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 14px 16px;
+  padding: 14px 28px;
   background: color-mix(in srgb, var(--surface-soft) 72%, transparent);
   border-bottom: 1px solid var(--border);
 }
@@ -1385,24 +1385,30 @@ tbody tr:hover .model-column {
   position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 34px;
-  margin-bottom: 30px;
+  gap: 0;
+  margin-bottom: 20px;
+  overflow: hidden;
+  background: var(--raised-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--raised-shadow);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .rule-principles::before {
-  content: "";
-  height: 1px;
-  position: absolute;
-  top: 19px;
-  right: 17%;
-  left: 17%;
-  background: var(--border-strong);
+  content: none;
 }
 
 .rule-principles article {
   min-width: 0;
   position: relative;
+  padding: 26px 28px 28px;
   text-align: center;
+}
+
+.rule-principles article + article {
+  border-left: 1px solid var(--border);
 }
 
 .principle-icon {
@@ -1437,6 +1443,84 @@ tbody tr:hover .model-column {
   line-height: 1.6;
 }
 
+.evaluation-flow-scroll {
+  margin-bottom: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: var(--raised-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--raised-shadow);
+  scrollbar-color: var(--border-strong) transparent;
+  scrollbar-width: thin;
+}
+
+.evaluation-flow {
+  min-width: 840px;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  list-style: none;
+}
+
+.evaluation-flow::before {
+  content: "";
+  height: 2px;
+  position: absolute;
+  top: 61px;
+  right: calc(100% / 12);
+  left: calc(100% / 12);
+  background: var(--border-strong);
+}
+
+.evaluation-flow li {
+  min-width: 0;
+  min-height: 132px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 17px 12px 15px;
+  text-align: center;
+}
+
+.evaluation-flow li + li {
+  border-left: 1px solid var(--border);
+}
+
+.flow-index {
+  align-self: flex-start;
+  color: var(--placeholder);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.flow-node {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  margin: 17px 0 12px;
+  background: var(--primary);
+  border: 4px solid var(--surface);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.evaluation-flow strong {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.evaluation-flow small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .tool-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1455,13 +1539,16 @@ tbody tr:hover .model-column {
 }
 
 .tool-panel-heading {
-  min-height: 112px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 19px;
+  min-height: 142px;
+  padding: 23px 23px 21px;
   background: color-mix(in srgb, var(--surface-soft) 74%, transparent);
   border-bottom: 1px solid var(--border);
+}
+
+.tool-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .tool-icon {
@@ -1482,18 +1569,15 @@ tbody tr:hover .model-column {
 
 .tool-panel h3 {
   color: var(--text);
-  font-size: 16px;
-  line-height: 1.4;
-}
-
-.tool-panel h3 code {
-  font-size: 14px;
+  font-size: 25px;
+  line-height: 1.15;
+  font-weight: 800;
 }
 
 .tool-panel-heading p {
-  margin-top: 6px;
+  margin-top: 15px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.55;
 }
 
@@ -2056,6 +2140,7 @@ tbody tr:hover .model-column {
 
   .comparison-controls {
     gap: 12px;
+    padding-inline: 16px;
   }
 
   .comparison-control-fields {
@@ -2091,6 +2176,12 @@ tbody tr:hover .model-column {
 
   .rule-principles article {
     display: block;
+    padding: 24px 20px;
+  }
+
+  .rule-principles article + article {
+    border-top: 1px solid var(--border);
+    border-left: 0;
   }
 
   .principle-icon {
@@ -2098,8 +2189,8 @@ tbody tr:hover .model-column {
   }
 
   .tool-panel-heading {
-    min-height: 0;
-    padding: 16px;
+    min-height: 132px;
+    padding: 20px;
   }
 
   .tool-specs {

@@ -14,10 +14,16 @@ interface RulePrinciple {
 }
 
 interface ToolText {
+  title: string;
   summary: string;
   input: string;
   retrieval: string;
   response: string;
+}
+
+interface RuleFlowStep {
+  title: string;
+  detail: string;
 }
 
 export interface Translation {
@@ -109,6 +115,8 @@ export interface Translation {
     heading: string;
     note: string;
     principles: RulePrinciple[];
+    flowScrollLabel: string;
+    flowSteps: RuleFlowStep[];
     inputLabel: string;
     retrievalLabel: string;
     responseLabel: string;
@@ -241,17 +249,28 @@ export const TRANSLATIONS: Record<Language, Translation> = {
           body: "Gold evidence can sit beyond the first search results, so agents must recognize and follow useful text links.",
         },
       ],
+      flowScrollLabel: "Evaluation path from query to answer",
+      flowSteps: [
+        { title: "Query", detail: "Question" },
+        { title: "Search", detail: "Initial retrieval" },
+        { title: "Visit", detail: "Open result" },
+        { title: "Visit", detail: "Second hop" },
+        { title: "Evidence", detail: "Grounded source" },
+        { title: "Answer", detail: "Final response" },
+      ],
       inputLabel: "Input",
       retrievalLabel: "Retrieval",
       responseLabel: "Response",
       search: {
-        summary: "Find relevant documents in the fixed corpus with a focused natural-language query.",
+        title: "Search",
+        summary: "Focused retrieval from the fixed benchmark corpus.",
         input: "query (required)",
         retrieval: "Fixed Elasticsearch index · title + text · hybrid · Qwen3-Embedding-8B",
         response: "Top 5 · highlight enabled · up to 5 fragments · 1,024-character snippets",
       },
       visit: {
-        summary: "Open an exact URL found in a search result or linked from a previously visited document.",
+        title: "Visit",
+        summary: "Open a result URL or follow a link from a visited document.",
         input: "document_id (required) · goal (optional)",
         retrieval: "Exact, unmodified URL · fixed corpus lookup · no live web fetch",
         response: "Full document text · 40,000-character limit · no summarizer",
@@ -409,17 +428,28 @@ export const TRANSLATIONS: Record<Language, Translation> = {
           body: "关键证据可能位于初始搜索结果之外，智能体需要识别并跟随有用的文本链接。",
         },
       ],
+      flowScrollLabel: "从 Query 到 Answer 的评测流程",
+      flowSteps: [
+        { title: "Query", detail: "评测问题" },
+        { title: "Search", detail: "初始检索" },
+        { title: "Visit", detail: "打开结果" },
+        { title: "Visit", detail: "二次跳转" },
+        { title: "Evidence", detail: "获取证据" },
+        { title: "Answer", detail: "生成答案" },
+      ],
       inputLabel: "输入",
       retrievalLabel: "检索方式",
       responseLabel: "返回内容",
       search: {
-        summary: "使用聚焦的自然语言查询，在固定语料中查找相关文档。",
+        title: "Search",
+        summary: "使用聚焦查询，从固定基准语料中检索相关文档。",
         input: "query（必填）",
         retrieval: "固定 Elasticsearch 索引 · title + text · hybrid · Qwen3-Embedding-8B",
         response: "Top 5 · 开启 highlight · 最多 5 个 fragments · 1,024 字符 snippet",
       },
       visit: {
-        summary: "打开搜索结果或已访问文档中出现的精确 URL。",
+        title: "Visit",
+        summary: "打开结果 URL，或跟随已访问文档中的链接。",
         input: "document_id（必填）· goal（可选）",
         retrieval: "URL 必须保持原样 · 查询固定语料 · 不访问实时网页",
         response: "返回完整文档文本 · 40,000 字符上限 · 不使用 summarizer",

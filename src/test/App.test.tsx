@@ -42,6 +42,11 @@ describe("LeaderboardApp", () => {
     expect(screen.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
     expect(screen.getByText(/40,000-character limit · no summarizer/)).toBeVisible();
     expect(screen.getByText("Each run is capped at 50 agent turns.")).toBeVisible();
+    expect(screen.getByRole("heading", { name: /^Search$/ })).toBeVisible();
+    expect(screen.getByRole("heading", { name: /^Visit$/ })).toBeVisible();
+    expect(container.querySelectorAll(".rule-principles article")).toHaveLength(3);
+    expect(container.querySelectorAll(".evaluation-flow li")).toHaveLength(6);
+    expect(container.querySelector(".evaluation-flow")).toHaveTextContent("Second hop");
     expect(screen.queryByText("What is recorded")).not.toBeInTheDocument();
 
     const sectionIds = Array.from(container.querySelectorAll("main > section"), (section) => section.id);

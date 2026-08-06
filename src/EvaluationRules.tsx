@@ -3,7 +3,7 @@ import type { Translation } from "./i18n";
 
 function ToolPanel({
   icon,
-  signature,
+  title,
   summary,
   input,
   retrieval,
@@ -11,7 +11,7 @@ function ToolPanel({
   copy,
 }: {
   icon: React.ReactNode;
-  signature: string;
+  title: string;
   summary: string;
   input: string;
   retrieval: string;
@@ -21,11 +21,11 @@ function ToolPanel({
   return (
     <article className="tool-panel">
       <div className="tool-panel-heading">
-        <span className="tool-icon" aria-hidden="true">{icon}</span>
-        <div>
-          <h3><code>{signature}</code></h3>
-          <p>{summary}</p>
+        <div className="tool-title-row">
+          <span className="tool-icon" aria-hidden="true">{icon}</span>
+          <h3>{title}</h3>
         </div>
+        <p>{summary}</p>
       </div>
       <dl className="tool-specs">
         <div>
@@ -73,10 +73,27 @@ export function EvaluationRules({ copy }: { copy: Translation }) {
           ))}
         </div>
 
+        <div
+          className="evaluation-flow-scroll"
+          tabIndex={0}
+          aria-label={copy.rules.flowScrollLabel}
+        >
+          <ol className="evaluation-flow">
+            {copy.rules.flowSteps.map((step, index) => (
+              <li key={`${step.title}-${step.detail}`}>
+                <span className="flow-index">{String(index + 1).padStart(2, "0")}</span>
+                <span className="flow-node" aria-hidden="true" />
+                <strong>{step.title}</strong>
+                <small>{step.detail}</small>
+              </li>
+            ))}
+          </ol>
+        </div>
+
         <div className="tool-grid">
           <ToolPanel
             icon={<Search />}
-            signature="search(query)"
+            title={copy.rules.search.title}
             summary={copy.rules.search.summary}
             input={copy.rules.search.input}
             retrieval={copy.rules.search.retrieval}
@@ -85,7 +102,7 @@ export function EvaluationRules({ copy }: { copy: Translation }) {
           />
           <ToolPanel
             icon={<FileText />}
-            signature="visit(document_id, goal)"
+            title={copy.rules.visit.title}
             summary={copy.rules.visit.summary}
             input={copy.rules.visit.input}
             retrieval={copy.rules.visit.retrieval}

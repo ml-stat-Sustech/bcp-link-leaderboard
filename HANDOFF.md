@@ -64,6 +64,9 @@ Last updated: 2026-08-06
 - Added stable section IDs: `about`, `leaderboard`, `comparison`, `rules`, and `metrics`.
 - Removed the duplicated `What is recorded` / `记录哪些结果` block from Evaluation Rules.
 - Kept the 50-turn limit directly below the tool panels.
+- Evaluation Rules groups the three benchmark principles in one framed surface, shows a six-step
+  Query → Search → Visit → second-hop Visit → Evidence → Answer path, and uses simplified Search and
+  Visit headings above the detailed tool contracts.
 - Added a bilingual Metric Guide sentence that maps metrics to Answer quality, Tool behavior, and Link following.
 
 ### Chart Logic

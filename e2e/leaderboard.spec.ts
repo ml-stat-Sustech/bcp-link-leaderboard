@@ -15,6 +15,10 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();
   await expect(page.getByRole("heading", { name: "One environment, the same tools" })).toBeVisible();
+  await expect(page.locator(".rule-principles article")).toHaveCount(3);
+  await expect(page.locator(".evaluation-flow li")).toHaveCount(6);
+  await expect(page.getByRole("heading", { name: "Search", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Visit", exact: true })).toBeVisible();
   await expect(page.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
   await expect(page.locator(".rank-medal")).toHaveCount(3);
   await expect(page.locator(".percentage-data-bar")).toHaveCount(18);
