@@ -10,7 +10,6 @@ import {
   Check,
   ChevronDown,
   Database,
-  ExternalLink,
   Github,
   Info,
   Link2,
@@ -1074,16 +1073,6 @@ function SiteFooter({ copy }: { copy: Translation }) {
           </a>
         </nav>
         <div className="footer-end">
-          <p className="footer-source">
-            {copy.footer.sourcePrefix}{" "}
-            <a
-              href="https://huggingface.co/spaces/Tevatron/BrowseComp-Plus"
-              target="_blank"
-              rel="noreferrer"
-            >
-              BrowseComp-Plus <ExternalLink aria-hidden="true" />
-            </a>
-          </p>
           <a className="back-to-top" href="#top">
             {copy.footer.backToTop} <ArrowUp aria-hidden="true" />
           </a>

@@ -150,7 +150,6 @@ export interface Translation {
     leaderboardLabel: string;
     comparisonLabel: string;
     rulesLabel: string;
-    sourcePrefix: string;
     backToTop: string;
   };
   metrics: Record<MetricKey, MetricText>;
@@ -317,7 +316,6 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       leaderboardLabel: "View leaderboard",
       comparisonLabel: "View benchmark comparison",
       rulesLabel: "View evaluation rules",
-      sourcePrefix: "Built on",
       backToTop: "Back to top",
     },
     metrics: {
@@ -528,7 +526,6 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       leaderboardLabel: "查看排行榜",
       comparisonLabel: "查看基准对比",
       rulesLabel: "查看评测规则",
-      sourcePrefix: "基于",
       backToTop: "返回顶部",
     },
     metrics: {

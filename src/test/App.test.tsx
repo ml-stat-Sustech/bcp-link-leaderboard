@@ -38,6 +38,7 @@ describe("LeaderboardApp", () => {
     );
     expect(screen.getByRole("link", { name: "Review protocol" })).toHaveAttribute("href", "#rules");
     expect(screen.getByRole("link", { name: "Back to top" })).toHaveAttribute("href", "#top");
+    expect(screen.queryByRole("link", { name: /BrowseComp-Plus/i })).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "BCP-Link", level: 1 })).toBeVisible();
     expect(
       screen.getByText("Evaluating whether search agents can find and follow useful links."),

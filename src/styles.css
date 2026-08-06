@@ -2074,9 +2074,8 @@ tbody tr:hover .model-column {
 }
 
 .footer-end {
-  display: grid;
-  justify-items: end;
-  gap: 9px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .footer-brand {
@@ -2095,8 +2094,7 @@ tbody tr:hover .model-column {
   font-size: 15px;
 }
 
-.footer-brand p,
-.footer-source {
+.footer-brand p {
   color: var(--nav-muted);
   font-size: 12px;
   line-height: 1.5;
@@ -2112,21 +2110,15 @@ tbody tr:hover .model-column {
   gap: 20px;
 }
 
-.footer-nav a,
-.footer-source a {
+.footer-nav a {
   color: var(--nav-muted);
   font-size: 12px;
   font-weight: 650;
   text-decoration: none;
 }
 
-.footer-nav a:hover,
-.footer-source a:hover {
+.footer-nav a:hover {
   color: var(--nav-text);
-}
-
-.footer-source {
-  text-align: right;
 }
 
 .back-to-top {
@@ -2155,16 +2147,6 @@ tbody tr:hover .model-column {
   height: 14px;
 }
 
-.footer-source a {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.footer-source svg {
-  width: 13px;
-  height: 13px;
-}
 
 .intro-body,
 .table-shell,
@@ -2333,16 +2315,12 @@ tbody tr:hover .model-column {
     grid-template-columns: 1fr auto;
   }
 
-  .footer-source {
-    text-align: left;
-  }
-
   .footer-end {
     width: 100%;
     grid-column: 1 / -1;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
   }
 }
 
@@ -2571,10 +2549,6 @@ tbody tr:hover .model-column {
   .footer-nav {
     gap: 16px;
     flex-wrap: wrap;
-  }
-
-  .footer-source {
-    grid-column: auto;
   }
 
   .footer-end {
