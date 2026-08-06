@@ -1,8 +1,17 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
-async function openPrimaryNavigationIfNeeded(page: import("@playwright/test").Page) {
+async function openPrimaryNavigationIfNeeded(page: Page) {
   const trigger = page.getByRole("button", { name: /Open navigation|打开导航/ });
   if (await trigger.isVisible()) await trigger.click();
+}
+
+async function clickAtCurrentPosition(page: Page, locator: Locator, useTouch: boolean) {
+  const box = await locator.boundingBox();
+  expect(box).not.toBeNull();
+  const x = box!.x + box!.width / 2;
+  const y = box!.y + box!.height / 2;
+  if (useTouch) await page.touchscreen.tap(x, y);
+  else await page.mouse.click(x, y);
 }
 
 test("renders real leaderboard data without page-level overflow", async ({ page }, testInfo) => {
@@ -352,6 +361,48 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
 test("applies all five themes to the chart and captures each palette", async ({ page }, testInfo) => {
   await page.goto("/");
   await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(8);
+
+  const themeScrollPosition = await page.evaluate(() => {
+    document.documentElement.style.scrollBehavior = "auto";
+    const comparison = document.querySelector("#comparison")!;
+    window.scrollTo(0, comparison.getBoundingClientRect().top + window.scrollY);
+    return window.scrollY;
+  });
+  const useTouch = testInfo.project.name.startsWith("mobile");
+  await clickAtCurrentPosition(
+    page,
+    page.getByRole("button", { name: "Choose color theme" }),
+    useTouch,
+  );
+  await expect
+    .poll(() => page.evaluate((before) => Math.abs(window.scrollY - before), themeScrollPosition))
+    .toBeLessThanOrEqual(1);
+  await clickAtCurrentPosition(
+    page,
+    page.getByRole("menuitemradio", { name: "Daylight Green" }),
+    useTouch,
+  );
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "sage-gold");
+  await expect
+    .poll(() => page.evaluate((before) => Math.abs(window.scrollY - before), themeScrollPosition))
+    .toBeLessThanOrEqual(1);
+  await clickAtCurrentPosition(
+    page,
+    page.getByRole("button", { name: "Choose color theme" }),
+    useTouch,
+  );
+  await clickAtCurrentPosition(
+    page,
+    page.getByRole("menuitemradio", { name: "Research Blue" }),
+    useTouch,
+  );
+  await expect
+    .poll(() => page.evaluate((before) => Math.abs(window.scrollY - before), themeScrollPosition))
+    .toBeLessThanOrEqual(1);
+  await page.evaluate(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.style.removeProperty("scroll-behavior");
+  });
 
   const themes = [
     ["Research Blue", "research-blue"],

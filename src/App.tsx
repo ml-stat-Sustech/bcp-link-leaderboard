@@ -128,7 +128,7 @@ function ThemePicker({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       setOpen(false);
-      triggerRef.current?.focus();
+      triggerRef.current?.focus({ preventScroll: true });
     };
 
     document.addEventListener("pointerdown", handlePointerDown);
@@ -148,6 +148,10 @@ function ThemePicker({
         aria-label={open ? copy.theme.closeLabel : copy.theme.openLabel}
         aria-expanded={open}
         aria-controls={pickerId}
+        onPointerDown={(event) => {
+          event.preventDefault();
+          event.currentTarget.focus({ preventScroll: true });
+        }}
         onClick={() => setOpen((current) => !current)}
       >
         <Palette aria-hidden="true" />
@@ -174,7 +178,7 @@ function ThemePicker({
                 onClick={() => {
                   onChange(option.key);
                   setOpen(false);
-                  triggerRef.current?.focus();
+                  triggerRef.current?.focus({ preventScroll: true });
                 }}
               >
                 <span className="theme-option-swatches" aria-hidden="true">

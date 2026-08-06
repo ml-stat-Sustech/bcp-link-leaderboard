@@ -104,7 +104,9 @@ The current UI upgrade is complete.
   keeps search and internal table scrolling without a separate expanded dialog. Its Model column is
   narrower on desktop, while Search Calls and Visit Calls stay on one line. The footer includes a
   right-aligned Back to top action.
-- The sticky header, theme picker, palette swatches, segmented language control, focus/hover states, and 320px+ responsive layouts are styled.
+- The sticky header, theme picker, palette swatches, segmented language control, focus/hover states,
+  and 320px+ responsive layouts are styled. Theme selection restores focus without changing the
+  current page scroll position.
 - Hard-coded interface colors were replaced with semantic variables; obsolete language-toggle and scoring-block rules were removed.
 - Recharts series have stable classes so CSS variables resolve correctly in SVG, BCP-Link remains
   left of BCP within every model group, and tests verify the rendered SVG positions.
