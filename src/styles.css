@@ -1,3 +1,15 @@
+@property --ambient-origin-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --ambient-origin-y {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
 :root {
   color: var(--text);
   background: var(--page-bg);
@@ -11,10 +23,10 @@
   --page-bg: #f4f7fa;
   --page-gradient: linear-gradient(155deg, #f8fafc 0%, #eef5fb 48%, #f7fafc 100%);
   --ambient-bg:
-    linear-gradient(112deg, transparent 0%, rgba(48, 105, 176, 0.38) 18%, rgba(105, 164, 218, 0.2) 48%, transparent 84%),
-    linear-gradient(296deg, transparent 0%, rgba(214, 128, 48, 0.31) 18%, rgba(247, 190, 126, 0.14) 48%, transparent 84%),
+    linear-gradient(112deg, transparent 0%, rgba(85, 147, 215, 0.34) 18%, rgba(140, 190, 230, 0.18) 48%, transparent 84%),
+    linear-gradient(296deg, transparent 0%, rgba(231, 151, 77, 0.27) 18%, rgba(250, 202, 151, 0.13) 48%, transparent 84%),
     linear-gradient(90deg, transparent 14%, rgba(255, 255, 255, 0.3) 45%, transparent 74%),
-    linear-gradient(145deg, #f7fbff 0%, #d9e9f8 49%, #ffeddd 100%);
+    radial-gradient(ellipse at var(--ambient-origin-x) var(--ambient-origin-y), #cfe5ff 0%, #e5f3f4 34%, #fff3d9 69%, #ffddc2 100%);
   --section-bg: #ffffff;
   --section-tinted: #edf2f7;
   --surface: #ffffff;
@@ -64,10 +76,10 @@
   --page-bg: #eef0e8;
   --page-gradient: linear-gradient(155deg, #f5f7ee 0%, #e8eee1 50%, #edf5f3 100%);
   --ambient-bg:
-    linear-gradient(110deg, transparent 0%, rgba(128, 167, 39, 0.4) 18%, rgba(191, 218, 101, 0.21) 48%, transparent 84%),
-    linear-gradient(297deg, transparent 0%, rgba(31, 154, 184, 0.35) 18%, rgba(105, 207, 218, 0.16) 48%, transparent 84%),
+    linear-gradient(110deg, transparent 0%, rgba(159, 193, 77, 0.34) 18%, rgba(205, 225, 133, 0.19) 48%, transparent 84%),
+    linear-gradient(297deg, transparent 0%, rgba(66, 178, 199, 0.3) 18%, rgba(126, 215, 222, 0.14) 48%, transparent 84%),
     linear-gradient(90deg, transparent 14%, rgba(255, 255, 255, 0.28) 45%, transparent 74%),
-    linear-gradient(145deg, #f8fbe9 0%, #deedcb 48%, #dff3f3 100%);
+    radial-gradient(ellipse at var(--ambient-origin-x) var(--ambient-origin-y), #e5f5b7 0%, #dff1cf 35%, #d8f6ee 69%, #cceef6 100%);
   --section-bg: #f7f8f2;
   --section-tinted: #e4eadf;
   --surface: #f9faf4;
@@ -113,10 +125,10 @@
   --page-bg: #f2f6f6;
   --page-gradient: linear-gradient(155deg, #f8fbfb 0%, #e9f4f2 52%, #fff9ef 100%);
   --ambient-bg:
-    linear-gradient(111deg, transparent 0%, rgba(24, 130, 139, 0.4) 18%, rgba(73, 185, 184, 0.2) 48%, transparent 84%),
-    linear-gradient(297deg, transparent 0%, rgba(231, 129, 13, 0.35) 18%, rgba(255, 184, 78, 0.17) 48%, transparent 84%),
+    linear-gradient(111deg, transparent 0%, rgba(55, 157, 163, 0.34) 18%, rgba(101, 196, 193, 0.18) 48%, transparent 84%),
+    linear-gradient(297deg, transparent 0%, rgba(238, 147, 42, 0.3) 18%, rgba(255, 196, 103, 0.15) 48%, transparent 84%),
     linear-gradient(90deg, transparent 14%, rgba(255, 255, 255, 0.3) 45%, transparent 74%),
-    linear-gradient(145deg, #f7fcfc 0%, #d8efed 49%, #ffe8c9 100%);
+    radial-gradient(ellipse at var(--ambient-origin-x) var(--ambient-origin-y), #cbf1ef 0%, #e1f8ef 34%, #fff1cc 69%, #ffdcb1 100%);
   --section-bg: #ffffff;
   --section-tinted: #e4eeee;
   --surface: #ffffff;
@@ -162,10 +174,10 @@
   --page-bg: #f5f6f6;
   --page-gradient: linear-gradient(155deg, #fafbfb 0%, #edf2f3 52%, #faf7f3 100%);
   --ambient-bg:
-    linear-gradient(111deg, transparent 0%, rgba(72, 118, 136, 0.34) 18%, rgba(128, 170, 182, 0.18) 48%, transparent 84%),
-    linear-gradient(297deg, transparent 0%, rgba(177, 109, 70, 0.29) 18%, rgba(220, 162, 121, 0.15) 48%, transparent 84%),
+    linear-gradient(111deg, transparent 0%, rgba(104, 145, 159, 0.3) 18%, rgba(151, 184, 193, 0.16) 48%, transparent 84%),
+    linear-gradient(297deg, transparent 0%, rgba(197, 135, 99, 0.25) 18%, rgba(226, 177, 142, 0.13) 48%, transparent 84%),
     linear-gradient(90deg, transparent 14%, rgba(255, 255, 255, 0.32) 45%, transparent 74%),
-    linear-gradient(145deg, #f9fcfc 0%, #dcebee 49%, #fae5d6 100%);
+    radial-gradient(ellipse at var(--ambient-origin-x) var(--ambient-origin-y), #d9ecef 0%, #eff7f4 35%, #faeadf 69%, #f4d5c2 100%);
   --section-bg: #ffffff;
   --section-tinted: #eceff0;
   --surface: #ffffff;
@@ -211,10 +223,10 @@
   --page-bg: #e9eaec;
   --page-gradient: linear-gradient(155deg, #f8f9fa 0%, #e9edf0 52%, #fff9e9 100%);
   --ambient-bg:
-    linear-gradient(112deg, transparent 0%, rgba(50, 57, 68, 0.34) 18%, rgba(105, 116, 130, 0.18) 48%, transparent 84%),
-    linear-gradient(297deg, transparent 0%, rgba(221, 160, 17, 0.42) 18%, rgba(255, 211, 93, 0.22) 48%, transparent 84%),
+    linear-gradient(112deg, transparent 0%, rgba(100, 109, 121, 0.28) 18%, rgba(144, 154, 166, 0.15) 48%, transparent 84%),
+    linear-gradient(297deg, transparent 0%, rgba(229, 176, 51, 0.34) 18%, rgba(255, 215, 112, 0.19) 48%, transparent 84%),
     linear-gradient(90deg, transparent 14%, rgba(255, 255, 255, 0.3) 45%, transparent 74%),
-    linear-gradient(145deg, #f6f8fa 0%, #dbe2e8 48%, #ffe6a3 100%);
+    radial-gradient(ellipse at var(--ambient-origin-x) var(--ambient-origin-y), #dce5ed 0%, #f3f6f7 34%, #fff0c3 69%, #ffdc83 100%);
   --section-bg: #ffffff;
   --section-tinted: #dfe1e4;
   --surface: #ffffff;
@@ -283,24 +295,30 @@ body::before {
   inset: -12vw;
   z-index: 0;
   pointer-events: none;
+  --ambient-origin-x: 0%;
+  --ambient-origin-y: 0%;
   background: var(--ambient-bg);
   background-repeat: no-repeat;
-  background-size: 72% 140%, 72% 145%, 68% 132%, 130% 120%;
-  background-position: 0% -10%, 100% 110%, 0% 50%, 0% 50%;
-  filter: blur(8px) saturate(1.1);
+  background-size: 112% 140%, 112% 145%, 120% 132%, 110% 110%;
+  background-position: 0% -10%, 100% 110%, 0% 50%, 50% 50%;
+  filter: blur(8px) saturate(1.1) brightness(1.03);
   transform: translate3d(-2.5%, -1.5%, 0) scale(1.08);
-  animation: ambient-gradient-drift 8s linear infinite alternate;
+  animation: ambient-gradient-drift 5s linear infinite alternate;
   will-change: transform, background-position;
 }
 
 @keyframes ambient-gradient-drift {
   50% {
-    background-position: 100% 24%, 0% 76%, 100% 34%, 100% 50%;
+    --ambient-origin-x: 55%;
+    --ambient-origin-y: 45%;
+    background-position: 100% 24%, 0% 76%, 100% 34%, 50% 50%;
     transform: translate3d(1.5%, -0.5%, 0) scale(1.11);
   }
 
   100% {
-    background-position: 24% 100%, 76% 0%, 20% 70%, 24% 50%;
+    --ambient-origin-x: 100%;
+    --ambient-origin-y: 100%;
+    background-position: 24% 100%, 76% 0%, 20% 70%, 50% 50%;
     transform: translate3d(3%, 2%, 0) scale(1.09);
   }
 }

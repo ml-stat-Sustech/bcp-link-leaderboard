@@ -97,9 +97,10 @@ The current UI upgrade is complete.
 - `src/styles.css` defines semantic tokens and five `data-theme` palettes for the complete dashboard.
 - Rose Sage was removed. The former Sage Gold option is now Daylight Green, based on the supplied
   daytime reference; its persisted key remains `sage-gold` for compatibility.
-- Every theme supplies a visibly differentiated two-color field through `--ambient-bg`. The fixed
-  viewport background uses a visible 8-second linear gradient drift with independently moving color
-  bands and moderate contrast; only the color field moves, and `prefers-reduced-motion` disables the animation.
+- Every theme supplies a visibly differentiated four-color diagonal field through `--ambient-bg`.
+  The fixed viewport background uses a bright radial gradient whose origin travels diagonally from
+  corner to corner during a 5-second drift, alongside independently moving color bands; only the
+  color field moves, and `prefers-reduced-motion` disables the animation.
 - The introduction includes compact links to the rankings and evaluation protocol. The leaderboard
   keeps search and internal table scrolling without a separate expanded dialog. Its Model column is
   narrower on desktop, while Search Calls and Visit Calls stay on one line. The footer includes a

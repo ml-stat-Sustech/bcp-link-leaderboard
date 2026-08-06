@@ -169,7 +169,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.linkWidth).toBeGreaterThan(visualDetails.accuracyWidth);
   expect(visualDetails.ambientPosition).toBe("fixed");
   expect(visualDetails.ambientAnimation).toBe("ambient-gradient-drift");
-  expect(visualDetails.ambientAnimationDuration).toBe("8s");
+  expect(visualDetails.ambientAnimationDuration).toBe("5s");
   expect(visualDetails.flowTransitionDuration).toBe("0s");
   expect(visualDetails.flowArrowWidth).toBe("8px");
   expect(visualDetails.principleParentBorder).toBe("0px");
@@ -182,11 +182,20 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   const ambientStartPosition = await page.evaluate(
     () => getComputedStyle(document.body, "::before").backgroundPosition,
   );
+  const ambientStartOrigin = await page.evaluate(() => {
+    const style = getComputedStyle(document.body, "::before");
+    return [style.getPropertyValue("--ambient-origin-x"), style.getPropertyValue("--ambient-origin-y")];
+  });
   await page.waitForTimeout(500);
   const ambientEndPosition = await page.evaluate(
     () => getComputedStyle(document.body, "::before").backgroundPosition,
   );
+  const ambientEndOrigin = await page.evaluate(() => {
+    const style = getComputedStyle(document.body, "::before");
+    return [style.getPropertyValue("--ambient-origin-x"), style.getPropertyValue("--ambient-origin-y")];
+  });
   expect(ambientEndPosition).not.toBe(ambientStartPosition);
+  expect(ambientEndOrigin).not.toEqual(ambientStartOrigin);
 
   const bcpLinkBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp-link");
   const bcpBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp");
@@ -446,6 +455,7 @@ test("applies all five themes to the chart and captures each palette", async ({ 
       };
     });
     expect(colors.ambientBackground).not.toBe("none");
+    expect(colors.ambientBackground).toContain("radial-gradient");
     ambientBackgrounds.add(colors.ambientBackground);
     expect(colors.bcpToken).not.toBe("");
     expect(colors.bcpLinkToken).not.toBe("");
