@@ -23,6 +23,14 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   for (let index = 0; index < 4; index += 1) {
     await expect(comparisonCharts.nth(index).locator(".recharts-bar-rectangle")).toHaveCount(2);
   }
+  const firstChart = comparisonCharts.first();
+  const bcpLinkBox = await firstChart
+    .locator(".recharts-rectangle.chart-series-bcp-link")
+    .boundingBox();
+  const bcpBox = await firstChart.locator(".recharts-rectangle.chart-series-bcp").boundingBox();
+  expect(bcpLinkBox).not.toBeNull();
+  expect(bcpBox).not.toBeNull();
+  expect(bcpLinkBox!.x).toBeLessThan(bcpBox!.x);
   const accuracyTicks = await comparisonCharts.locator(".recharts-yAxis text").allTextContents();
   expect(accuracyTicks).not.toContain("0.00%");
 

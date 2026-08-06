@@ -363,12 +363,12 @@ function ModelComparisonChart({
       <h3 id={headingId}>{datum.model}</h3>
       <dl className="model-chart-values">
         <div>
-          <dt><span className="series-swatch series-swatch-bcp" aria-hidden="true" />BCP</dt>
-          <dd>{formatMetricValue(metric, datum.bcp, language)}</dd>
-        </div>
-        <div>
           <dt><span className="series-swatch series-swatch-bcp-link" aria-hidden="true" />BCP-Link</dt>
           <dd>{formatMetricValue(metric, datum.bcpLink, language)}</dd>
+        </div>
+        <div>
+          <dt><span className="series-swatch series-swatch-bcp" aria-hidden="true" />BCP</dt>
+          <dd>{formatMetricValue(metric, datum.bcp, language)}</dd>
         </div>
       </dl>
       <div className="model-chart-canvas" role="img" aria-label={`${datum.model}: ${chartLabel}`}>
@@ -411,20 +411,20 @@ function ModelComparisonChart({
               labelStyle={{ display: "none" }}
             />
             <Bar
-              className="chart-series-bcp"
-              dataKey="bcp"
-              name="BCP"
-              fill="var(--chart-bcp)"
+              className="chart-series-bcp-link"
+              dataKey="bcpLink"
+              name="BCP-Link"
+              fill="var(--chart-bcp-link)"
               radius={[3, 3, 0, 0]}
               barSize={52}
               maxBarSize={56}
               isAnimationActive={false}
             />
             <Bar
-              className="chart-series-bcp-link"
-              dataKey="bcpLink"
-              name="BCP-Link"
-              fill="var(--chart-bcp-link)"
+              className="chart-series-bcp"
+              dataKey="bcp"
+              name="BCP"
+              fill="var(--chart-bcp)"
               radius={[3, 3, 0, 0]}
               barSize={52}
               maxBarSize={56}

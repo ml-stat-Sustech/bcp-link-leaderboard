@@ -163,6 +163,9 @@ describe("LeaderboardApp", () => {
       "WebSailor-32B",
     ]);
     expect(screen.getByText("4 models with comparable Accuracy data")).toBeInTheDocument();
+    expect(
+      Array.from(charts[0].querySelectorAll(".model-chart-values dt"), (term) => term.textContent),
+    ).toEqual(["BCP-Link", "BCP"]);
     expect(within(charts[0]).getByText("57.59%")).toBeVisible();
     expect(within(charts[0]).getByText("59.76%")).toBeVisible();
   });

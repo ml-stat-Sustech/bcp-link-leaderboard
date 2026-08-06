@@ -65,7 +65,8 @@ Last updated: 2026-08-06
 
 - The comparison section is limited to Tongyi-DeepResearch-30B-A3B, SearchAgent-Zero,
   WebExplorer-8B, and WebSailor-32B.
-- Each model has a separate two-bar chart while all four charts share one metric selector.
+- Each model has a separate two-bar chart while all four charts share one metric selector; BCP-Link
+  is the left bar and BCP is the right bar.
 - Each chart uses a focused padded Y-axis domain; it starts at zero only when one compared value is zero.
 - Chart grid, axes, tooltip, cursor, BCP bars, and BCP-Link bars reference semantic CSS variables.
 - Intended series variables are `--chart-bcp` and `--chart-bcp-link`.
