@@ -6,6 +6,9 @@ interface MetricText {
   label: string;
   shortLabel: string;
   definition: string;
+  calculation: string;
+  interpretation: string;
+  direction: string;
 }
 
 interface RulePrinciple {
@@ -56,6 +59,8 @@ export interface Translation {
     bodyOneBetweenTools: string;
     bodyOneAfterVisit: string;
     bodyTwo: string;
+    rankingsAction: string;
+    protocolAction: string;
   };
   stats: {
     label: string;
@@ -76,6 +81,9 @@ export interface Translation {
     sortStatus: (metric: string, direction: "asc" | "desc") => string;
     noMatches: (query: string) => string;
     showing: (visible: number, total: number) => string;
+    expandTable: string;
+    closeExpandedTable: string;
+    expandedTitle: string;
   };
   comparison: {
     kicker: string;
@@ -108,6 +116,12 @@ export interface Translation {
     };
     percentage: string;
     averageCount: string;
+    definitionLabel: string;
+    calculationLabel: string;
+    interpretationLabel: string;
+    openMetricDetails: (metric: string) => string;
+    unpinMetricDetails: (metric: string) => string;
+    pinnedStatus: string;
     footnote: string;
   };
   rules: {
@@ -135,6 +149,7 @@ export interface Translation {
     comparisonLabel: string;
     rulesLabel: string;
     sourcePrefix: string;
+    backToTop: string;
   };
   metrics: Record<MetricKey, MetricText>;
 }
@@ -174,6 +189,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       bodyOneAfterVisit: " tools so model results remain reproducible and directly comparable.",
       bodyTwo:
         "Gold evidence may not appear in the initial search results, but can be reached through links inside retrieved pages. This leaderboard shows which models can recognize those links, navigate to the right evidence, and complete the search task accurately.",
+      rankingsAction: "View rankings",
+      protocolAction: "Review protocol",
     },
     stats: {
       label: "Dataset summary",
@@ -195,6 +212,9 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         `Sorted by ${metric}, ${direction === "asc" ? "ascending" : "descending"}`,
       noMatches: (query) => `No models match “${query}”.`,
       showing: (visible, total) => `Showing ${visible} of ${total} models`,
+      expandTable: "Expand leaderboard",
+      closeExpandedTable: "Close expanded leaderboard",
+      expandedTitle: "Expanded BCP-Link leaderboard",
     },
     comparison: {
       kicker: "Benchmark comparison",
@@ -228,6 +248,12 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       },
       percentage: "Percentage",
       averageCount: "Average count",
+      definitionLabel: "What it measures",
+      calculationLabel: "Calculation or source",
+      interpretationLabel: "How to read it",
+      openMetricDetails: (metric) => `View ${metric} details`,
+      unpinMetricDetails: (metric) => `Unpin ${metric} details`,
+      pinnedStatus: "Pinned",
       footnote:
         "Accuracy and Recall reward higher values. Tool calls and Turns describe agent behavior and efficiency; lower values are not automatically better.",
     },
@@ -288,37 +314,56 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       comparisonLabel: "View benchmark comparison",
       rulesLabel: "View evaluation rules",
       sourcePrefix: "Built on",
+      backToTop: "Back to top",
     },
     metrics: {
       accuracy: {
         label: "Accuracy",
         shortLabel: "Accuracy",
         definition: "Answer accuracy evaluated by Qwen3-32B as the LLM judge.",
+        calculation: "Share of evaluated answers judged accurate by Qwen3-32B.",
+        interpretation: "Higher values indicate that more benchmark questions were answered correctly.",
+        direction: "Higher is better",
       },
       recall: {
         label: "Recall",
         shortLabel: "Recall",
         definition: "Recall of evidence documents across all searched and visited documents.",
+        calculation: "Evidence documents found across search and visit outputs relative to the gold evidence set.",
+        interpretation: "Higher values indicate broader recovery of the evidence needed to answer each query.",
+        direction: "Higher is better",
       },
       searchCalls: {
         label: "Search Calls",
         shortLabel: "Search Calls",
         definition: "Average number of search tool calls made by the agent.",
+        calculation: "Mean count of search tool invocations per evaluated task.",
+        interpretation: "This describes retrieval strategy; more or fewer calls are not automatically better.",
+        direction: "Context dependent",
       },
       visitCalls: {
         label: "Visit Calls",
         shortLabel: "Visit Calls",
         definition: "Average number of visit tool calls made by the agent.",
+        calculation: "Mean count of visit tool invocations per evaluated task.",
+        interpretation: "Read this with answer quality to distinguish useful exploration from extra work.",
+        direction: "Context dependent",
       },
       linkFollowingVisitCalls: {
         label: "Link-following Visit Calls",
         shortLabel: "Link-following Visit Calls",
         definition: "Average visit calls triggered by links found in retrieved or visited documents.",
+        calculation: "Mean count of visits initiated from links discovered in benchmark documents.",
+        interpretation: "Shows link-navigation behavior; a higher count alone does not prove better navigation.",
+        direction: "Context dependent",
       },
       turns: {
         label: "Turns",
         shortLabel: "Turns",
         definition: "Average number of agent turns per task.",
+        calculation: "Mean agent turns used per task, with each run capped at 50 turns.",
+        interpretation: "Fewer turns can indicate efficiency only when answer quality remains comparable.",
+        direction: "Context dependent",
       },
     },
   },
@@ -354,6 +399,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       bodyOneAfterVisit: " 工具，使不同模型的结果可复现、可直接比较。",
       bodyTwo:
         "关键证据不一定出现在初始搜索结果中，但可能通过检索页面内的链接到达。该排行榜用于衡量模型能否识别这些链接、导航至正确证据，并准确完成搜索任务。",
+      rankingsAction: "查看排行榜",
+      protocolAction: "阅读评测规则",
     },
     stats: {
       label: "数据概览",
@@ -375,6 +422,9 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         `当前按 ${metric} ${direction === "asc" ? "升序" : "降序"}排列`,
       noMatches: (query) => `没有与“${query}”匹配的模型。`,
       showing: (visible, total) => `正在显示 ${visible} / ${total} 个模型`,
+      expandTable: "放大排行榜",
+      closeExpandedTable: "关闭放大排行榜",
+      expandedTitle: "BCP-Link 排行榜放大视图",
     },
     comparison: {
       kicker: "基准对比",
@@ -407,6 +457,12 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       },
       percentage: "百分比",
       averageCount: "平均次数",
+      definitionLabel: "衡量内容",
+      calculationLabel: "计算或来源",
+      interpretationLabel: "解读方式",
+      openMetricDetails: (metric) => `查看 ${metric} 详情`,
+      unpinMetricDetails: (metric) => `取消固定 ${metric} 详情`,
+      pinnedStatus: "已固定",
       footnote:
         "Accuracy 和 Recall 越高越好。工具调用次数和 Turns 用于描述智能体行为与效率，数值较低并不一定代表表现更好。",
     },
@@ -467,37 +523,56 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       comparisonLabel: "查看基准对比",
       rulesLabel: "查看评测规则",
       sourcePrefix: "基于",
+      backToTop: "返回顶部",
     },
     metrics: {
       accuracy: {
         label: "Accuracy",
         shortLabel: "Accuracy",
         definition: "由 Qwen3-32B 作为 LLM judge 评估的答案准确率。",
+        calculation: "由 Qwen3-32B 判定为准确的答案占全部评测答案的比例。",
+        interpretation: "数值越高，表示正确回答的基准问题越多。",
+        direction: "越高越好",
       },
       recall: {
         label: "Recall",
         shortLabel: "Recall",
         definition: "所有搜索和访问过的文档相对于 evidence documents 的召回率。",
+        calculation: "search 和 visit 输出中找到的证据文档相对于标准证据集的比例。",
+        interpretation: "数值越高，表示回答每个问题所需的证据覆盖得越完整。",
+        direction: "越高越好",
       },
       searchCalls: {
         label: "Search Calls",
         shortLabel: "Search Calls",
         definition: "智能体平均调用 search 工具的次数。",
+        calculation: "所有评测任务中 search 工具调用次数的平均值。",
+        interpretation: "该数值描述检索策略，调用更多或更少并不自动代表更好。",
+        direction: "需结合情境",
       },
       visitCalls: {
         label: "Visit Calls",
         shortLabel: "Visit Calls",
         definition: "智能体平均调用 visit 工具的次数。",
+        calculation: "所有评测任务中 visit 工具调用次数的平均值。",
+        interpretation: "需结合答案质量判断这些访问是有效探索还是额外开销。",
+        direction: "需结合情境",
       },
       linkFollowingVisitCalls: {
         label: "Link-following Visit Calls",
         shortLabel: "Link-following Visit Calls",
         definition: "由检索结果或已访问文档中的链接触发的平均访问次数。",
+        calculation: "从基准文档中发现的链接继续发起访问的平均次数。",
+        interpretation: "用于描述链接导航行为；次数更高本身并不能证明导航效果更好。",
+        direction: "需结合情境",
       },
       turns: {
         label: "Turns",
         shortLabel: "Turns",
         definition: "每个任务平均使用的智能体 turns 数量。",
+        calculation: "每项任务所用智能体 turns 的平均值，每次运行最多 50 turns。",
+        interpretation: "仅在答案质量相近时，较少 turns 才能体现更高效率。",
+        direction: "需结合情境",
       },
     },
   },

@@ -1,6 +1,6 @@
 # BCP-Link Leaderboard Handoff
 
-Last updated: 2026-08-06
+Last updated: 2026-08-07
 
 ## 1. Project Location And Current Status
 
@@ -64,10 +64,12 @@ Last updated: 2026-08-06
 - Added stable section IDs: `about`, `leaderboard`, `comparison`, `rules`, and `metrics`.
 - Removed the duplicated `What is recorded` / `记录哪些结果` block from Evaluation Rules.
 - Kept the 50-turn limit directly below the tool panels.
-- Evaluation Rules groups the three benchmark principles in one framed surface, shows a six-step
-  Query → Search → Visit → second-hop Visit → Evidence → Answer path, and uses simplified Search and
-  Visit headings above the detailed tool contracts.
-- Added a bilingual Metric Guide sentence that maps metrics to Answer quality, Tool behavior, and Link following.
+- Evaluation Rules renders the three benchmark principles as separate framed cards, shows a six-step
+  Query → Search → Visit → second-hop Visit → Evidence → Answer path with a directional arrow, and
+  uses simplified Search and Visit headings above the detailed tool contracts.
+- Metric Guide maps metrics to Answer quality, Tool behavior, and Link following through individual
+  cards. Hover or keyboard focus previews a floating detail panel; clicking pins selectable detail
+  text, clicking again returns to preview behavior, and Escape clears a pinned panel.
 
 ### Chart Logic
 
@@ -89,7 +91,13 @@ Last updated: 2026-08-06
 The current UI upgrade is complete.
 
 - `src/styles.css` defines semantic tokens and five `data-theme` palettes for the complete dashboard.
-- Rose Sage was removed. Sage Gold, Teal Amber, and Charcoal Amber now use their source gold/amber colors for the brand mark, active language state, callout rules, and BCP-Link series.
+- Rose Sage was removed. The former Sage Gold option is now Daylight Green, based on the supplied
+  daytime reference; its persisted key remains `sage-gold` for compatibility.
+- Every theme supplies a soft color-field background through `--ambient-bg`. The blurred background
+  is rendered by a fixed viewport pseudo-element, so only page content moves during scrolling.
+- The introduction includes compact links to the rankings and evaluation protocol. The leaderboard
+  has an accessible expanded dialog with Escape/outside-click dismissal, focus restoration, focus
+  containment, and body scroll locking. The footer includes a right-aligned Back to top action.
 - The sticky header, theme picker, palette swatches, segmented language control, focus/hover states, and 320px+ responsive layouts are styled.
 - Hard-coded interface colors were replaced with semantic variables; obsolete language-toggle and scoring-block rules were removed.
 - Recharts series have stable classes so CSS variables resolve correctly in SVG, BCP-Link remains
@@ -98,7 +106,7 @@ The current UI upgrade is complete.
   Visit Calls, and Turns; four decimals for Link-following Visit Calls.
 - Component tests cover all themes, persistence, picker dismissal, exact section order, fixed metric
   precision, the all-model comparison picker, select-all/clear behavior, Chinese UI with English
-  metrics, and state preservation.
+  metrics, state preservation, leaderboard expansion, and Metric Guide preview/pinning.
 - Playwright covers both desktop and Pixel 7 viewports, page overflow, one/multiple comparison-model
   selection, shared-chart bar counts, BCP-Link/BCP geometry, tooltip behavior, theme-driven chart
   fills, and all five palette screenshots.
@@ -122,7 +130,7 @@ Commands run from `/data/hs_dev/bcp-link-leaderboard`:
 ```text
 npm run typecheck  PASS
 npm run build      PASS
-npm test           PASS: 24 passed
+npm test           PASS: 26 passed
 npm run test:e2e   PASS: 8 passed across desktop and mobile Chromium
 ```
 
@@ -159,7 +167,7 @@ Comparison rendering          0/1/2/5/9 selected models render 0/2/4/10/18 bars
 
 - UI reference: `/root/.codex/attachments/fa42566f-368d-4650-abd5-4d78fe8e151b/codex-clipboard-627fae6b-61d9-4df2-bbd2-ef6aaf24e2d9.png`
 - Research Blue: `/root/.codex/attachments/4045c21f-5490-42f3-8bba-f8fbd3f18eae/Color Hunt Palette f9f7f7dbe2ef3f72af112d4e.png`
-- Sage Gold: `/root/.codex/attachments/d69f8080-3081-4bda-b374-0ae082aa5d8f/Color Hunt Palette 8fa28ac7d3c0f7f4edc8a96b.png`
+- Daylight Green: `/data/hs_dev/BCP-Link-Leaderboard_Offline_v2.html` paper/daytime mode
 - Teal Amber: `/root/.codex/attachments/8927a77a-104a-49ef-ab27-e3c12834a955/Color Hunt Palette 224248325e6a44a1a4ff9a00.png`
 - Warm Neutral: `/root/.codex/attachments/9a0d6a14-c1af-4eb4-ac20-8059ffde195b/Color Hunt Palette f9f8f6efe9e3d9cfc7c9b59c.png`
 - Charcoal Amber: `/root/.codex/attachments/e2c42329-761a-4ab4-9d9a-990a9de28432/Color Hunt Palette 222831393e46ffd369eeeeee.png`

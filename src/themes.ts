@@ -25,8 +25,8 @@ export const THEMES: readonly ThemeOption[] = [
   },
   {
     key: "sage-gold",
-    name: { en: "Sage Gold", zh: "鼠尾草金" },
-    colors: ["#8FA28A", "#C7D3C0", "#F7F4ED", "#C8A96B"],
+    name: { en: "Daylight Green", zh: "日光绿" },
+    colors: ["#EEF0E8", "#3D5F1F", "#08708E", "#203B29"],
   },
   {
     key: "teal-amber",

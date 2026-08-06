@@ -24,6 +24,15 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.locator(".percentage-data-bar")).toHaveCount(18);
   await expect(page.locator("thead .metric-group-answerQuality")).toHaveText("Answer quality");
   await expect(page.locator("thead .metric-group-toolBehavior")).toHaveText("Tool behavior");
+  await expect(page.getByRole("link", { name: "View rankings" })).toHaveAttribute(
+    "href",
+    "#leaderboard",
+  );
+  await expect(page.getByRole("link", { name: "Review protocol" })).toHaveAttribute(
+    "href",
+    "#rules",
+  );
+  await expect(page.getByRole("link", { name: "Back to top" })).toHaveAttribute("href", "#top");
   const comparisonChart = page.getByTestId("comparison-chart");
   await expect(comparisonChart).toHaveCount(1);
   const modelTrigger = page.getByRole("button", { name: "Choose comparison models" });
@@ -33,12 +42,12 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     "Qwen3.6-27B",
     "Tongyi-DeepResearch-30B-A3B",
     "Qwen3.6-35B-A3B",
-    "gemma-4-31B-it",
+    "Gemma-4-31B-it",
     "Qwen3.5-9B",
     "WebExplorer-8B",
     "SearchAgent-Zero",
     "WebSailor-32B",
-    "gemma-4-E4B-it",
+    "Gemma-4-E4B-it",
   ]) {
     await expect(page.getByRole("checkbox", { name: model })).toBeVisible();
   }
@@ -58,6 +67,61 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(modelTrigger).toHaveText("4 models selected");
   await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(8);
   await page.keyboard.press("Escape");
+
+  const visualDetails = await page.evaluate(() => {
+    const workspace = document.querySelector(".comparison-workspace")!.getBoundingClientRect();
+    const legend = document.querySelector(".comparison-series-legend")!.getBoundingClientRect();
+    const getFontSize = (selector: string) =>
+      getComputedStyle(document.querySelector(selector)!).fontSize;
+    const valueCells = ["searchCalls", "visitCalls", "turns", "linkFollowingVisitCalls"].map(
+      (key) => getComputedStyle(document.querySelector(`.metric-value-${key}`)!).textAlign,
+    );
+    const searchWidth = document
+      .querySelector(".metric-column-searchCalls")!
+      .getBoundingClientRect().width;
+    const accuracyWidth = document
+      .querySelector(".metric-column-accuracy")!
+      .getBoundingClientRect().width;
+    const linkWidth = document
+      .querySelector(".metric-column-linkFollowingVisitCalls")!
+      .getBoundingClientRect().width;
+    return {
+      legendInset: legend.left - workspace.left,
+      controlLabelFont: getFontSize(".comparison-control-label"),
+      modelValueFont: getFontSize(".comparison-model-trigger"),
+      metricValueFont: getFontSize(".select-wrap select"),
+      axisFont: getFontSize(".comparison-axis-label text"),
+      searchFont: getFontSize(".search-field input"),
+      valueCells,
+      searchWidth,
+      accuracyWidth,
+      linkWidth,
+      ambientPosition: getComputedStyle(document.body, "::before").position,
+      flowTransitionDuration: getComputedStyle(
+        document.querySelector(".evaluation-flow-scroll")!,
+      ).transitionDuration,
+      flowArrowWidth: getComputedStyle(document.querySelector(".evaluation-flow")!, "::after")
+        .borderLeftWidth,
+      principleParentBorder: getComputedStyle(document.querySelector(".rule-principles")!).borderWidth,
+      principleCardBorder: getComputedStyle(document.querySelector(".rule-principles article")!)
+        .borderWidth,
+    };
+  });
+  expect(visualDetails.legendInset).toBeGreaterThanOrEqual(
+    testInfo.project.name.startsWith("mobile") ? 16 : 38,
+  );
+  expect(visualDetails.controlLabelFont).toBe(visualDetails.modelValueFont);
+  expect(visualDetails.controlLabelFont).toBe(visualDetails.metricValueFont);
+  expect(Number.parseFloat(visualDetails.axisFont)).toBeGreaterThanOrEqual(13);
+  expect(visualDetails.searchFont).toBe("13px");
+  expect(visualDetails.valueCells).toEqual(["center", "center", "center", "center"]);
+  expect(visualDetails.searchWidth).toBeLessThan(visualDetails.accuracyWidth);
+  expect(visualDetails.linkWidth).toBeGreaterThan(visualDetails.accuracyWidth);
+  expect(visualDetails.ambientPosition).toBe("fixed");
+  expect(visualDetails.flowTransitionDuration).toBe("0s");
+  expect(visualDetails.flowArrowWidth).toBe("8px");
+  expect(visualDetails.principleParentBorder).toBe("0px");
+  expect(visualDetails.principleCardBorder).toBe("1px");
 
   const bcpLinkBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp-link");
   const bcpBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp");
@@ -163,6 +227,26 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   await expect(comparisonChart.locator(".recharts-tooltip-wrapper")).toBeVisible();
   await expect(comparisonChart.locator(".comparison-tooltip")).toContainText("Difference");
 
+  const metricCard = page.getByRole("button", { name: "View Accuracy details" });
+  await metricCard.hover();
+  await expect(page.getByRole("tooltip")).toContainText("Calculation or source");
+  await metricCard.click();
+  await expect(page.getByRole("region", { name: /Accuracy:/ })).toContainText("Pinned");
+  await page.mouse.move(0, 0);
+  await expect(page.getByRole("region", { name: /Accuracy:/ })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(metricCard).toBeFocused();
+
+  const expandButton = page.getByRole("button", { name: "Expand leaderboard" });
+  await expandButton.click();
+  const expandedDialog = page.getByRole("dialog", { name: "Expanded BCP-Link leaderboard" });
+  await expect(expandedDialog).toBeVisible();
+  await expect(
+    expandedDialog.getByRole("button", { name: "Close expanded leaderboard" }),
+  ).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(expandButton).toBeFocused();
+
   const modelTrigger = page.getByRole("button", { name: "Choose comparison models" });
   await modelTrigger.click();
   const selectAllModels = page.getByRole("checkbox", { name: /Select all/ });
@@ -221,7 +305,7 @@ test("applies all five themes to the chart and captures each palette", async ({ 
 
   const themes = [
     ["Research Blue", "research-blue"],
-    ["Sage Gold", "sage-gold"],
+    ["Daylight Green", "sage-gold"],
     ["Teal Amber", "teal-amber"],
     ["Warm Neutral", "warm-neutral"],
     ["Charcoal Amber", "charcoal-amber"],

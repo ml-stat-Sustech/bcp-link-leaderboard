@@ -32,6 +32,12 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("link", { name: "Comparison" })).toHaveAttribute("href", "#comparison");
     expect(screen.getByRole("link", { name: "Evaluation Rules" })).toHaveAttribute("href", "#rules");
     expect(screen.getByRole("link", { name: "Metric Guide" })).toHaveAttribute("href", "#metrics");
+    expect(screen.getByRole("link", { name: "View rankings" })).toHaveAttribute(
+      "href",
+      "#leaderboard",
+    );
+    expect(screen.getByRole("link", { name: "Review protocol" })).toHaveAttribute("href", "#rules");
+    expect(screen.getByRole("link", { name: "Back to top" })).toHaveAttribute("href", "#top");
     expect(screen.getByRole("heading", { name: "BCP-Link", level: 1 })).toBeVisible();
     expect(
       screen.getByText("Evaluating whether search agents can find and follow useful links."),
@@ -125,7 +131,7 @@ describe("LeaderboardApp", () => {
     expect(window.localStorage.getItem("bcp-link-theme")).toBe("research-blue");
 
     const themes = [
-      ["Sage Gold", "sage-gold"],
+      ["Daylight Green", "sage-gold"],
       ["Teal Amber", "teal-amber"],
       ["Warm Neutral", "warm-neutral"],
       ["Charcoal Amber", "charcoal-amber"],
@@ -182,12 +188,55 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector(".percentage-data-bar")).toHaveStyle("--metric-fill: 60%");
   });
 
+  it("expands the leaderboard while preserving controls and restores focus on close", async () => {
+    const user = userEvent.setup();
+    render(<LeaderboardApp csvText={TEST_CSV} />);
+
+    const search = screen.getByRole("searchbox", { name: "Search models" });
+    await user.type(search, "alpha");
+    const expandButton = screen.getByRole("button", { name: "Expand leaderboard" });
+    await user.click(expandButton);
+
+    const dialog = screen.getByRole("dialog", { name: "Expanded BCP-Link leaderboard" });
+    expect(dialog).toBeVisible();
+    expect(within(dialog).getByRole("searchbox", { name: "Search models" })).toHaveValue("alpha");
+    expect(within(dialog).getByRole("button", { name: "Close expanded leaderboard" })).toHaveFocus();
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("searchbox", { name: "Search models" })).toHaveValue("alpha");
+    expect(screen.getByRole("button", { name: "Expand leaderboard" })).toHaveFocus();
+  });
+
+  it("previews and pins metric details for selectable text", async () => {
+    const user = userEvent.setup();
+    render(<LeaderboardApp csvText={TEST_CSV} />);
+    const accuracy = screen.getByRole("button", { name: "View Accuracy details" });
+
+    await user.hover(accuracy);
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Calculation or source");
+    await user.click(accuracy);
+    expect(screen.getByRole("region", { name: /Accuracy:/ })).toHaveTextContent("Pinned");
+    await user.unhover(accuracy);
+    expect(screen.getByRole("region", { name: /Accuracy:/ })).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: "Unpin Accuracy details" }));
+    await user.unhover(accuracy);
+    expect(screen.queryByRole("region", { name: /Accuracy:/ })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "View Accuracy details" }));
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("region", { name: /Accuracy:/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "View Accuracy details" })).toHaveFocus();
+  });
+
   it("selects one or more models for a shared comparison chart", async () => {
     const user = userEvent.setup();
     render(<LeaderboardApp />);
 
     expect(screen.getByTestId("comparison-chart")).toBeInTheDocument();
     expect(screen.getByText("4 models with comparable Accuracy data")).toBeInTheDocument();
+    expect(modelNames()).toContain("Gemma-4-31B-it");
 
     const trigger = screen.getByRole("button", { name: "Choose comparison models" });
     await user.click(trigger);
@@ -195,6 +244,7 @@ describe("LeaderboardApp", () => {
     const selectAll = screen.getByRole("checkbox", { name: /Select all/ });
     expect(selectAll).toBePartiallyChecked();
     expect(screen.getByRole("checkbox", { name: "Qwen3.6-27B" })).not.toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "Gemma-4-31B-it" })).not.toBeChecked();
     const tongyi = screen.getByRole("checkbox", { name: "Tongyi-DeepResearch-30B-A3B" });
     const searchAgent = screen.getByRole("checkbox", { name: "SearchAgent-Zero" });
     const webExplorer = screen.getByRole("checkbox", { name: "WebExplorer-8B" });

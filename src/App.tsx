@@ -2,6 +2,8 @@ import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 
 import {
   AlertTriangle,
   ArrowDown,
+  ArrowDownRight,
+  ArrowRight,
   ArrowUp,
   ArrowUpDown,
   BarChart3,
@@ -11,13 +13,17 @@ import {
   Info,
   Link2,
   ListFilter,
+  Maximize2,
   Menu,
+  Minimize2,
   Palette,
+  Pin,
   Search,
   Target,
   Wrench,
   X,
 } from "lucide-react";
+import { createPortal } from "react-dom";
 import {
   Bar,
   BarChart,
@@ -90,6 +96,10 @@ const METRIC_GROUPS = [
 const LEADERBOARD_METRICS = METRIC_GROUPS.flatMap((group) =>
   group.metrics.map((metricKey) => METRIC_BY_KEY[metricKey]),
 );
+
+function formatModelDisplayName(model: string): string {
+  return model.replace(/^gemma(?=-)/i, "Gemma");
+}
 
 function ThemePicker({
   theme,
@@ -335,6 +345,10 @@ function LeaderboardTable({
 }) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortState>({ key: "accuracy", direction: "desc" });
+  const [expanded, setExpanded] = useState(false);
+  const expandTriggerRef = useRef<HTMLButtonElement>(null);
+  const dialogCloseRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const ranks = useMemo(() => getAccuracyRanks(models), [models]);
 
   const visibleModels = useMemo(() => {
@@ -351,6 +365,184 @@ function LeaderboardTable({
     }));
   };
 
+  useEffect(() => {
+    if (!expanded) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const focusTimer = window.setTimeout(() => dialogCloseRef.current?.focus(), 0);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setExpanded(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const focusable = Array.from(
+        dialogRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex="0"]',
+        ) ?? [],
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+      window.setTimeout(() => expandTriggerRef.current?.focus(), 0);
+    };
+  }, [expanded]);
+
+  const renderLeaderboardSurface = (expandedView: boolean) => (
+    <div className={expandedView ? "leaderboard-surface leaderboard-surface-expanded" : "leaderboard-surface"}>
+      <div className="leaderboard-toolbar">
+        <div className="leaderboard-status" aria-live="polite">
+          <strong>{copy.leaderboard.showing(visibleModels.length, models.length)}</strong>
+          <span>
+            {copy.leaderboard.sortStatus(copy.metrics[sort.key].label, sort.direction)}
+          </span>
+        </div>
+        <div className="leaderboard-actions">
+          <label className="search-field">
+            <Search aria-hidden="true" />
+            <span className="sr-only">{copy.leaderboard.searchLabel}</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={copy.leaderboard.searchPlaceholder}
+            />
+          </label>
+          <button
+            ref={expandedView ? dialogCloseRef : expandTriggerRef}
+            className="leaderboard-expand-button"
+            type="button"
+            aria-label={
+              expandedView ? copy.leaderboard.closeExpandedTable : copy.leaderboard.expandTable
+            }
+            title={
+              expandedView ? copy.leaderboard.closeExpandedTable : copy.leaderboard.expandTable
+            }
+            onClick={() => setExpanded(!expandedView)}
+          >
+            {expandedView ? <Minimize2 aria-hidden="true" /> : <Maximize2 aria-hidden="true" />}
+          </button>
+        </div>
+      </div>
+
+      <div className="table-shell">
+        <div className="table-scroll" tabIndex={0} aria-label={copy.leaderboard.tableScrollLabel}>
+          <table>
+            <colgroup>
+              <col className="rank-column-track" />
+              <col className="model-column-track" />
+              {LEADERBOARD_METRICS.map((metric) => (
+                <col key={metric.key} className={`metric-column-track metric-track-${metric.key}`} />
+              ))}
+            </colgroup>
+            <thead>
+              <tr className="metric-group-row">
+                <th className="rank-column" scope="col" rowSpan={2}>
+                  {copy.leaderboard.rank}
+                </th>
+                <th className="model-column" scope="col" rowSpan={2}>
+                  {copy.leaderboard.model}
+                </th>
+                {METRIC_GROUPS.map((group) => (
+                  <th
+                    key={group.key}
+                    className={`metric-group metric-group-${group.key}`}
+                    scope="colgroup"
+                    colSpan={group.metrics.length}
+                  >
+                    {copy.metricGuide.groups[group.key]}
+                  </th>
+                ))}
+              </tr>
+              <tr className="metric-label-row">
+                {LEADERBOARD_METRICS.map((metric) => (
+                  <th
+                    key={metric.key}
+                    className={`metric-column metric-column-${metric.key}`}
+                    scope="col"
+                  >
+                    <MetricHeader
+                      metricKey={metric.key}
+                      sort={sort}
+                      onSort={handleSort}
+                      copy={copy}
+                    />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {visibleModels.map((model) => {
+                const rank = ranks.get(model.model) ?? null;
+                return (
+                  <tr
+                    key={model.model}
+                    className={rank === 1 ? "leader-row leader-row-first" : "leader-row"}
+                  >
+                    <td className="rank-column rank-value">
+                      {rank !== null && rank <= 3 ? (
+                        <span className={`rank-medal rank-${rank}`}>{rank}</span>
+                      ) : (
+                        rank ?? "—"
+                      )}
+                    </td>
+                    <th className="model-column model-name" scope="row" data-testid="model-name">
+                      {formatModelDisplayName(model.model)}
+                    </th>
+                    {LEADERBOARD_METRICS.map((metric) => {
+                      const value = model.bcpLink?.[metric.key] ?? null;
+                      const isPercentage = metric.format === "percent" && value !== null;
+                      const cellStyle = isPercentage
+                        ? ({
+                            "--metric-fill": `${Math.max(0, Math.min(100, value))}%`,
+                          } as CSSProperties)
+                        : undefined;
+                      const classNames = [
+                        "metric-value-cell",
+                        `metric-value-${metric.key}`,
+                        isPercentage ? "percentage-data-bar" : "",
+                        value === null ? "missing-value" : "",
+                      ]
+                        .filter(Boolean)
+                        .join(" ");
+                      return (
+                        <td key={metric.key} className={classNames} style={cellStyle}>
+                          <span>{formatMetricValue(metric.key, value, language)}</span>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {visibleModels.length === 0 && (
+            <div className="table-empty">
+              <Search aria-hidden="true" />
+              <p>{copy.leaderboard.noMatches(query)}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <section
       id="leaderboard"
@@ -364,117 +556,30 @@ function LeaderboardTable({
           <p className="section-note">{copy.leaderboard.note}</p>
         </div>
 
-        <div className="leaderboard-toolbar">
-          <div className="leaderboard-status" aria-live="polite">
-            <strong>{copy.leaderboard.showing(visibleModels.length, models.length)}</strong>
-            <span>
-              {copy.leaderboard.sortStatus(copy.metrics[sort.key].label, sort.direction)}
-            </span>
-          </div>
-          <label className="search-field">
-            <Search aria-hidden="true" />
-            <span className="sr-only">{copy.leaderboard.searchLabel}</span>
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={copy.leaderboard.searchPlaceholder}
-            />
-          </label>
-        </div>
-
-        <div className="table-shell">
-          <div className="table-scroll" tabIndex={0} aria-label={copy.leaderboard.tableScrollLabel}>
-            <table>
-              <thead>
-                <tr className="metric-group-row">
-                  <th className="rank-column" scope="col" rowSpan={2}>
-                    {copy.leaderboard.rank}
-                  </th>
-                  <th className="model-column" scope="col" rowSpan={2}>
-                    {copy.leaderboard.model}
-                  </th>
-                  {METRIC_GROUPS.map((group) => (
-                    <th
-                      key={group.key}
-                      className={`metric-group metric-group-${group.key}`}
-                      scope="colgroup"
-                      colSpan={group.metrics.length}
-                    >
-                      {copy.metricGuide.groups[group.key]}
-                    </th>
-                  ))}
-                </tr>
-                <tr className="metric-label-row">
-                  {LEADERBOARD_METRICS.map((metric) => (
-                    <th
-                      key={metric.key}
-                      className={`metric-column metric-column-${metric.key}`}
-                      scope="col"
-                    >
-                      <MetricHeader
-                        metricKey={metric.key}
-                        sort={sort}
-                        onSort={handleSort}
-                        copy={copy}
-                      />
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {visibleModels.map((model) => {
-                  const rank = ranks.get(model.model) ?? null;
-                  return (
-                    <tr
-                      key={model.model}
-                      className={rank === 1 ? "leader-row leader-row-first" : "leader-row"}
-                    >
-                      <td className="rank-column rank-value">
-                        {rank !== null && rank <= 3 ? (
-                          <span className={`rank-medal rank-${rank}`}>{rank}</span>
-                        ) : (
-                          rank ?? "—"
-                        )}
-                      </td>
-                      <th className="model-column model-name" scope="row" data-testid="model-name">
-                        {model.model}
-                      </th>
-                      {LEADERBOARD_METRICS.map((metric) => {
-                        const value = model.bcpLink?.[metric.key] ?? null;
-                        const isPercentage = metric.format === "percent" && value !== null;
-                        const cellStyle = isPercentage
-                          ? ({
-                              "--metric-fill": `${Math.max(0, Math.min(100, value))}%`,
-                            } as CSSProperties)
-                          : undefined;
-                        const classNames = [
-                          "metric-value-cell",
-                          `metric-value-${metric.key}`,
-                          isPercentage ? "percentage-data-bar" : "",
-                          value === null ? "missing-value" : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ");
-                        return (
-                          <td key={metric.key} className={classNames} style={cellStyle}>
-                            <span>{formatMetricValue(metric.key, value, language)}</span>
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            {visibleModels.length === 0 && (
-              <div className="table-empty">
-                <Search aria-hidden="true" />
-                <p>{copy.leaderboard.noMatches(query)}</p>
+        <div aria-hidden={expanded ? true : undefined}>{renderLeaderboardSurface(false)}</div>
+        {expanded &&
+          createPortal(
+            <div
+              className="leaderboard-modal-backdrop"
+              onMouseDown={(event) => {
+                if (event.target === event.currentTarget) setExpanded(false);
+              }}
+            >
+              <div
+                ref={dialogRef}
+                className="leaderboard-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="expanded-leaderboard-title"
+              >
+                <h2 id="expanded-leaderboard-title" className="sr-only">
+                  {copy.leaderboard.expandedTitle}
+                </h2>
+                {renderLeaderboardSurface(true)}
               </div>
-            )}
-          </div>
-        </div>
+            </div>,
+            document.body,
+          )}
       </div>
     </section>
   );
@@ -566,7 +671,7 @@ function ComparisonModelPicker({
                   checked={checked}
                   onChange={() => onToggle(modelName)}
                 />
-                <span>{modelName}</span>
+                <span>{formatModelDisplayName(modelName)}</span>
               </label>
             );
           })}
@@ -606,11 +711,12 @@ function ComparisonXAxisTick({
   payload?: { value?: string };
 }) {
   const model = payload?.value ?? "";
-  const lines = splitModelLabel(model);
+  const displayName = formatModelDisplayName(model);
+  const lines = splitModelLabel(displayName);
 
   return (
     <g className="comparison-axis-label" transform={`translate(${x},${y})`}>
-      <title>{model}</title>
+      <title>{displayName}</title>
       <text textAnchor="middle">
         {lines.map((line, index) => (
           <tspan key={line} x="0" dy={index === 0 ? 18 : 16}>
@@ -659,7 +765,7 @@ function ComparisonTooltip({
 
   return (
     <div className="comparison-tooltip" role="tooltip">
-      <p className="comparison-tooltip-title">{datum.model}</p>
+      <p className="comparison-tooltip-title">{formatModelDisplayName(datum.model)}</p>
       <dl>
         <div>
           <dt><span className="tooltip-swatch tooltip-swatch-bcp-link" />BCP-Link</dt>
@@ -752,7 +858,7 @@ function ComparisonChart({
   const chartDomain = getComparisonValuesDomain(
     chartData.flatMap((datum) => [datum.bcpLink, datum.bcp]),
   );
-  const chartMinWidth = Math.max(720, chartData.length * 220);
+  const chartMinWidth = Math.max(720, chartData.length * 180);
 
   return (
     <section
@@ -821,8 +927,8 @@ function ComparisonChart({
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={chartData}
-                    barGap={8}
-                    barCategoryGap="30%"
+                    barGap={6}
+                    barCategoryGap="20%"
                     margin={{ top: 18, right: 24, bottom: 54, left: 10 }}
                   >
                     <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
@@ -902,11 +1008,29 @@ function ComparisonChart({
 }
 
 function MetricGuide({ copy }: { copy: Translation }) {
+  const [previewMetric, setPreviewMetric] = useState<MetricKey | null>(null);
+  const [pinnedMetric, setPinnedMetric] = useState<MetricKey | null>(null);
+  const metricButtonRefs = useRef<Partial<Record<MetricKey, HTMLButtonElement | null>>>({});
+  const activeMetric = pinnedMetric ?? previewMetric;
   const groupIcons = {
     answerQuality: <Target />,
     toolBehavior: <Wrench />,
     linkFollowing: <Link2 />,
   } satisfies Record<keyof Translation["metricGuide"]["groups"], React.ReactNode>;
+
+  useEffect(() => {
+    if (!pinnedMetric) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      const metricKey = pinnedMetric;
+      setPinnedMetric(null);
+      setPreviewMetric(null);
+      metricButtonRefs.current[metricKey]?.focus();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [pinnedMetric]);
 
   return (
     <section
@@ -927,24 +1051,87 @@ function MetricGuide({ copy }: { copy: Translation }) {
                 <span aria-hidden="true">{groupIcons[group.key]}</span>
                 <h3>{copy.metricGuide.groups[group.key]}</h3>
               </div>
-              <dl>
+              <div className="metric-card-list">
                 {group.metrics.map((metricKey) => {
                   const metric = METRIC_BY_KEY[metricKey];
+                  const metricCopy = copy.metrics[metricKey];
+                  const isActive = activeMetric === metricKey;
+                  const isPinned = pinnedMetric === metricKey;
                   return (
-                    <div key={metricKey} className="metric-definition">
-                      <dt>
-                        <span>{copy.metrics[metricKey].label}</span>
-                        <small>
+                    <article
+                      key={metricKey}
+                      className="metric-card"
+                      data-active={isActive ? "true" : "false"}
+                      data-pinned={isPinned ? "true" : "false"}
+                      onMouseEnter={() => setPreviewMetric(metricKey)}
+                      onMouseLeave={() => setPreviewMetric(null)}
+                    >
+                      <button
+                        ref={(element) => {
+                          metricButtonRefs.current[metricKey] = element;
+                        }}
+                        type="button"
+                        className="metric-card-trigger"
+                        aria-expanded={isActive}
+                        aria-controls={`metric-detail-${metricKey}`}
+                        aria-label={
+                          isPinned
+                            ? copy.metricGuide.unpinMetricDetails(metricCopy.label)
+                            : copy.metricGuide.openMetricDetails(metricCopy.label)
+                        }
+                        onFocus={() => setPreviewMetric(metricKey)}
+                        onBlur={() => {
+                          if (!isPinned) setPreviewMetric(null);
+                        }}
+                        onClick={() => {
+                          setPinnedMetric((current) => (current === metricKey ? null : metricKey));
+                        }}
+                      >
+                        <span className="metric-card-copy">
+                          <strong>{metricCopy.label}</strong>
+                          <small>
                           {metric.format === "percent"
                             ? copy.metricGuide.percentage
                             : copy.metricGuide.averageCount}
-                        </small>
-                      </dt>
-                      <dd>{copy.metrics[metricKey].definition}</dd>
-                    </div>
+                          </small>
+                        </span>
+                        <span className="metric-card-direction">{metricCopy.direction}</span>
+                      </button>
+                      {isActive && (
+                        <div
+                          id={`metric-detail-${metricKey}`}
+                          className="metric-detail-popover"
+                          role={isPinned ? "region" : "tooltip"}
+                          aria-label={`${metricCopy.label}: ${metricCopy.definition}`}
+                        >
+                          <div className="metric-detail-heading">
+                            <strong>{metricCopy.label}</strong>
+                            {isPinned && (
+                              <span className="metric-pinned-status">
+                                <Pin aria-hidden="true" /> {copy.metricGuide.pinnedStatus}
+                              </span>
+                            )}
+                          </div>
+                          <dl>
+                            <div>
+                              <dt>{copy.metricGuide.definitionLabel}</dt>
+                              <dd>{metricCopy.definition}</dd>
+                            </div>
+                            <div>
+                              <dt>{copy.metricGuide.calculationLabel}</dt>
+                              <dd>{metricCopy.calculation}</dd>
+                            </div>
+                            <div>
+                              <dt>{copy.metricGuide.interpretationLabel}</dt>
+                              <dd>{metricCopy.interpretation}</dd>
+                            </div>
+                          </dl>
+                        </div>
+                      )}
+                    </article>
                   );
                 })}
-              </dl>
+              </div>
             </article>
           ))}
         </div>
@@ -976,16 +1163,21 @@ function SiteFooter({ copy }: { copy: Translation }) {
             {copy.nav.rules}
           </a>
         </nav>
-        <p className="footer-source">
-          {copy.footer.sourcePrefix}{" "}
-          <a
-            href="https://huggingface.co/spaces/Tevatron/BrowseComp-Plus"
-            target="_blank"
-            rel="noreferrer"
-          >
-            BrowseComp-Plus <ExternalLink aria-hidden="true" />
+        <div className="footer-end">
+          <p className="footer-source">
+            {copy.footer.sourcePrefix}{" "}
+            <a
+              href="https://huggingface.co/spaces/Tevatron/BrowseComp-Plus"
+              target="_blank"
+              rel="noreferrer"
+            >
+              BrowseComp-Plus <ExternalLink aria-hidden="true" />
+            </a>
+          </p>
+          <a className="back-to-top" href="#top">
+            {copy.footer.backToTop} <ArrowUp aria-hidden="true" />
           </a>
-        </p>
+        </div>
       </div>
     </footer>
   );
@@ -1089,6 +1281,14 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                   {copy.intro.bodyOneBetweenTools}<code>visit</code>{copy.intro.bodyOneAfterVisit}
                 </p>
                 <p>{copy.intro.bodyTwo}</p>
+                <div className="intro-actions">
+                  <a className="intro-action intro-action-primary" href="#leaderboard">
+                    {copy.intro.rankingsAction} <ArrowDownRight aria-hidden="true" />
+                  </a>
+                  <a className="intro-action intro-action-secondary" href="#rules">
+                    {copy.intro.protocolAction} <ArrowRight aria-hidden="true" />
+                  </a>
+                </div>
                 <dl className="dataset-stats" aria-label={copy.stats.label}>
                   <div>
                     <dt>{parsed.models.length}</dt>
