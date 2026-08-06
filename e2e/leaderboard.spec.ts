@@ -145,6 +145,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       principleParentBorder: getComputedStyle(document.querySelector(".rule-principles")!).borderWidth,
       principleCardBorder: getComputedStyle(document.querySelector(".rule-principles article")!)
         .borderWidth,
+      toolSpecsPaddingBottom: getComputedStyle(document.querySelector(".tool-specs")!).paddingBottom,
       metricGridColumns: getComputedStyle(document.querySelector(".metric-guide-grid")!)
         .gridTemplateColumns.split(" ").length,
       metricCardHeight: document
@@ -174,6 +175,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.flowArrowWidth).toBe("8px");
   expect(visualDetails.principleParentBorder).toBe("0px");
   expect(visualDetails.principleCardBorder).toBe("1px");
+  expect(visualDetails.toolSpecsPaddingBottom).toBe("10px");
   expect(visualDetails.metricGridColumns).toBe(testInfo.project.name.startsWith("mobile") ? 1 : 3);
   expect(visualDetails.metricCardHeight).toBeGreaterThanOrEqual(
     testInfo.project.name.startsWith("mobile") ? 116 : 132,

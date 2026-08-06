@@ -1808,7 +1808,7 @@ tbody tr:hover .model-column {
 }
 
 .tool-specs {
-  padding-inline: 19px;
+  padding: 0 19px 10px;
 }
 
 .tool-specs > div {
