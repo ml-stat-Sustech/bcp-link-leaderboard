@@ -76,6 +76,8 @@ The theme/layout upgrade is now complete.
 - The sticky header, theme picker, palette swatches, segmented language control, focus/hover states, and 320px+ responsive layouts are styled.
 - Hard-coded interface colors were replaced with semantic variables; obsolete language-toggle and scoring-block rules were removed.
 - Recharts series have stable classes and 28px bars so CSS variables resolve correctly in SVG and paired bars remain visually grouped.
+- Metric values use fixed per-column precision: two decimals for Accuracy, Recall, Search Calls,
+  Visit Calls, and Turns; four decimals for Link-following Visit Calls.
 - Component tests cover all themes, persistence, picker dismissal, exact section order, removed copy, Chinese UI with English metrics, and state preservation.
 - Playwright covers both desktop and Pixel 7 viewports, page overflow, paired-bar geometry, theme-driven chart fills, and all five palette screenshots.
 - Visual checks also covered open theme-menu bounds at 1440px, 412px, and 320px widths.

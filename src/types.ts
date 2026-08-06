@@ -30,4 +30,5 @@ export interface ModelResults {
 export interface MetricMeta {
   key: MetricKey;
   format: "percent" | "number";
+  fractionDigits: number;
 }
