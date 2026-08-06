@@ -6,12 +6,12 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(
     page.getByRole("heading", { name: "BCP-Link Leaderboard", exact: true, level: 1 }),
   ).toBeVisible();
-  await expect(page.getByTestId("model-name")).toHaveCount(8);
-  await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor" })).toHaveCount(0);
-  await expect(page.getByText("8 models with comparable Accuracy data")).toBeVisible();
+  await expect(page.getByTestId("model-name")).toHaveCount(9);
+  await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
+  await expect(page.getByText("9 models with comparable Accuracy data")).toBeVisible();
   await expect(page.getByRole("heading", { name: "One environment, the same tools" })).toBeVisible();
   await expect(page.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
-  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(16);
+  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(18);
 
   const barBoxes = await page.locator(".recharts-bar-rectangle").evaluateAll((bars) =>
     bars
@@ -62,10 +62,10 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
 
   await page.getByRole("searchbox", { name: "Search models" }).fill("WebExplorer");
   await expect(page.getByTestId("model-name")).toHaveCount(1);
-  await expect(page.getByText("Showing 1 of 8 models")).toBeVisible();
+  await expect(page.getByText("Showing 1 of 9 models")).toBeVisible();
 
   await page.getByRole("combobox", { name: "Comparison metric" }).selectOption("recall");
-  await expect(page.getByText("8 models with comparable Recall data")).toBeVisible();
+  await expect(page.getByText("9 models with comparable Recall data")).toBeVisible();
   await page.locator(".recharts-bar-rectangle").first().hover();
   await expect(page.locator(".recharts-tooltip-wrapper")).toBeVisible();
 
@@ -97,7 +97,7 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
 
 test("applies all five themes to the chart and captures each palette", async ({ page }, testInfo) => {
   await page.goto("/");
-  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(16);
+  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(18);
 
   const themes = [
     ["Research Blue", "research-blue"],

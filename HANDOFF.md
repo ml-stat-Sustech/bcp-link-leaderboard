@@ -1,13 +1,13 @@
 # BCP-Link Leaderboard Handoff
 
-Last updated: 2026-08-05
+Last updated: 2026-08-06
 
 ## 1. Project Location And Current Status
 
 - Project root: `/data/hs_dev/bcp-link-leaderboard`
 - Stack: Vite, React 18, TypeScript, Recharts, Papa Parse, Vitest, Playwright
 - Data source: `data/bcp-link-results.csv`
-- Latest imported source: `/data/hs_dev/bcp-link测评结果汇总 - Sheet1.csv`; empty WebSailor rows were excluded, leaving 8 fully comparable models.
+- Latest imported source: `/data/hs_dev/bcp-link测评结果汇总 - Sheet1.csv`; it now contains 9 fully comparable models, including WebSailor-32B.
 - GitHub private repository: `https://github.com/Samanthe-H/bcp-link-leaderboard`.
 - The local `main` branch tracks `origin/main` over SSH.
 - Cloudflare Pages production site: `https://bcp-link-leaderboard.pages.dev/`.
@@ -105,7 +105,7 @@ GitHub default branch         main
 Cloudflare unauthenticated    HTTP 401
 Cloudflare authenticated      HTTP 200
 Production HTML               current BCP-Link dashboard assets loaded
-Production data               8 models; empty WebSailor rows excluded
+Production data               9 models; WebSailor-32B included
 ```
 
 ## 7. Current Deployment
