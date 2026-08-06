@@ -119,6 +119,9 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       metricValueFont: getFontSize(".select-wrap select"),
       axisFont: getFontSize(".comparison-axis-label text"),
       searchFont: getFontSize(".search-field input"),
+      introSubtitleFont: getFontSize(".intro-subtitle"),
+      introBodyFont: getFontSize(".intro-body p"),
+      introActionFont: getFontSize(".intro-action"),
       valueCells,
       searchWidth,
       visitWidth,
@@ -143,6 +146,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       ambientPosition: getComputedStyle(document.body, "::before").position,
       ambientAnimation: getComputedStyle(document.body, "::before").animationName,
       ambientAnimationDuration: getComputedStyle(document.body, "::before").animationDuration,
+      ambientBackgroundSize: getComputedStyle(document.body, "::before").backgroundSize,
       flowTransitionDuration: getComputedStyle(
         document.querySelector(".evaluation-flow-scroll")!,
       ).transitionDuration,
@@ -166,6 +170,13 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.controlLabelFont).toBe(visualDetails.metricValueFont);
   expect(Number.parseFloat(visualDetails.axisFont)).toBeGreaterThanOrEqual(13);
   expect(visualDetails.searchFont).toBe("13px");
+  expect(visualDetails.introSubtitleFont).toBe(
+    testInfo.project.name.startsWith("mobile") ? "17px" : "21px",
+  );
+  expect(visualDetails.introBodyFont).toBe(
+    testInfo.project.name.startsWith("mobile") ? "15px" : "17px",
+  );
+  expect(visualDetails.introActionFont).toBe("14px");
   expect(visualDetails.valueCells).toEqual(["center", "center", "center", "center"]);
   expect(visualDetails.searchWidth).toBeGreaterThanOrEqual(visualDetails.accuracyWidth);
   expect(visualDetails.visitWidth).toBeGreaterThanOrEqual(visualDetails.accuracyWidth);
@@ -179,7 +190,8 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.linkWidth).toBeGreaterThan(visualDetails.accuracyWidth);
   expect(visualDetails.ambientPosition).toBe("fixed");
   expect(visualDetails.ambientAnimation).toBe("ambient-gradient-drift");
-  expect(visualDetails.ambientAnimationDuration).toBe("5s");
+  expect(visualDetails.ambientAnimationDuration).toBe("18s");
+  expect(visualDetails.ambientBackgroundSize).toBe("400% 400%");
   expect(visualDetails.flowTransitionDuration).toBe("0s");
   expect(visualDetails.flowArrowWidth).toBe("8px");
   expect(visualDetails.principleParentBorder).toBe("0px");
@@ -193,20 +205,11 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   const ambientStartPosition = await page.evaluate(
     () => getComputedStyle(document.body, "::before").backgroundPosition,
   );
-  const ambientStartOrigin = await page.evaluate(() => {
-    const style = getComputedStyle(document.body, "::before");
-    return [style.getPropertyValue("--ambient-origin-x"), style.getPropertyValue("--ambient-origin-y")];
-  });
   await page.waitForTimeout(500);
   const ambientEndPosition = await page.evaluate(
     () => getComputedStyle(document.body, "::before").backgroundPosition,
   );
-  const ambientEndOrigin = await page.evaluate(() => {
-    const style = getComputedStyle(document.body, "::before");
-    return [style.getPropertyValue("--ambient-origin-x"), style.getPropertyValue("--ambient-origin-y")];
-  });
   expect(ambientEndPosition).not.toBe(ambientStartPosition);
-  expect(ambientEndOrigin).not.toEqual(ambientStartOrigin);
 
   const bcpLinkBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp-link");
   const bcpBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp");
@@ -466,7 +469,7 @@ test("applies all five themes to the chart and captures each palette", async ({ 
       };
     });
     expect(colors.ambientBackground).not.toBe("none");
-    expect(colors.ambientBackground).toContain("radial-gradient");
+    expect(colors.ambientBackground).toContain("linear-gradient");
     ambientBackgrounds.add(colors.ambientBackground);
     expect(colors.bcpToken).not.toBe("");
     expect(colors.bcpLinkToken).not.toBe("");
