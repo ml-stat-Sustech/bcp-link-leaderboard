@@ -71,7 +71,12 @@ export interface Translation {
     comparable: (count: number, metric: string) => string;
     metricLabel: string;
     selectLabel: string;
+    modelsLabel: string;
+    modelPickerLabel: string;
+    selectedModels: (count: number) => string;
     chartLabel: (metric: string) => string;
+    overviewHeading: string;
+    detailHeading: string;
     emptyHeading: (metric: string) => string;
     emptyBody: string;
   };
@@ -160,7 +165,12 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         `${count} ${count === 1 ? "model" : "models"} with comparable ${metric} data`,
       metricLabel: "Metric",
       selectLabel: "Comparison metric",
+      modelsLabel: "Models",
+      modelPickerLabel: "Choose comparison models",
+      selectedModels: (count) => `${count} ${count === 1 ? "model" : "models"} selected`,
       chartLabel: (metric) => `${metric} comparison chart`,
+      overviewHeading: "Four-model overview",
+      detailHeading: "Per-model detail",
       emptyHeading: (metric) => `No comparable ${metric} data yet`,
       emptyBody: "Add both BCP and BCP-Link values to the results CSV to populate this chart.",
     },
@@ -300,7 +310,12 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       comparable: (count, metric) => `${count} 个模型具备可比较的${metric}数据`,
       metricLabel: "指标",
       selectLabel: "选择对比指标",
+      modelsLabel: "模型",
+      modelPickerLabel: "选择对比模型",
+      selectedModels: (count) => `已选择 ${count} 个模型`,
       chartLabel: (metric) => `${metric}对比柱状图`,
+      overviewHeading: "四个模型总览",
+      detailHeading: "单模型详情",
       emptyHeading: (metric) => `暂无可比较的${metric}数据`,
       emptyBody: "请在结果 CSV 中同时添加 BCP 和 BCP-Link 数值。",
     },

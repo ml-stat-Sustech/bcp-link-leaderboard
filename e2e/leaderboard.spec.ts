@@ -11,27 +11,33 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();
   await expect(page.getByRole("heading", { name: "One environment, the same tools" })).toBeVisible();
   await expect(page.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
-  const comparisonCharts = page.getByTestId("model-comparison-chart");
-  await expect(comparisonCharts).toHaveCount(4);
-  await expect(comparisonCharts.locator("h3")).toHaveText([
+  const comparisonChart = page.getByTestId("comparison-chart");
+  await expect(comparisonChart).toHaveCount(1);
+  const modelTrigger = page.getByRole("button", { name: "Choose comparison models" });
+  await expect(modelTrigger).toHaveText("4 models selected");
+  await modelTrigger.click();
+  for (const model of [
     "Tongyi-DeepResearch-30B-A3B",
     "SearchAgent-Zero",
     "WebExplorer-8B",
     "WebSailor-32B",
-  ]);
-  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(8);
-  for (let index = 0; index < 4; index += 1) {
-    await expect(comparisonCharts.nth(index).locator(".recharts-bar-rectangle")).toHaveCount(2);
+  ]) {
+    await expect(page.getByRole("checkbox", { name: model })).toBeChecked();
   }
-  const firstChart = comparisonCharts.first();
-  const bcpLinkBox = await firstChart
-    .locator(".recharts-rectangle.chart-series-bcp-link")
-    .boundingBox();
-  const bcpBox = await firstChart.locator(".recharts-rectangle.chart-series-bcp").boundingBox();
-  expect(bcpLinkBox).not.toBeNull();
-  expect(bcpBox).not.toBeNull();
-  expect(bcpLinkBox!.x).toBeLessThan(bcpBox!.x);
-  const accuracyTicks = await comparisonCharts.locator(".recharts-yAxis text").allTextContents();
+  await page.keyboard.press("Escape");
+
+  const bcpLinkBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp-link");
+  const bcpBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp");
+  await expect(bcpLinkBars).toHaveCount(4);
+  await expect(bcpBars).toHaveCount(4);
+  for (let index = 0; index < 4; index += 1) {
+    const bcpLinkBox = await bcpLinkBars.nth(index).boundingBox();
+    const bcpBox = await bcpBars.nth(index).boundingBox();
+    expect(bcpLinkBox).not.toBeNull();
+    expect(bcpBox).not.toBeNull();
+    expect(bcpLinkBox!.x).toBeLessThan(bcpBox!.x);
+  }
+  const accuracyTicks = await comparisonChart.locator(".recharts-yAxis text").allTextContents();
   expect(accuracyTicks).not.toContain("0.00%");
 
   const hasPageOverflow = await page.evaluate(
@@ -71,9 +77,25 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
 
   await page.getByRole("combobox", { name: "Comparison metric" }).selectOption("recall");
   await expect(page.getByText("4 models with comparable Recall data")).toBeVisible();
-  const firstComparisonChart = page.getByTestId("model-comparison-chart").first();
-  await firstComparisonChart.locator(".recharts-bar-rectangle").first().hover();
-  await expect(firstComparisonChart.locator(".recharts-tooltip-wrapper")).toBeVisible();
+  const comparisonChart = page.getByTestId("comparison-chart");
+  await comparisonChart.locator(".recharts-bar-rectangle").first().hover();
+  await expect(comparisonChart.locator(".recharts-tooltip-wrapper")).toBeVisible();
+
+  const modelTrigger = page.getByRole("button", { name: "Choose comparison models" });
+  await modelTrigger.click();
+  await page.getByRole("checkbox", { name: "SearchAgent-Zero" }).uncheck();
+  await page.getByRole("checkbox", { name: "WebExplorer-8B" }).uncheck();
+  await page.getByRole("checkbox", { name: "WebSailor-32B" }).uncheck();
+  await expect(modelTrigger).toHaveText("1 model selected");
+  await expect(page.getByText("1 model with comparable Recall data")).toBeVisible();
+  await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(2);
+  await expect(
+    page.getByRole("checkbox", { name: "Tongyi-DeepResearch-30B-A3B" }),
+  ).toBeDisabled();
+  await page.getByRole("checkbox", { name: "SearchAgent-Zero" }).check();
+  await expect(modelTrigger).toHaveText("2 models selected");
+  await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(4);
+  await modelTrigger.click();
 
   await page.getByRole("button", { name: "Choose color theme" }).click();
   await page.getByRole("menuitemradio", { name: "Teal Amber" }).click();
@@ -81,6 +103,7 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   await expect(page.getByRole("link", { name: "排行榜" })).toBeVisible();
   await expect(page.getByRole("searchbox", { name: "搜索模型" })).toHaveValue("WebExplorer");
   await expect(page.getByRole("combobox", { name: "选择对比指标" })).toHaveValue("recall");
+  await expect(page.getByRole("button", { name: "选择对比模型" })).toHaveText("已选择 2 个模型");
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "teal-amber");
   await expect(page.locator("thead th").filter({ hasText: "Accuracy" })).toHaveCount(1);

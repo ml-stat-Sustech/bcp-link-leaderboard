@@ -11,6 +11,7 @@ import {
   GitCompareArrows,
   Info,
   Link2,
+  ListFilter,
   Palette,
   Search,
 } from "lucide-react";
@@ -18,6 +19,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -33,7 +35,7 @@ import {
   type Language,
   type Translation,
 } from "./i18n";
-import { formatMetricValue, getComparisonDomain, METRICS } from "./metrics";
+import { formatMetricValue, getComparisonValuesDomain, METRICS } from "./metrics";
 import {
   resolveInitialTheme,
   THEMES,
@@ -59,12 +61,6 @@ const COMPARISON_MODEL_NAMES = [
   "WebExplorer-8B",
   "WebSailor-32B",
 ] as const;
-
-interface ComparisonDatum {
-  model: string;
-  bcp: number;
-  bcpLink: number;
-}
 
 function ThemePicker({
   theme,
@@ -337,103 +333,80 @@ function LeaderboardTable({
   );
 }
 
-function ModelComparisonChart({
-  datum,
-  metric,
-  metricLabel,
-  language,
-  chartLabel,
+function ComparisonModelPicker({
+  selectedModels,
+  copy,
+  onToggle,
 }: {
-  datum: ComparisonDatum;
-  metric: MetricKey;
-  metricLabel: string;
-  language: Language;
-  chartLabel: string;
+  selectedModels: string[];
+  copy: Translation["comparison"];
+  onToggle: (model: string) => void;
 }) {
-  const headingId = useId();
-  const domain = getComparisonDomain(datum.bcp, datum.bcpLink);
-  const data = [{ metric: metricLabel, bcp: datum.bcp, bcpLink: datum.bcpLink }];
+  const [open, setOpen] = useState(false);
+  const menuId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      triggerRef.current?.focus();
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
 
   return (
-    <article
-      className="model-comparison-card"
-      data-testid="model-comparison-chart"
-      aria-labelledby={headingId}
-    >
-      <h3 id={headingId}>{datum.model}</h3>
-      <dl className="model-chart-values">
-        <div>
-          <dt><span className="series-swatch series-swatch-bcp-link" aria-hidden="true" />BCP-Link</dt>
-          <dd>{formatMetricValue(metric, datum.bcpLink, language)}</dd>
+    <div className="comparison-model-picker" ref={rootRef}>
+      <span className="comparison-control-label">{copy.modelsLabel}</span>
+      <button
+        ref={triggerRef}
+        type="button"
+        className="comparison-model-trigger"
+        aria-label={copy.modelPickerLabel}
+        aria-expanded={open}
+        aria-controls={menuId}
+        onClick={() => setOpen((current) => !current)}
+      >
+        <ListFilter aria-hidden="true" />
+        <span>{copy.selectedModels(selectedModels.length)}</span>
+        <ChevronDown aria-hidden="true" />
+      </button>
+      {open && (
+        <div
+          id={menuId}
+          className="comparison-model-menu"
+          role="group"
+          aria-label={copy.modelPickerLabel}
+        >
+          {COMPARISON_MODEL_NAMES.map((modelName) => {
+            const checked = selectedModels.includes(modelName);
+            return (
+              <label key={modelName}>
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  disabled={checked && selectedModels.length === 1}
+                  onChange={() => onToggle(modelName)}
+                />
+                <span>{modelName}</span>
+              </label>
+            );
+          })}
         </div>
-        <div>
-          <dt><span className="series-swatch series-swatch-bcp" aria-hidden="true" />BCP</dt>
-          <dd>{formatMetricValue(metric, datum.bcp, language)}</dd>
-        </div>
-      </dl>
-      <div className="model-chart-canvas" role="img" aria-label={`${datum.model}: ${chartLabel}`}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={data}
-            barGap={10}
-            barCategoryGap="42%"
-            margin={{ top: 12, right: 12, bottom: 4, left: 2 }}
-          >
-            <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false} />
-            <XAxis
-              dataKey="metric"
-              tick={false}
-              tickLine={false}
-              axisLine={{ stroke: "var(--border-strong)" }}
-              height={12}
-            />
-            <YAxis
-              domain={domain}
-              allowDataOverflow={false}
-              tickCount={4}
-              width={72}
-              tick={{ fill: "var(--muted)", fontSize: 11 }}
-              tickLine={false}
-              axisLine={false}
-              tickFormatter={(value: number) => formatMetricValue(metric, value, language)}
-            />
-            <Tooltip
-              cursor={{ fill: "var(--chart-cursor)" }}
-              labelFormatter={() => ""}
-              formatter={(value) => formatMetricValue(metric, Number(value), language)}
-              contentStyle={{
-                border: "1px solid var(--border-strong)",
-                borderRadius: 6,
-                boxShadow: "0 8px 24px rgba(16, 24, 40, 0.10)",
-                color: "var(--text)",
-                background: "var(--surface)",
-              }}
-              labelStyle={{ display: "none" }}
-            />
-            <Bar
-              className="chart-series-bcp-link"
-              dataKey="bcpLink"
-              name="BCP-Link"
-              fill="var(--chart-bcp-link)"
-              radius={[3, 3, 0, 0]}
-              barSize={52}
-              maxBarSize={56}
-              isAnimationActive={false}
-            />
-            <Bar
-              className="chart-series-bcp"
-              dataKey="bcp"
-              name="BCP"
-              fill="var(--chart-bcp)"
-              radius={[3, 3, 0, 0]}
-              barSize={52}
-              maxBarSize={56}
-              isAnimationActive={false}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </article>
+      )}
+    </div>
   );
 }
 
@@ -447,18 +420,40 @@ function ComparisonChart({
   copy: Translation;
 }) {
   const [selectedMetric, setSelectedMetric] = useState<MetricKey>("accuracy");
+  const [selectedModels, setSelectedModels] = useState<string[]>(() => [
+    ...COMPARISON_MODEL_NAMES,
+  ]);
   const selectId = useId();
   const metricText = copy.metrics[selectedMetric];
+
+  const handleModelToggle = (modelName: string) => {
+    setSelectedModels((current) => {
+      const next = new Set(current);
+      if (next.has(modelName)) {
+        if (next.size === 1) return current;
+        next.delete(modelName);
+      } else {
+        next.add(modelName);
+      }
+      return COMPARISON_MODEL_NAMES.filter((name) => next.has(name));
+    });
+  };
 
   const chartData = useMemo(() => {
     const modelsByName = new Map(models.map((model) => [model.model, model]));
     return COMPARISON_MODEL_NAMES.flatMap((modelName) => {
+      if (!selectedModels.includes(modelName)) return [];
       const model = modelsByName.get(modelName);
       const bcp = model?.bcp?.[selectedMetric] ?? null;
       const bcpLink = model?.bcpLink?.[selectedMetric] ?? null;
       return bcp === null || bcpLink === null ? [] : [{ model: modelName, bcp, bcpLink }];
     });
-  }, [models, selectedMetric]);
+  }, [models, selectedMetric, selectedModels]);
+
+  const chartDomain = getComparisonValuesDomain(
+    chartData.flatMap((datum) => [datum.bcpLink, datum.bcp]),
+  );
+  const chartMinWidth = Math.max(760, chartData.length * 240);
 
   return (
     <section id="comparison" className="content-section comparison-section" aria-labelledby="comparison-heading">
@@ -470,38 +465,116 @@ function ComparisonChart({
             {copy.comparison.comparable(chartData.length, metricText.label)}
           </p>
         </div>
-        <div className="select-group">
-          <label htmlFor={selectId}>{copy.comparison.metricLabel}</label>
-          <div className="select-wrap">
-            <select
-              id={selectId}
-              aria-label={copy.comparison.selectLabel}
-              value={selectedMetric}
-              onChange={(event) => setSelectedMetric(event.target.value as MetricKey)}
-            >
-              {METRICS.map((option) => (
-                <option key={option.key} value={option.key}>
-                  {copy.metrics[option.key].label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown aria-hidden="true" />
+        <div className="comparison-controls">
+          <ComparisonModelPicker
+            selectedModels={selectedModels}
+            copy={copy.comparison}
+            onToggle={handleModelToggle}
+          />
+          <div className="select-group">
+            <label htmlFor={selectId}>{copy.comparison.metricLabel}</label>
+            <div className="select-wrap">
+              <select
+                id={selectId}
+                aria-label={copy.comparison.selectLabel}
+                value={selectedMetric}
+                onChange={(event) => setSelectedMetric(event.target.value as MetricKey)}
+              >
+                {METRICS.map((option) => (
+                  <option key={option.key} value={option.key}>
+                    {copy.metrics[option.key].label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown aria-hidden="true" />
+            </div>
           </div>
         </div>
       </div>
 
       {chartData.length > 0 ? (
-        <div className="comparison-grid" data-testid="comparison-chart">
-          {chartData.map((datum) => (
-            <ModelComparisonChart
-              key={datum.model}
-              datum={datum}
-              metric={selectedMetric}
-              metricLabel={metricText.label}
-              language={language}
-              chartLabel={copy.comparison.chartLabel(metricText.label)}
-            />
-          ))}
+        <div className="chart-shell" data-testid="comparison-chart">
+          <div
+            className="chart-scroll"
+            tabIndex={0}
+            aria-label={copy.comparison.chartLabel(metricText.label)}
+          >
+            <div className="chart-canvas" style={{ minWidth: chartMinWidth }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={chartData}
+                  barGap={8}
+                  barCategoryGap="38%"
+                  margin={{ top: 20, right: 24, bottom: 78, left: 10 }}
+                >
+                  <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false} />
+                  <XAxis
+                    dataKey="model"
+                    interval={0}
+                    angle={-20}
+                    textAnchor="end"
+                    height={92}
+                    tick={{ fill: "var(--text-subtle)", fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={{ stroke: "var(--border-strong)" }}
+                  />
+                  <YAxis
+                    domain={chartDomain}
+                    allowDataOverflow={false}
+                    tickCount={5}
+                    width={72}
+                    tick={{ fill: "var(--muted)", fontSize: 11 }}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value: number) =>
+                      formatMetricValue(selectedMetric, value, language)
+                    }
+                  />
+                  <Tooltip
+                    cursor={{ fill: "var(--chart-cursor)" }}
+                    formatter={(value) =>
+                      formatMetricValue(selectedMetric, Number(value), language)
+                    }
+                    contentStyle={{
+                      border: "1px solid var(--border-strong)",
+                      borderRadius: 6,
+                      boxShadow: "0 8px 24px rgba(16, 24, 40, 0.10)",
+                      color: "var(--text)",
+                      background: "var(--surface)",
+                    }}
+                    labelStyle={{ fontWeight: 650, marginBottom: 8 }}
+                  />
+                  <Legend
+                    verticalAlign="top"
+                    align="right"
+                    height={36}
+                    iconType="square"
+                    wrapperStyle={{ color: "var(--text-subtle)", fontSize: 13 }}
+                  />
+                  <Bar
+                    className="chart-series-bcp-link"
+                    dataKey="bcpLink"
+                    name="BCP-Link"
+                    fill="var(--chart-bcp-link)"
+                    radius={[3, 3, 0, 0]}
+                    barSize={40}
+                    maxBarSize={48}
+                    isAnimationActive={false}
+                  />
+                  <Bar
+                    className="chart-series-bcp"
+                    dataKey="bcp"
+                    name="BCP"
+                    fill="var(--chart-bcp)"
+                    radius={[3, 3, 0, 0]}
+                    barSize={40}
+                    maxBarSize={48}
+                    isAnimationActive={false}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="chart-empty" role="status">

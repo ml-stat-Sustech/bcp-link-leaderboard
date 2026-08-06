@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { formatMetricValue, getComparisonDomain } from "../metrics";
+import {
+  formatMetricValue,
+  getComparisonDomain,
+  getComparisonValuesDomain,
+} from "../metrics";
 
 describe("formatMetricValue", () => {
   it("uses a consistent precision for every metric", () => {
@@ -22,5 +26,15 @@ describe("formatMetricValue", () => {
     expect(positiveDomain[1]).toBeGreaterThan(59.76);
 
     expect(getComparisonDomain(0, 0.1289)[0]).toBe(0);
+  });
+
+  it("focuses the shared domain across all comparison values", () => {
+    const domain = getComparisonValuesDomain([23.37, 25.55, 34.1, 59.76]);
+    expect(domain[0]).toBeGreaterThan(0);
+    expect(domain[0]).toBeLessThan(23.37);
+    expect(domain[1]).toBeGreaterThan(59.76);
+
+    expect(getComparisonValuesDomain([0, 0.1289])[0]).toBe(0);
+    expect(getComparisonValuesDomain([0.49, 1.04, 3.78, 7.23])[0]).toBeGreaterThan(0);
   });
 });

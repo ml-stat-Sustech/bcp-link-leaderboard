@@ -154,23 +154,34 @@ describe("LeaderboardApp", () => {
     expect(screen.getByText("0 models with comparable Accuracy data")).toBeInTheDocument();
   });
 
-  it("renders separate comparison charts for the four selected models", () => {
+  it("selects one or more models for a shared comparison chart", async () => {
+    const user = userEvent.setup();
     render(<LeaderboardApp />);
 
-    const charts = screen.getAllByTestId("model-comparison-chart");
-    expect(charts).toHaveLength(4);
-    expect(charts.map((chart) => chart.querySelector("h3")?.textContent)).toEqual([
-      "Tongyi-DeepResearch-30B-A3B",
-      "SearchAgent-Zero",
-      "WebExplorer-8B",
-      "WebSailor-32B",
-    ]);
+    expect(screen.getByTestId("comparison-chart")).toBeInTheDocument();
     expect(screen.getByText("4 models with comparable Accuracy data")).toBeInTheDocument();
-    expect(
-      Array.from(charts[0].querySelectorAll(".model-chart-values dt"), (term) => term.textContent),
-    ).toEqual(["BCP-Link", "BCP"]);
-    expect(within(charts[0]).getByText("57.59%")).toBeVisible();
-    expect(within(charts[0]).getByText("59.76%")).toBeVisible();
+
+    const trigger = screen.getByRole("button", { name: "Choose comparison models" });
+    await user.click(trigger);
+    const tongyi = screen.getByRole("checkbox", { name: "Tongyi-DeepResearch-30B-A3B" });
+    const searchAgent = screen.getByRole("checkbox", { name: "SearchAgent-Zero" });
+    const webExplorer = screen.getByRole("checkbox", { name: "WebExplorer-8B" });
+    const webSailor = screen.getByRole("checkbox", { name: "WebSailor-32B" });
+    expect(tongyi).toBeChecked();
+    expect(searchAgent).toBeChecked();
+    expect(webExplorer).toBeChecked();
+    expect(webSailor).toBeChecked();
+
+    await user.click(searchAgent);
+    await user.click(webExplorer);
+    await user.click(webSailor);
+    expect(trigger).toHaveTextContent("1 model selected");
+    expect(screen.getByText("1 model with comparable Accuracy data")).toBeInTheDocument();
+    expect(tongyi).toBeDisabled();
+
+    await user.click(searchAgent);
+    expect(trigger).toHaveTextContent("2 models selected");
+    expect(screen.getByText("2 models with comparable Accuracy data")).toBeInTheDocument();
   });
 
   it("filters by model name and sorts numeric columns", async () => {

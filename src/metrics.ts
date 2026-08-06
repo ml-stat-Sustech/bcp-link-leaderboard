@@ -28,12 +28,25 @@ export function formatMetricValue(
   }).format(value);
 }
 
-export function getComparisonDomain(first: number, second: number): [number, number] {
-  const minimum = Math.min(first, second);
-  const maximum = Math.max(first, second);
+function calculateComparisonDomain(values: number[], spreadPadding: number): [number, number] {
+  if (values.length === 0) return [0, 1];
+
+  const minimum = Math.min(...values);
+  const maximum = Math.max(...values);
   const midpoint = (minimum + maximum) / 2;
   const spread = maximum - minimum;
-  const padding = Math.max(spread * 0.35, Math.abs(midpoint) * 0.03, 0.01);
+  const padding = Math.max(spread * spreadPadding, Math.abs(midpoint) * 0.03, 0.01);
 
-  return [minimum === 0 ? 0 : Math.max(0, minimum - padding), maximum + padding];
+  return [
+    minimum === 0 ? 0 : Math.max(minimum * 0.5, minimum - padding),
+    maximum + padding,
+  ];
+}
+
+export function getComparisonDomain(first: number, second: number): [number, number] {
+  return calculateComparisonDomain([first, second], 0.35);
+}
+
+export function getComparisonValuesDomain(values: number[]): [number, number] {
+  return calculateComparisonDomain(values, 0.08);
 }
