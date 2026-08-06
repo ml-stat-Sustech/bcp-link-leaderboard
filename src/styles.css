@@ -1851,52 +1851,10 @@ tbody tr:hover .model-column {
   margin: 18px auto 0;
 }
 
-.metric-guide-groups {
+.metric-guide-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
-}
-
-.metric-guide-group {
-  min-width: 0;
-}
-
-.metric-group-heading {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.metric-group-heading > span {
-  width: 30px;
-  height: 30px;
-  display: grid;
-  place-items: center;
-  color: var(--primary);
-  background: var(--primary-soft);
-  border-radius: 6px;
-}
-
-.metric-guide-linkFollowing .metric-group-heading > span {
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
-}
-
-.metric-group-heading svg {
-  width: 16px;
-  height: 16px;
-}
-
-.metric-group-heading h3 {
-  color: var(--text);
-  font-size: 16px;
-  line-height: 1.35;
-}
-
-.metric-card-list {
-  display: grid;
-  gap: 10px;
+  gap: 18px;
 }
 
 .metric-card {
@@ -1911,12 +1869,12 @@ tbody tr:hover .model-column {
 
 .metric-card-trigger {
   width: 100%;
-  min-height: 96px;
+  min-height: 132px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
-  padding: 16px;
+  padding: 20px;
   color: var(--text);
   background: var(--raised-bg);
   border: 1px solid var(--border);
@@ -1947,8 +1905,8 @@ tbody tr:hover .model-column {
   text-transform: uppercase;
 }
 
-.metric-card-direction {
-  max-width: 108px;
+.metric-card-category {
+  max-width: 124px;
   padding: 5px 7px;
   color: var(--primary);
   background: var(--primary-soft);
@@ -1959,7 +1917,7 @@ tbody tr:hover .model-column {
   text-align: center;
 }
 
-.metric-guide-linkFollowing .metric-card-direction {
+.metric-card-category-linkFollowing {
   color: var(--accent);
   background: color-mix(in srgb, var(--accent) 12%, var(--surface));
 }
@@ -2244,7 +2202,7 @@ tbody tr:hover .model-column {
     min-width: 38px;
   }
 
-  .metric-guide-groups {
+  .metric-guide-grid {
     gap: 24px;
   }
 }
@@ -2365,12 +2323,8 @@ tbody tr:hover .model-column {
     grid-template-columns: 1fr;
   }
 
-  .metric-guide-groups {
+  .metric-guide-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .metric-guide-linkFollowing {
-    grid-column: 1 / -1;
   }
 
   .footer-inner {
@@ -2614,17 +2568,13 @@ tbody tr:hover .model-column {
     gap: 10px;
   }
 
-  .metric-guide-groups {
+  .metric-guide-grid {
     grid-template-columns: 1fr;
-    gap: 28px;
-  }
-
-  .metric-guide-linkFollowing {
-    grid-column: auto;
+    gap: 16px;
   }
 
   .metric-card-trigger {
-    min-height: 88px;
+    min-height: 116px;
   }
 
   .metric-detail-popover {

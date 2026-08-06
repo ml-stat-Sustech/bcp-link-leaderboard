@@ -24,6 +24,15 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.locator(".percentage-data-bar")).toHaveCount(18);
   await expect(page.locator("thead .metric-group-answerQuality")).toHaveText("Answer quality");
   await expect(page.locator("thead .metric-group-toolBehavior")).toHaveText("Tool behavior");
+  await expect(page.locator(".metric-card")).toHaveCount(6);
+  await expect(page.locator(".metric-card-category")).toHaveText([
+    "Answer quality",
+    "Answer quality",
+    "Tool behavior",
+    "Tool behavior",
+    "Tool behavior",
+    "Link following",
+  ]);
   await expect(page.getByRole("link", { name: "View rankings" })).toHaveAttribute(
     "href",
     "#leaderboard",
@@ -105,6 +114,11 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       principleParentBorder: getComputedStyle(document.querySelector(".rule-principles")!).borderWidth,
       principleCardBorder: getComputedStyle(document.querySelector(".rule-principles article")!)
         .borderWidth,
+      metricGridColumns: getComputedStyle(document.querySelector(".metric-guide-grid")!)
+        .gridTemplateColumns.split(" ").length,
+      metricCardHeight: document
+        .querySelector(".metric-card-trigger")!
+        .getBoundingClientRect().height,
     };
   });
   expect(visualDetails.legendInset).toBeGreaterThanOrEqual(
@@ -122,6 +136,10 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.flowArrowWidth).toBe("8px");
   expect(visualDetails.principleParentBorder).toBe("0px");
   expect(visualDetails.principleCardBorder).toBe("1px");
+  expect(visualDetails.metricGridColumns).toBe(testInfo.project.name.startsWith("mobile") ? 1 : 3);
+  expect(visualDetails.metricCardHeight).toBeGreaterThanOrEqual(
+    testInfo.project.name.startsWith("mobile") ? 116 : 132,
+  );
 
   const bcpLinkBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp-link");
   const bcpBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp");

@@ -57,6 +57,28 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector(".evaluation-flow")).toHaveTextContent("Second hop");
     expect(screen.queryByText("What is recorded")).not.toBeInTheDocument();
 
+    const metricCards = Array.from(container.querySelectorAll(".metric-card"));
+    expect(metricCards).toHaveLength(6);
+    expect(metricCards.map((card) => card.querySelector("strong")?.textContent)).toEqual([
+      "Accuracy",
+      "Recall",
+      "Search Calls",
+      "Visit Calls",
+      "Turns",
+      "Link-following Visit Calls",
+    ]);
+    expect(
+      metricCards.map((card) => card.querySelector(".metric-card-category")?.textContent),
+    ).toEqual([
+      "Answer quality",
+      "Answer quality",
+      "Tool behavior",
+      "Tool behavior",
+      "Tool behavior",
+      "Link following",
+    ]);
+    expect(container.querySelector(".metric-group-heading")).not.toBeInTheDocument();
+
     const sectionIds = Array.from(container.querySelectorAll("main > section"), (section) => section.id);
     expect(sectionIds).toEqual(["about", "leaderboard", "comparison", "rules", "metrics"]);
   });

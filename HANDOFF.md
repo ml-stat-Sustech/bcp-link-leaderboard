@@ -67,9 +67,11 @@ Last updated: 2026-08-07
 - Evaluation Rules renders the three benchmark principles as separate framed cards, shows a six-step
   Query → Search → Visit → second-hop Visit → Evidence → Answer path with a directional arrow, and
   uses simplified Search and Visit headings above the detailed tool contracts.
-- Metric Guide maps metrics to Answer quality, Tool behavior, and Link following through individual
-  cards. Hover or keyboard focus previews a floating detail panel; clicking pins selectable detail
-  text, clicking again returns to preview behavior, and Escape clears a pinned panel.
+- Metric Guide uses a flat six-card grid instead of category columns: three cards per row on desktop,
+  two on tablet, and one on mobile. Each card carries its Answer quality, Tool behavior, or Link
+  following category in the upper-right badge. Hover or keyboard focus previews a floating detail
+  panel; clicking pins selectable detail text, clicking again returns to preview behavior, and Escape
+  clears a pinned panel.
 
 ### Chart Logic
 

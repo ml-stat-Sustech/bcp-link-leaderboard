@@ -19,8 +19,6 @@ import {
   Palette,
   Pin,
   Search,
-  Target,
-  Wrench,
   X,
 } from "lucide-react";
 import { createPortal } from "react-dom";
@@ -96,6 +94,10 @@ const METRIC_GROUPS = [
 const LEADERBOARD_METRICS = METRIC_GROUPS.flatMap((group) =>
   group.metrics.map((metricKey) => METRIC_BY_KEY[metricKey]),
 );
+
+const METRIC_CATEGORY_BY_KEY = Object.fromEntries(
+  METRIC_GROUPS.flatMap((group) => group.metrics.map((metricKey) => [metricKey, group.key])),
+) as Record<MetricKey, keyof Translation["metricGuide"]["groups"]>;
 
 function formatModelDisplayName(model: string): string {
   return model.replace(/^gemma(?=-)/i, "Gemma");
@@ -1012,12 +1014,6 @@ function MetricGuide({ copy }: { copy: Translation }) {
   const [pinnedMetric, setPinnedMetric] = useState<MetricKey | null>(null);
   const metricButtonRefs = useRef<Partial<Record<MetricKey, HTMLButtonElement | null>>>({});
   const activeMetric = pinnedMetric ?? previewMetric;
-  const groupIcons = {
-    answerQuality: <Target />,
-    toolBehavior: <Wrench />,
-    linkFollowing: <Link2 />,
-  } satisfies Record<keyof Translation["metricGuide"]["groups"], React.ReactNode>;
-
   useEffect(() => {
     if (!pinnedMetric) return;
 
@@ -1044,96 +1040,89 @@ function MetricGuide({ copy }: { copy: Translation }) {
           <h2 id="metrics-heading">{copy.metricGuide.heading}</h2>
           <p className="section-note">{copy.metricGuide.note}</p>
         </div>
-        <div className="metric-guide-groups">
-          {METRIC_GROUPS.map((group) => (
-            <article key={group.key} className={`metric-guide-group metric-guide-${group.key}`}>
-              <div className="metric-group-heading">
-                <span aria-hidden="true">{groupIcons[group.key]}</span>
-                <h3>{copy.metricGuide.groups[group.key]}</h3>
-              </div>
-              <div className="metric-card-list">
-                {group.metrics.map((metricKey) => {
-                  const metric = METRIC_BY_KEY[metricKey];
-                  const metricCopy = copy.metrics[metricKey];
-                  const isActive = activeMetric === metricKey;
-                  const isPinned = pinnedMetric === metricKey;
-                  return (
-                    <article
-                      key={metricKey}
-                      className="metric-card"
-                      data-active={isActive ? "true" : "false"}
-                      data-pinned={isPinned ? "true" : "false"}
-                      onMouseEnter={() => setPreviewMetric(metricKey)}
-                      onMouseLeave={() => setPreviewMetric(null)}
-                    >
-                      <button
-                        ref={(element) => {
-                          metricButtonRefs.current[metricKey] = element;
-                        }}
-                        type="button"
-                        className="metric-card-trigger"
-                        aria-expanded={isActive}
-                        aria-controls={`metric-detail-${metricKey}`}
-                        aria-label={
-                          isPinned
-                            ? copy.metricGuide.unpinMetricDetails(metricCopy.label)
-                            : copy.metricGuide.openMetricDetails(metricCopy.label)
-                        }
-                        onFocus={() => setPreviewMetric(metricKey)}
-                        onBlur={() => {
-                          if (!isPinned) setPreviewMetric(null);
-                        }}
-                        onClick={() => {
-                          setPinnedMetric((current) => (current === metricKey ? null : metricKey));
-                        }}
-                      >
-                        <span className="metric-card-copy">
-                          <strong>{metricCopy.label}</strong>
-                          <small>
-                          {metric.format === "percent"
-                            ? copy.metricGuide.percentage
-                            : copy.metricGuide.averageCount}
-                          </small>
+        <div className="metric-guide-grid">
+          {LEADERBOARD_METRICS.map((metric) => {
+            const metricKey = metric.key;
+            const categoryKey = METRIC_CATEGORY_BY_KEY[metricKey];
+            const metricCopy = copy.metrics[metricKey];
+            const isActive = activeMetric === metricKey;
+            const isPinned = pinnedMetric === metricKey;
+            return (
+              <article
+                key={metricKey}
+                className="metric-card"
+                data-active={isActive ? "true" : "false"}
+                data-pinned={isPinned ? "true" : "false"}
+                onMouseEnter={() => setPreviewMetric(metricKey)}
+                onMouseLeave={() => setPreviewMetric(null)}
+              >
+                <button
+                  ref={(element) => {
+                    metricButtonRefs.current[metricKey] = element;
+                  }}
+                  type="button"
+                  className="metric-card-trigger"
+                  aria-expanded={isActive}
+                  aria-controls={`metric-detail-${metricKey}`}
+                  aria-label={
+                    isPinned
+                      ? copy.metricGuide.unpinMetricDetails(metricCopy.label)
+                      : copy.metricGuide.openMetricDetails(metricCopy.label)
+                  }
+                  onFocus={() => setPreviewMetric(metricKey)}
+                  onBlur={() => {
+                    if (!isPinned) setPreviewMetric(null);
+                  }}
+                  onClick={() => {
+                    setPinnedMetric((current) => (current === metricKey ? null : metricKey));
+                  }}
+                >
+                  <span className="metric-card-copy">
+                    <strong>{metricCopy.label}</strong>
+                    <small>
+                      {metric.format === "percent"
+                        ? copy.metricGuide.percentage
+                        : copy.metricGuide.averageCount}
+                    </small>
+                  </span>
+                  <span className={`metric-card-category metric-card-category-${categoryKey}`}>
+                    {copy.metricGuide.groups[categoryKey]}
+                  </span>
+                </button>
+                {isActive && (
+                  <div
+                    id={`metric-detail-${metricKey}`}
+                    className="metric-detail-popover"
+                    role={isPinned ? "region" : "tooltip"}
+                    aria-label={`${metricCopy.label}: ${metricCopy.definition}`}
+                  >
+                    <div className="metric-detail-heading">
+                      <strong>{metricCopy.label}</strong>
+                      {isPinned && (
+                        <span className="metric-pinned-status">
+                          <Pin aria-hidden="true" /> {copy.metricGuide.pinnedStatus}
                         </span>
-                        <span className="metric-card-direction">{metricCopy.direction}</span>
-                      </button>
-                      {isActive && (
-                        <div
-                          id={`metric-detail-${metricKey}`}
-                          className="metric-detail-popover"
-                          role={isPinned ? "region" : "tooltip"}
-                          aria-label={`${metricCopy.label}: ${metricCopy.definition}`}
-                        >
-                          <div className="metric-detail-heading">
-                            <strong>{metricCopy.label}</strong>
-                            {isPinned && (
-                              <span className="metric-pinned-status">
-                                <Pin aria-hidden="true" /> {copy.metricGuide.pinnedStatus}
-                              </span>
-                            )}
-                          </div>
-                          <dl>
-                            <div>
-                              <dt>{copy.metricGuide.definitionLabel}</dt>
-                              <dd>{metricCopy.definition}</dd>
-                            </div>
-                            <div>
-                              <dt>{copy.metricGuide.calculationLabel}</dt>
-                              <dd>{metricCopy.calculation}</dd>
-                            </div>
-                            <div>
-                              <dt>{copy.metricGuide.interpretationLabel}</dt>
-                              <dd>{metricCopy.interpretation}</dd>
-                            </div>
-                          </dl>
-                        </div>
                       )}
-                    </article>
-                  );
-                })}
-              </div>
-            </article>
-          ))}
+                    </div>
+                    <dl>
+                      <div>
+                        <dt>{copy.metricGuide.definitionLabel}</dt>
+                        <dd>{metricCopy.definition}</dd>
+                      </div>
+                      <div>
+                        <dt>{copy.metricGuide.calculationLabel}</dt>
+                        <dd>{metricCopy.calculation}</dd>
+                      </div>
+                      <div>
+                        <dt>{copy.metricGuide.interpretationLabel}</dt>
+                        <dd>{metricCopy.interpretation}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                )}
+              </article>
+            );
+          })}
         </div>
         <p className="metric-footnote">{copy.metricGuide.footnote}</p>
       </div>
