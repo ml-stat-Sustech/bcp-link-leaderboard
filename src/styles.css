@@ -11,9 +11,10 @@
   --page-bg: #f4f7fa;
   --page-gradient: linear-gradient(155deg, #f8fafc 0%, #eef5fb 48%, #f7fafc 100%);
   --ambient-bg:
-    linear-gradient(124deg, rgba(63, 114, 175, 0.15) 0%, transparent 44%),
-    linear-gradient(308deg, rgba(181, 106, 43, 0.08) 0%, transparent 47%),
-    linear-gradient(180deg, #f8fafc 0%, #eef5fb 100%);
+    linear-gradient(112deg, transparent 0%, rgba(48, 105, 176, 0.38) 18%, rgba(105, 164, 218, 0.2) 48%, transparent 84%),
+    linear-gradient(296deg, transparent 0%, rgba(214, 128, 48, 0.31) 18%, rgba(247, 190, 126, 0.14) 48%, transparent 84%),
+    linear-gradient(90deg, transparent 14%, rgba(255, 255, 255, 0.3) 45%, transparent 74%),
+    linear-gradient(145deg, #f7fbff 0%, #d9e9f8 49%, #ffeddd 100%);
   --section-bg: #ffffff;
   --section-tinted: #edf2f7;
   --surface: #ffffff;
@@ -63,9 +64,10 @@
   --page-bg: #eef0e8;
   --page-gradient: linear-gradient(155deg, #f5f7ee 0%, #e8eee1 50%, #edf5f3 100%);
   --ambient-bg:
-    linear-gradient(121deg, rgba(171, 203, 91, 0.2) 0%, transparent 45%),
-    linear-gradient(307deg, rgba(92, 191, 214, 0.18) 0%, transparent 48%),
-    linear-gradient(180deg, #f4f6ed 0%, #e8eee6 100%);
+    linear-gradient(110deg, transparent 0%, rgba(128, 167, 39, 0.4) 18%, rgba(191, 218, 101, 0.21) 48%, transparent 84%),
+    linear-gradient(297deg, transparent 0%, rgba(31, 154, 184, 0.35) 18%, rgba(105, 207, 218, 0.16) 48%, transparent 84%),
+    linear-gradient(90deg, transparent 14%, rgba(255, 255, 255, 0.28) 45%, transparent 74%),
+    linear-gradient(145deg, #f8fbe9 0%, #deedcb 48%, #dff3f3 100%);
   --section-bg: #f7f8f2;
   --section-tinted: #e4eadf;
   --surface: #f9faf4;
@@ -111,9 +113,10 @@
   --page-bg: #f2f6f6;
   --page-gradient: linear-gradient(155deg, #f8fbfb 0%, #e9f4f2 52%, #fff9ef 100%);
   --ambient-bg:
-    linear-gradient(123deg, rgba(68, 161, 164, 0.16) 0%, transparent 46%),
-    linear-gradient(305deg, rgba(255, 154, 0, 0.11) 0%, transparent 46%),
-    linear-gradient(180deg, #f8fbfb 0%, #e9f4f2 100%);
+    linear-gradient(111deg, transparent 0%, rgba(24, 130, 139, 0.4) 18%, rgba(73, 185, 184, 0.2) 48%, transparent 84%),
+    linear-gradient(297deg, transparent 0%, rgba(231, 129, 13, 0.35) 18%, rgba(255, 184, 78, 0.17) 48%, transparent 84%),
+    linear-gradient(90deg, transparent 14%, rgba(255, 255, 255, 0.3) 45%, transparent 74%),
+    linear-gradient(145deg, #f7fcfc 0%, #d8efed 49%, #ffe8c9 100%);
   --section-bg: #ffffff;
   --section-tinted: #e4eeee;
   --surface: #ffffff;
@@ -159,9 +162,10 @@
   --page-bg: #f5f6f6;
   --page-gradient: linear-gradient(155deg, #fafbfb 0%, #edf2f3 52%, #faf7f3 100%);
   --ambient-bg:
-    linear-gradient(123deg, rgba(82, 109, 119, 0.13) 0%, transparent 46%),
-    linear-gradient(304deg, rgba(155, 113, 76, 0.1) 0%, transparent 47%),
-    linear-gradient(180deg, #fafbfb 0%, #edf2f3 100%);
+    linear-gradient(111deg, transparent 0%, rgba(72, 118, 136, 0.34) 18%, rgba(128, 170, 182, 0.18) 48%, transparent 84%),
+    linear-gradient(297deg, transparent 0%, rgba(177, 109, 70, 0.29) 18%, rgba(220, 162, 121, 0.15) 48%, transparent 84%),
+    linear-gradient(90deg, transparent 14%, rgba(255, 255, 255, 0.32) 45%, transparent 74%),
+    linear-gradient(145deg, #f9fcfc 0%, #dcebee 49%, #fae5d6 100%);
   --section-bg: #ffffff;
   --section-tinted: #eceff0;
   --surface: #ffffff;
@@ -207,9 +211,10 @@
   --page-bg: #e9eaec;
   --page-gradient: linear-gradient(155deg, #f8f9fa 0%, #e9edf0 52%, #fff9e9 100%);
   --ambient-bg:
-    linear-gradient(124deg, rgba(57, 62, 70, 0.14) 0%, transparent 45%),
-    linear-gradient(306deg, rgba(255, 211, 105, 0.16) 0%, transparent 47%),
-    linear-gradient(180deg, #f8f9fa 0%, #e9edf0 100%);
+    linear-gradient(112deg, transparent 0%, rgba(50, 57, 68, 0.34) 18%, rgba(105, 116, 130, 0.18) 48%, transparent 84%),
+    linear-gradient(297deg, transparent 0%, rgba(221, 160, 17, 0.42) 18%, rgba(255, 211, 93, 0.22) 48%, transparent 84%),
+    linear-gradient(90deg, transparent 14%, rgba(255, 255, 255, 0.3) 45%, transparent 74%),
+    linear-gradient(145deg, #f6f8fa 0%, #dbe2e8 48%, #ffe6a3 100%);
   --section-bg: #ffffff;
   --section-tinted: #dfe1e4;
   --surface: #ffffff;
@@ -275,22 +280,28 @@ body {
 body::before {
   content: "";
   position: fixed;
-  inset: -6vw;
+  inset: -12vw;
   z-index: 0;
   pointer-events: none;
   background: var(--ambient-bg);
-  background-size: 118% 118%, 122% 122%, 100% 100%;
-  background-position: 0% 0%, 100% 100%, 50% 50%;
-  filter: blur(28px);
-  transform: translate3d(-1%, -0.7%, 0) scale(1.06);
-  animation: ambient-gradient-drift 28s ease-in-out infinite alternate;
+  background-repeat: no-repeat;
+  background-size: 72% 140%, 72% 145%, 68% 132%, 130% 120%;
+  background-position: 0% -10%, 100% 110%, 0% 50%, 0% 50%;
+  filter: blur(8px) saturate(1.1);
+  transform: translate3d(-2.5%, -1.5%, 0) scale(1.08);
+  animation: ambient-gradient-drift 8s linear infinite alternate;
   will-change: transform, background-position;
 }
 
 @keyframes ambient-gradient-drift {
-  to {
-    background-position: 16% 10%, 84% 90%, 50% 50%;
-    transform: translate3d(1%, 0.7%, 0) scale(1.09);
+  50% {
+    background-position: 100% 24%, 0% 76%, 100% 34%, 100% 50%;
+    transform: translate3d(1.5%, -0.5%, 0) scale(1.11);
+  }
+
+  100% {
+    background-position: 24% 100%, 76% 0%, 20% 70%, 24% 50%;
+    transform: translate3d(3%, 2%, 0) scale(1.09);
   }
 }
 
@@ -2590,7 +2601,7 @@ tbody tr:hover .model-column {
 @media (prefers-reduced-motion: reduce) {
   body::before {
     animation: none;
-    transform: scale(1.04);
+    transform: scale(1.1);
   }
 
   *,

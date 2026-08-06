@@ -136,6 +136,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       ).whiteSpace,
       ambientPosition: getComputedStyle(document.body, "::before").position,
       ambientAnimation: getComputedStyle(document.body, "::before").animationName,
+      ambientAnimationDuration: getComputedStyle(document.body, "::before").animationDuration,
       flowTransitionDuration: getComputedStyle(
         document.querySelector(".evaluation-flow-scroll")!,
       ).transitionDuration,
@@ -168,6 +169,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.linkWidth).toBeGreaterThan(visualDetails.accuracyWidth);
   expect(visualDetails.ambientPosition).toBe("fixed");
   expect(visualDetails.ambientAnimation).toBe("ambient-gradient-drift");
+  expect(visualDetails.ambientAnimationDuration).toBe("8s");
   expect(visualDetails.flowTransitionDuration).toBe("0s");
   expect(visualDetails.flowArrowWidth).toBe("8px");
   expect(visualDetails.principleParentBorder).toBe("0px");
@@ -176,6 +178,15 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.metricCardHeight).toBeGreaterThanOrEqual(
     testInfo.project.name.startsWith("mobile") ? 116 : 132,
   );
+
+  const ambientStartPosition = await page.evaluate(
+    () => getComputedStyle(document.body, "::before").backgroundPosition,
+  );
+  await page.waitForTimeout(500);
+  const ambientEndPosition = await page.evaluate(
+    () => getComputedStyle(document.body, "::before").backgroundPosition,
+  );
+  expect(ambientEndPosition).not.toBe(ambientStartPosition);
 
   const bcpLinkBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp-link");
   const bcpBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp");
@@ -411,6 +422,7 @@ test("applies all five themes to the chart and captures each palette", async ({ 
     ["Warm Neutral", "warm-neutral"],
     ["Charcoal Amber", "charcoal-amber"],
   ] as const;
+  const ambientBackgrounds = new Set<string>();
 
   for (const [name, key] of themes) {
     if (key !== "research-blue") {
@@ -426,12 +438,15 @@ test("applies all five themes to the chart and captures each palette", async ({ 
         ".chart-series-bcp-link .recharts-bar-rectangle",
       );
       return {
+        ambientBackground: getComputedStyle(document.body, "::before").backgroundImage,
         bcpToken: rootStyle.getPropertyValue("--chart-bcp").trim(),
         bcpLinkToken: rootStyle.getPropertyValue("--chart-bcp-link").trim(),
         bcpFill: bcpBar ? getComputedStyle(bcpBar).fill : "",
         bcpLinkFill: bcpLinkBar ? getComputedStyle(bcpLinkBar).fill : "",
       };
     });
+    expect(colors.ambientBackground).not.toBe("none");
+    ambientBackgrounds.add(colors.ambientBackground);
     expect(colors.bcpToken).not.toBe("");
     expect(colors.bcpLinkToken).not.toBe("");
     expect(colors.bcpToken).not.toBe(colors.bcpLinkToken);
@@ -441,4 +456,5 @@ test("applies all five themes to the chart and captures each palette", async ({ 
 
     await page.screenshot({ path: testInfo.outputPath(`${key}.png`), fullPage: true });
   }
+  expect(ambientBackgrounds.size).toBe(themes.length);
 });
