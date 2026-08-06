@@ -54,7 +54,9 @@ Last updated: 2026-08-07
 
 - The About section uses `BCP-Link` as its heading, the English subtitle `Evaluating whether search
   agents can find and follow useful links.`, and one framed single-column description panel in both
-  languages.
+  languages. The first `BCP-Link` in the description is emphasized. Disabled Code and Dataset
+  placeholders reserve space for future GitHub and Hugging Face URLs without publishing unconfirmed
+  destinations.
 - The rendered section order is now:
   1. About BCP-Link
   2. Leaderboard

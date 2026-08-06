@@ -42,6 +42,13 @@ describe("LeaderboardApp", () => {
     expect(
       screen.getByText("Evaluating whether search agents can find and follow useful links."),
     ).toBeVisible();
+    expect(container.querySelector(".intro-body p > strong:first-child")).toHaveTextContent(
+      "BCP-Link",
+    );
+    expect(screen.getByRole("button", { name: "Code on GitHub, coming soon" })).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "Dataset on Hugging Face, coming soon" }),
+    ).toBeDisabled();
     expect(screen.getByRole("heading", { name: "One environment, the same tools" })).toBeVisible();
     expect(screen.getByRole("heading", { name: "How the leaderboard is measured" })).toBeVisible();
     expect(screen.getByText(/Gold evidence may not appear/)).toBeVisible();

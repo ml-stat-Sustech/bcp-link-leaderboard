@@ -9,7 +9,9 @@ import {
   BarChart3,
   Check,
   ChevronDown,
+  Database,
   ExternalLink,
+  Github,
   Info,
   Link2,
   ListFilter,
@@ -1181,7 +1183,7 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
               </div>
               <div className="intro-body">
                 <p>
-                  {copy.intro.bodyOneBeforeSearch}<code>search</code>
+                  <strong>BCP-Link</strong>{copy.intro.bodyOneAfterName}<code>search</code>
                   {copy.intro.bodyOneBetweenTools}<code>visit</code>{copy.intro.bodyOneAfterVisit}
                 </p>
                 <p>{copy.intro.bodyTwo}</p>
@@ -1192,6 +1194,24 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                   <a className="intro-action intro-action-secondary" href="#rules">
                     {copy.intro.protocolAction} <ArrowRight aria-hidden="true" />
                   </a>
+                  <button
+                    className="intro-action intro-action-resource"
+                    type="button"
+                    disabled
+                    title={`GitHub · ${copy.intro.comingSoon}`}
+                    aria-label={copy.intro.codeActionLabel}
+                  >
+                    <Github aria-hidden="true" /> <span>{copy.intro.codeAction}</span>
+                  </button>
+                  <button
+                    className="intro-action intro-action-resource"
+                    type="button"
+                    disabled
+                    title={`Hugging Face · ${copy.intro.comingSoon}`}
+                    aria-label={copy.intro.datasetActionLabel}
+                  >
+                    <Database aria-hidden="true" /> <span>{copy.intro.datasetAction}</span>
+                  </button>
                 </div>
                 <dl className="dataset-stats" aria-label={copy.stats.label}>
                   <div>

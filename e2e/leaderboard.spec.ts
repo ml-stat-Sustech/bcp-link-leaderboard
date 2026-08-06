@@ -11,6 +11,11 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(
     page.getByRole("heading", { name: "BCP-Link", exact: true, level: 1 }),
   ).toBeVisible();
+  await expect(page.locator(".intro-body p > strong").first()).toHaveText("BCP-Link");
+  await expect(page.getByRole("button", { name: "Code on GitHub, coming soon" })).toBeDisabled();
+  await expect(
+    page.getByRole("button", { name: "Dataset on Hugging Face, coming soon" }),
+  ).toBeDisabled();
   await expect(page.getByTestId("model-name")).toHaveCount(9);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();
@@ -333,7 +338,9 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   expect(hasChinesePageOverflow).toBe(false);
   await page.getByRole("searchbox", { name: "搜索模型" }).fill("");
   await page.getByRole("combobox", { name: "选择对比指标" }).selectOption("accuracy");
-  await page.getByRole("button", { name: "按 Accuracy 排序" }).click();
+  await page
+    .getByRole("button", { name: "按 Accuracy 排序" })
+    .evaluate((button: HTMLButtonElement) => button.click());
   await page.getByRole("link", { name: "返回 BCP-Link 首页" }).click();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
   await page.screenshot({

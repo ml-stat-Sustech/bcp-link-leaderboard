@@ -55,12 +55,17 @@ export interface Translation {
   intro: {
     heading: string;
     subtitle: string;
-    bodyOneBeforeSearch: string;
+    bodyOneAfterName: string;
     bodyOneBetweenTools: string;
     bodyOneAfterVisit: string;
     bodyTwo: string;
     rankingsAction: string;
     protocolAction: string;
+    codeAction: string;
+    datasetAction: string;
+    comingSoon: string;
+    codeActionLabel: string;
+    datasetActionLabel: string;
   };
   stats: {
     label: string;
@@ -180,14 +185,19 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     intro: {
       heading: "BCP-Link",
       subtitle: "Evaluating whether search agents can find and follow useful links.",
-      bodyOneBeforeSearch:
-        "BCP-Link is a link-aware search-agent benchmark built on BrowseComp-Plus. It uses a fixed corpus with standardized ",
+      bodyOneAfterName:
+        " is a link-aware search-agent benchmark built on BrowseComp-Plus. It uses a fixed corpus with standardized ",
       bodyOneBetweenTools: " and ",
       bodyOneAfterVisit: " tools so model results remain reproducible and directly comparable.",
       bodyTwo:
         "Gold evidence may not appear in the initial search results, but can be reached through links inside retrieved pages. This leaderboard shows which models can recognize those links, navigate to the right evidence, and complete the search task accurately.",
       rankingsAction: "View rankings",
       protocolAction: "Review protocol",
+      codeAction: "Code",
+      datasetAction: "Dataset",
+      comingSoon: "Coming soon",
+      codeActionLabel: "Code on GitHub, coming soon",
+      datasetActionLabel: "Dataset on Hugging Face, coming soon",
     },
     stats: {
       label: "Dataset summary",
@@ -387,14 +397,19 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     intro: {
       heading: "BCP-Link",
       subtitle: "Evaluating whether search agents can find and follow useful links.",
-      bodyOneBeforeSearch:
-        "BCP-Link 是基于 BrowseComp-Plus 构建的链接感知搜索智能体基准。它使用固定语料，以及标准化的 ",
+      bodyOneAfterName:
+        " 是基于 BrowseComp-Plus 构建的链接感知搜索智能体基准。它使用固定语料，以及标准化的 ",
       bodyOneBetweenTools: " 和 ",
       bodyOneAfterVisit: " 工具，使不同模型的结果可复现、可直接比较。",
       bodyTwo:
         "关键证据不一定出现在初始搜索结果中，但可能通过检索页面内的链接到达。该排行榜用于衡量模型能否识别这些链接、导航至正确证据，并准确完成搜索任务。",
       rankingsAction: "查看排行榜",
       protocolAction: "阅读评测规则",
+      codeAction: "Code",
+      datasetAction: "Dataset",
+      comingSoon: "即将开放",
+      codeActionLabel: "GitHub 上的代码，即将开放",
+      datasetActionLabel: "Hugging Face 上的数据集，即将开放",
     },
     stats: {
       label: "数据概览",
