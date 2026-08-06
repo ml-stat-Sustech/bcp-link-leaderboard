@@ -6,7 +6,7 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --rank-width: 64px;
-  --model-width: 270px;
+  --model-width: 235px;
 
   --page-bg: #f4f7fa;
   --page-gradient: linear-gradient(155deg, #f8fafc 0%, #eef5fb 48%, #f7fafc 100%);
@@ -279,8 +279,19 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background: var(--ambient-bg);
+  background-size: 118% 118%, 122% 122%, 100% 100%;
+  background-position: 0% 0%, 100% 100%, 50% 50%;
   filter: blur(28px);
-  transform: scale(1.04);
+  transform: translate3d(-1%, -0.7%, 0) scale(1.06);
+  animation: ambient-gradient-drift 28s ease-in-out infinite alternate;
+  will-change: transform, background-position;
+}
+
+@keyframes ambient-gradient-drift {
+  to {
+    background-position: 16% 10%, 84% 90%, 50% 50%;
+    transform: translate3d(1%, 0.7%, 0) scale(1.09);
+  }
 }
 
 button,
@@ -792,80 +803,6 @@ h2 {
   margin-bottom: 12px;
 }
 
-.leaderboard-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.leaderboard-expand-button {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
-  display: grid;
-  place-items: center;
-  color: var(--text-subtle);
-  background: var(--control-bg);
-  border: 1px solid var(--control-border);
-  border-radius: 6px;
-  transition: color 140ms ease, border-color 140ms ease, transform 140ms ease;
-}
-
-.leaderboard-expand-button:hover {
-  color: var(--primary);
-  border-color: var(--primary);
-  transform: translateY(1px);
-}
-
-.leaderboard-expand-button svg {
-  width: 17px;
-  height: 17px;
-}
-
-.leaderboard-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: color-mix(in srgb, var(--primary-strong) 32%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.leaderboard-modal {
-  width: min(1680px, 96vw);
-  max-height: calc(100vh - 48px);
-  padding: 18px;
-  overflow: hidden;
-  background: var(--raised-bg);
-  border: 1px solid var(--border-strong);
-  border-radius: 8px;
-  box-shadow: 0 28px 80px color-mix(in srgb, var(--primary-strong) 28%, transparent);
-}
-
-.leaderboard-surface-expanded {
-  max-height: calc(100vh - 84px);
-  display: flex;
-  flex-direction: column;
-}
-
-.leaderboard-surface-expanded .leaderboard-toolbar {
-  flex: 0 0 auto;
-}
-
-.leaderboard-surface-expanded .table-shell {
-  min-height: 0;
-  flex: 1 1 auto;
-}
-
-.leaderboard-surface-expanded .table-scroll {
-  height: calc(100vh - 178px);
-  overflow: auto;
-}
-
 .leaderboard-status {
   min-width: 0;
   display: flex;
@@ -967,7 +904,10 @@ table {
 }
 
 .metric-track-searchCalls,
-.metric-track-visitCalls,
+.metric-track-visitCalls {
+  width: 132px;
+}
+
 .metric-track-turns {
   width: 112px;
 }
@@ -1032,7 +972,10 @@ thead th {
 }
 
 .metric-column-searchCalls,
-.metric-column-visitCalls,
+.metric-column-visitCalls {
+  width: 132px;
+}
+
 .metric-column-turns {
   width: 112px;
 }
@@ -1214,6 +1157,11 @@ tbody tr:hover .model-column {
 .metric-column-turns .sort-button,
 .metric-column-linkFollowingVisitCalls .sort-button {
   justify-content: center;
+}
+
+.metric-column-searchCalls .sort-button span,
+.metric-column-visitCalls .sort-button span {
+  white-space: nowrap;
 }
 
 .metric-value-cell > span {
@@ -2461,32 +2409,10 @@ tbody tr:hover .model-column {
     gap: 9px;
   }
 
-  .leaderboard-actions {
-    width: 100%;
-  }
-
   .search-field {
     width: 100%;
     flex: 1 1 auto;
     flex-basis: auto;
-  }
-
-  .leaderboard-modal-backdrop {
-    padding: 8px;
-  }
-
-  .leaderboard-modal {
-    width: calc(100vw - 16px);
-    max-height: calc(100vh - 16px);
-    padding: 11px;
-  }
-
-  .leaderboard-surface-expanded {
-    max-height: calc(100vh - 38px);
-  }
-
-  .leaderboard-surface-expanded .table-scroll {
-    height: calc(100vh - 180px);
   }
 
   .leaderboard-status {
@@ -2638,6 +2564,11 @@ tbody tr:hover .model-column {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+    transform: scale(1.04);
+  }
+
   *,
   *::before,
   *::after {

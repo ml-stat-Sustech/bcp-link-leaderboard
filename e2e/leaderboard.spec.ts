@@ -88,6 +88,10 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     const searchWidth = document
       .querySelector(".metric-column-searchCalls")!
       .getBoundingClientRect().width;
+    const visitWidth = document
+      .querySelector(".metric-column-visitCalls")!
+      .getBoundingClientRect().width;
+    const modelWidth = document.querySelector(".model-column")!.getBoundingClientRect().width;
     const accuracyWidth = document
       .querySelector(".metric-column-accuracy")!
       .getBoundingClientRect().width;
@@ -103,9 +107,21 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       searchFont: getFontSize(".search-field input"),
       valueCells,
       searchWidth,
+      visitWidth,
+      modelWidth,
+      modelWidthToken: getComputedStyle(document.documentElement)
+        .getPropertyValue("--model-width")
+        .trim(),
       accuracyWidth,
       linkWidth,
+      searchHeaderWhiteSpace: getComputedStyle(
+        document.querySelector(".metric-column-searchCalls .sort-button span")!,
+      ).whiteSpace,
+      visitHeaderWhiteSpace: getComputedStyle(
+        document.querySelector(".metric-column-visitCalls .sort-button span")!,
+      ).whiteSpace,
       ambientPosition: getComputedStyle(document.body, "::before").position,
+      ambientAnimation: getComputedStyle(document.body, "::before").animationName,
       flowTransitionDuration: getComputedStyle(
         document.querySelector(".evaluation-flow-scroll")!,
       ).transitionDuration,
@@ -129,9 +145,15 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(Number.parseFloat(visualDetails.axisFont)).toBeGreaterThanOrEqual(13);
   expect(visualDetails.searchFont).toBe("13px");
   expect(visualDetails.valueCells).toEqual(["center", "center", "center", "center"]);
-  expect(visualDetails.searchWidth).toBeLessThan(visualDetails.accuracyWidth);
+  expect(visualDetails.searchWidth).toBeGreaterThanOrEqual(visualDetails.accuracyWidth);
+  expect(visualDetails.visitWidth).toBeGreaterThanOrEqual(visualDetails.accuracyWidth);
+  expect(visualDetails.modelWidthToken).toBe(testInfo.project.name.startsWith("mobile") ? "210px" : "235px");
+  expect(visualDetails.modelWidth).toBeLessThan(270);
+  expect(visualDetails.searchHeaderWhiteSpace).toBe("nowrap");
+  expect(visualDetails.visitHeaderWhiteSpace).toBe("nowrap");
   expect(visualDetails.linkWidth).toBeGreaterThan(visualDetails.accuracyWidth);
   expect(visualDetails.ambientPosition).toBe("fixed");
+  expect(visualDetails.ambientAnimation).toBe("ambient-gradient-drift");
   expect(visualDetails.flowTransitionDuration).toBe("0s");
   expect(visualDetails.flowArrowWidth).toBe("8px");
   expect(visualDetails.principleParentBorder).toBe("0px");
@@ -206,6 +228,16 @@ test("keeps compact navigation and menus inside narrow viewports", async ({ page
   }
 });
 
+test("stops the ambient gradient when reduced motion is requested", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+
+  const animationName = await page.evaluate(
+    () => getComputedStyle(document.body, "::before").animationName,
+  );
+  expect(animationName).toBe("none");
+});
+
 test("supports search, sorting, metric selection, and chart tooltips", async ({ page }, testInfo) => {
   await page.goto("/");
 
@@ -255,15 +287,8 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   await page.keyboard.press("Escape");
   await expect(metricCard).toBeFocused();
 
-  const expandButton = page.getByRole("button", { name: "Expand leaderboard" });
-  await expandButton.click();
-  const expandedDialog = page.getByRole("dialog", { name: "Expanded BCP-Link leaderboard" });
-  await expect(expandedDialog).toBeVisible();
-  await expect(
-    expandedDialog.getByRole("button", { name: "Close expanded leaderboard" }),
-  ).toBeFocused();
-  await page.keyboard.press("Escape");
-  await expect(expandButton).toBeFocused();
+  await expect(page.getByRole("button", { name: "Expand leaderboard" })).toHaveCount(0);
+  await expect(page.getByRole("dialog", { name: "Expanded BCP-Link leaderboard" })).toHaveCount(0);
 
   const modelTrigger = page.getByRole("button", { name: "Choose comparison models" });
   await modelTrigger.click();

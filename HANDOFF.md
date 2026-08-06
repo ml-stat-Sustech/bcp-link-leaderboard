@@ -96,10 +96,12 @@ The current UI upgrade is complete.
 - Rose Sage was removed. The former Sage Gold option is now Daylight Green, based on the supplied
   daytime reference; its persisted key remains `sage-gold` for compatibility.
 - Every theme supplies a soft color-field background through `--ambient-bg`. The blurred background
-  is rendered by a fixed viewport pseudo-element, so only page content moves during scrolling.
+  is rendered by a fixed viewport pseudo-element with a slow, subtle gradient drift. Only the color
+  field moves, and `prefers-reduced-motion` disables the animation.
 - The introduction includes compact links to the rankings and evaluation protocol. The leaderboard
-  has an accessible expanded dialog with Escape/outside-click dismissal, focus restoration, focus
-  containment, and body scroll locking. The footer includes a right-aligned Back to top action.
+  keeps search and internal table scrolling without a separate expanded dialog. Its Model column is
+  narrower on desktop, while Search Calls and Visit Calls stay on one line. The footer includes a
+  right-aligned Back to top action.
 - The sticky header, theme picker, palette swatches, segmented language control, focus/hover states, and 320px+ responsive layouts are styled.
 - Hard-coded interface colors were replaced with semantic variables; obsolete language-toggle and scoring-block rules were removed.
 - Recharts series have stable classes so CSS variables resolve correctly in SVG, BCP-Link remains
@@ -108,7 +110,7 @@ The current UI upgrade is complete.
   Visit Calls, and Turns; four decimals for Link-following Visit Calls.
 - Component tests cover all themes, persistence, picker dismissal, exact section order, fixed metric
   precision, the all-model comparison picker, select-all/clear behavior, Chinese UI with English
-  metrics, state preservation, leaderboard expansion, and Metric Guide preview/pinning.
+  metrics, state preservation, leaderboard search, and Metric Guide preview/pinning.
 - Playwright covers both desktop and Pixel 7 viewports, page overflow, one/multiple comparison-model
   selection, shared-chart bar counts, BCP-Link/BCP geometry, tooltip behavior, theme-driven chart
   fills, and all five palette screenshots.
@@ -133,7 +135,7 @@ Commands run from `/data/hs_dev/bcp-link-leaderboard`:
 npm run typecheck  PASS
 npm run build      PASS
 npm test           PASS: 26 passed
-npm run test:e2e   PASS: 8 passed across desktop and mobile Chromium
+npm run test:e2e   PASS: 10 passed across desktop and mobile Chromium
 ```
 
 Deployment verification completed on 2026-08-06:

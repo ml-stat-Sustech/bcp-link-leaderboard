@@ -210,24 +210,16 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector(".percentage-data-bar")).toHaveStyle("--metric-fill: 60%");
   });
 
-  it("expands the leaderboard while preserving controls and restores focus on close", async () => {
+  it("keeps the leaderboard focused on search without an expanded view", async () => {
     const user = userEvent.setup();
     render(<LeaderboardApp csvText={TEST_CSV} />);
 
     const search = screen.getByRole("searchbox", { name: "Search models" });
     await user.type(search, "alpha");
-    const expandButton = screen.getByRole("button", { name: "Expand leaderboard" });
-    await user.click(expandButton);
-
-    const dialog = screen.getByRole("dialog", { name: "Expanded BCP-Link leaderboard" });
-    expect(dialog).toBeVisible();
-    expect(within(dialog).getByRole("searchbox", { name: "Search models" })).toHaveValue("alpha");
-    expect(within(dialog).getByRole("button", { name: "Close expanded leaderboard" })).toHaveFocus();
-
-    await user.keyboard("{Escape}");
+    expect(search).toHaveValue("alpha");
+    expect(screen.getByTestId("model-name")).toHaveTextContent("Alpha");
+    expect(screen.queryByRole("button", { name: "Expand leaderboard" })).not.toBeInTheDocument();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    expect(screen.getByRole("searchbox", { name: "Search models" })).toHaveValue("alpha");
-    expect(screen.getByRole("button", { name: "Expand leaderboard" })).toHaveFocus();
   });
 
   it("previews and pins metric details for selectable text", async () => {

@@ -81,9 +81,6 @@ export interface Translation {
     sortStatus: (metric: string, direction: "asc" | "desc") => string;
     noMatches: (query: string) => string;
     showing: (visible: number, total: number) => string;
-    expandTable: string;
-    closeExpandedTable: string;
-    expandedTitle: string;
   };
   comparison: {
     kicker: string;
@@ -212,9 +209,6 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         `Sorted by ${metric}, ${direction === "asc" ? "ascending" : "descending"}`,
       noMatches: (query) => `No models match “${query}”.`,
       showing: (visible, total) => `Showing ${visible} of ${total} models`,
-      expandTable: "Expand leaderboard",
-      closeExpandedTable: "Close expanded leaderboard",
-      expandedTitle: "Expanded BCP-Link leaderboard",
     },
     comparison: {
       kicker: "Benchmark comparison",
@@ -422,9 +416,6 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         `当前按 ${metric} ${direction === "asc" ? "升序" : "降序"}排列`,
       noMatches: (query) => `没有与“${query}”匹配的模型。`,
       showing: (visible, total) => `正在显示 ${visible} / ${total} 个模型`,
-      expandTable: "放大排行榜",
-      closeExpandedTable: "关闭放大排行榜",
-      expandedTitle: "BCP-Link 排行榜放大视图",
     },
     comparison: {
       kicker: "基准对比",

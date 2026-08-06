@@ -13,15 +13,12 @@ import {
   Info,
   Link2,
   ListFilter,
-  Maximize2,
   Menu,
-  Minimize2,
   Palette,
   Pin,
   Search,
   X,
 } from "lucide-react";
-import { createPortal } from "react-dom";
 import {
   Bar,
   BarChart,
@@ -347,10 +344,6 @@ function LeaderboardTable({
 }) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortState>({ key: "accuracy", direction: "desc" });
-  const [expanded, setExpanded] = useState(false);
-  const expandTriggerRef = useRef<HTMLButtonElement>(null);
-  const dialogCloseRef = useRef<HTMLButtonElement>(null);
-  const dialogRef = useRef<HTMLDivElement>(null);
   const ranks = useMemo(() => getAccuracyRanks(models), [models]);
 
   const visibleModels = useMemo(() => {
@@ -367,47 +360,8 @@ function LeaderboardTable({
     }));
   };
 
-  useEffect(() => {
-    if (!expanded) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const focusTimer = window.setTimeout(() => dialogCloseRef.current?.focus(), 0);
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setExpanded(false);
-        return;
-      }
-      if (event.key !== "Tab") return;
-
-      const focusable = Array.from(
-        dialogRef.current?.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex="0"]',
-        ) ?? [],
-      );
-      if (focusable.length === 0) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.clearTimeout(focusTimer);
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", handleKeyDown);
-      window.setTimeout(() => expandTriggerRef.current?.focus(), 0);
-    };
-  }, [expanded]);
-
-  const renderLeaderboardSurface = (expandedView: boolean) => (
-    <div className={expandedView ? "leaderboard-surface leaderboard-surface-expanded" : "leaderboard-surface"}>
+  const renderLeaderboardSurface = () => (
+    <div className="leaderboard-surface">
       <div className="leaderboard-toolbar">
         <div className="leaderboard-status" aria-live="polite">
           <strong>{copy.leaderboard.showing(visibleModels.length, models.length)}</strong>
@@ -415,32 +369,16 @@ function LeaderboardTable({
             {copy.leaderboard.sortStatus(copy.metrics[sort.key].label, sort.direction)}
           </span>
         </div>
-        <div className="leaderboard-actions">
-          <label className="search-field">
-            <Search aria-hidden="true" />
-            <span className="sr-only">{copy.leaderboard.searchLabel}</span>
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={copy.leaderboard.searchPlaceholder}
-            />
-          </label>
-          <button
-            ref={expandedView ? dialogCloseRef : expandTriggerRef}
-            className="leaderboard-expand-button"
-            type="button"
-            aria-label={
-              expandedView ? copy.leaderboard.closeExpandedTable : copy.leaderboard.expandTable
-            }
-            title={
-              expandedView ? copy.leaderboard.closeExpandedTable : copy.leaderboard.expandTable
-            }
-            onClick={() => setExpanded(!expandedView)}
-          >
-            {expandedView ? <Minimize2 aria-hidden="true" /> : <Maximize2 aria-hidden="true" />}
-          </button>
-        </div>
+        <label className="search-field">
+          <Search aria-hidden="true" />
+          <span className="sr-only">{copy.leaderboard.searchLabel}</span>
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={copy.leaderboard.searchPlaceholder}
+          />
+        </label>
       </div>
 
       <div className="table-shell">
@@ -558,30 +496,7 @@ function LeaderboardTable({
           <p className="section-note">{copy.leaderboard.note}</p>
         </div>
 
-        <div aria-hidden={expanded ? true : undefined}>{renderLeaderboardSurface(false)}</div>
-        {expanded &&
-          createPortal(
-            <div
-              className="leaderboard-modal-backdrop"
-              onMouseDown={(event) => {
-                if (event.target === event.currentTarget) setExpanded(false);
-              }}
-            >
-              <div
-                ref={dialogRef}
-                className="leaderboard-modal"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="expanded-leaderboard-title"
-              >
-                <h2 id="expanded-leaderboard-title" className="sr-only">
-                  {copy.leaderboard.expandedTitle}
-                </h2>
-                {renderLeaderboardSurface(true)}
-              </div>
-            </div>,
-            document.body,
-          )}
+        {renderLeaderboardSurface()}
       </div>
     </section>
   );
