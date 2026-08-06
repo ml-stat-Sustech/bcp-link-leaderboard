@@ -40,8 +40,8 @@ export interface Translation {
     selectedLabel: (theme: string) => string;
   };
   intro: {
-    kicker: string;
     heading: string;
+    subtitle: string;
     bodyOneBeforeSearch: string;
     bodyOneBetweenTools: string;
     bodyOneAfterVisit: string;
@@ -126,8 +126,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       selectedLabel: (theme) => `${theme} selected`,
     },
     intro: {
-      kicker: "About BCP-Link",
-      heading: "Evaluating whether research agents can find and follow useful links",
+      heading: "BCP-Link",
+      subtitle: "Evaluating whether search agents can find and follow useful links.",
       bodyOneBeforeSearch:
         "BCP-Link is a link-aware research agent benchmark built on BrowseComp-Plus. It uses a fixed corpus with standardized ",
       bodyOneBetweenTools: " and ",
@@ -267,8 +267,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       selectedLabel: (theme) => `已选择${theme}`,
     },
     intro: {
-      kicker: "关于 BCP-Link",
-      heading: "评测研究智能体发现并跟随有效链接的能力",
+      heading: "BCP-Link",
+      subtitle: "Evaluating whether search agents can find and follow useful links.",
       bodyOneBeforeSearch:
         "BCP-Link 是基于 BrowseComp-Plus 构建的链接感知研究智能体基准。它使用固定语料，以及标准化的 ",
       bodyOneBetweenTools: " 和 ",

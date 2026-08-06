@@ -31,7 +31,10 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("link", { name: "Leaderboard" })).toHaveAttribute("href", "#leaderboard");
     expect(screen.getByRole("link", { name: "Evaluation Rules" })).toHaveAttribute("href", "#rules");
     expect(screen.getByRole("link", { name: "Metric Guide" })).toHaveAttribute("href", "#metrics");
-    expect(screen.getByRole("heading", { name: /Evaluating whether research agents/ })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "BCP-Link", level: 2 })).toBeVisible();
+    expect(
+      screen.getByText("Evaluating whether search agents can find and follow useful links."),
+    ).toBeVisible();
     expect(screen.getByRole("heading", { name: "One environment, the same tools" })).toBeVisible();
     expect(screen.getByRole("heading", { name: "How the leaderboard is measured" })).toBeVisible();
     expect(screen.getByText(/Gold evidence may not appear/)).toBeVisible();

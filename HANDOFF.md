@@ -50,6 +50,8 @@ Last updated: 2026-08-06
 
 ### Page Structure And Content
 
+- The About section uses `BCP-Link` as its heading, a one-line English benchmark subtitle, and one
+  framed single-column description panel in both languages.
 - The rendered section order is now:
   1. About BCP-Link
   2. Leaderboard

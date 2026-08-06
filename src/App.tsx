@@ -630,8 +630,8 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
       ) : (
         <main className="page-main container">
           <section id="about" className="benchmark-intro" aria-labelledby="about-heading">
-            <p className="section-kicker">{copy.intro.kicker}</p>
             <h2 id="about-heading">{copy.intro.heading}</h2>
+            <p className="intro-subtitle">{copy.intro.subtitle}</p>
             <div className="intro-body">
               <p>
                 {copy.intro.bodyOneBeforeSearch}<code>search</code>
