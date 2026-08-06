@@ -22,7 +22,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -772,29 +771,41 @@ function ComparisonChart({
 
         <div className="comparison-workspace">
           <div className="comparison-controls">
-            <ComparisonModelPicker
-              availableModels={availableModelNames}
-              selectedModels={selectedModels}
-              copy={copy.comparison}
-              onToggle={handleModelToggle}
-              onToggleAll={handleAllModelsToggle}
-            />
-            <div className="select-group">
-              <label htmlFor={selectId}>{copy.comparison.metricLabel}</label>
-              <div className="select-wrap">
-                <select
-                  id={selectId}
-                  aria-label={copy.comparison.selectLabel}
-                  value={selectedMetric}
-                  onChange={(event) => setSelectedMetric(event.target.value as MetricKey)}
-                >
-                  {METRICS.map((option) => (
-                    <option key={option.key} value={option.key}>
-                      {copy.metrics[option.key].label}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown aria-hidden="true" />
+            <div className="comparison-series-legend" aria-hidden="true">
+              <span>
+                <i className="series-swatch series-swatch-bcp-link" />
+                BCP-Link
+              </span>
+              <span>
+                <i className="series-swatch series-swatch-bcp" />
+                BCP
+              </span>
+            </div>
+            <div className="comparison-control-fields">
+              <ComparisonModelPicker
+                availableModels={availableModelNames}
+                selectedModels={selectedModels}
+                copy={copy.comparison}
+                onToggle={handleModelToggle}
+                onToggleAll={handleAllModelsToggle}
+              />
+              <div className="select-group">
+                <label htmlFor={selectId}>{copy.comparison.metricLabel}</label>
+                <div className="select-wrap">
+                  <select
+                    id={selectId}
+                    aria-label={copy.comparison.selectLabel}
+                    value={selectedMetric}
+                    onChange={(event) => setSelectedMetric(event.target.value as MetricKey)}
+                  >
+                    {METRICS.map((option) => (
+                      <option key={option.key} value={option.key}>
+                        {copy.metrics[option.key].label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown aria-hidden="true" />
+                </div>
               </div>
             </div>
           </div>
@@ -811,7 +822,7 @@ function ComparisonChart({
                   <BarChart
                     data={chartData}
                     barGap={8}
-                    barCategoryGap="38%"
+                    barCategoryGap="30%"
                     margin={{ top: 18, right: 24, bottom: 54, left: 10 }}
                   >
                     <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
@@ -844,13 +855,6 @@ function ComparisonChart({
                           copy={copy}
                         />
                       }
-                    />
-                    <Legend
-                      verticalAlign="top"
-                      align="right"
-                      height={36}
-                      iconType="square"
-                      wrapperStyle={{ color: "var(--text-subtle)", fontSize: 13 }}
                     />
                     <Bar
                       className="chart-series-bcp-link"

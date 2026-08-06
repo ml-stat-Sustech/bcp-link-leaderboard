@@ -1059,16 +1059,68 @@ tbody tr:hover .model-column {
 .comparison-controls {
   min-height: 76px;
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
   padding: 14px 16px;
   background: color-mix(in srgb, var(--surface-soft) 72%, transparent);
   border-bottom: 1px solid var(--border);
 }
 
+.comparison-series-legend,
+.comparison-control-fields {
+  display: flex;
+  align-items: center;
+}
+
+.comparison-series-legend {
+  flex: 0 0 auto;
+  gap: 18px;
+  color: var(--text-subtle);
+  font-size: 13px;
+}
+
+.comparison-series-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.series-swatch {
+  width: 13px;
+  height: 13px;
+  display: block;
+  border-radius: 2px;
+}
+
+.series-swatch-bcp-link {
+  background: var(--chart-bcp-link);
+}
+
+.series-swatch-bcp {
+  background: var(--chart-bcp);
+}
+
+.comparison-control-fields {
+  min-width: 0;
+  justify-content: flex-end;
+  gap: 18px;
+}
+
 .select-group,
 .comparison-model-picker {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.comparison-model-picker {
+  width: 360px;
+  flex: 0 0 360px;
+}
+
+.select-group {
   width: 260px;
   flex: 0 0 260px;
 }
@@ -1076,10 +1128,11 @@ tbody tr:hover .model-column {
 .select-group > label,
 .comparison-control-label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 0;
   color: var(--text-subtle);
   font-size: 12px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .select-wrap {
@@ -1219,14 +1272,6 @@ tbody tr:hover .model-column {
 .chart-series-bcp-link .recharts-bar-rectangle,
 .chart-series-bcp-link.recharts-bar-rectangle {
   fill: var(--chart-bcp-link);
-}
-
-.recharts-legend-item:first-child .recharts-legend-icon {
-  fill: var(--chart-bcp-link);
-}
-
-.recharts-legend-item:last-child .recharts-legend-icon {
-  fill: var(--chart-bcp);
 }
 
 .comparison-axis-label text {
@@ -1839,6 +1884,16 @@ tbody tr:hover .model-column {
     font-size: 18px;
   }
 
+  .comparison-controls {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .comparison-control-fields {
+    width: 100%;
+  }
+
   .rule-principles {
     gap: 22px;
   }
@@ -2000,8 +2055,13 @@ tbody tr:hover .model-column {
   }
 
   .comparison-controls {
+    gap: 12px;
+  }
+
+  .comparison-control-fields {
     align-items: stretch;
     flex-direction: column;
+    gap: 10px;
   }
 
   .select-group,
