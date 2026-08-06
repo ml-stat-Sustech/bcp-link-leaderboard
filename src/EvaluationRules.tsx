@@ -49,47 +49,53 @@ export function EvaluationRules({ copy }: { copy: Translation }) {
   const principleIcons = [<Database />, <GlobeLock />, <Route />];
 
   return (
-    <section id="rules" className="content-section rules-section" aria-labelledby="rules-heading">
-      <div className="section-toolbar">
-        <div>
+    <section
+      id="rules"
+      className="page-section rules-section"
+      aria-labelledby="rules-heading"
+    >
+      <div className="container section-inner">
+        <div className="section-heading">
           <p className="section-kicker">{copy.rules.kicker}</p>
           <h2 id="rules-heading">{copy.rules.heading}</h2>
           <p className="section-note">{copy.rules.note}</p>
         </div>
-      </div>
 
-      <div className="rule-principles">
-        {copy.rules.principles.map((principle, index) => (
-          <article key={principle.title}>
-            <span aria-hidden="true">{principleIcons[index]}</span>
-            <h3>{principle.title}</h3>
-            <p>{principle.body}</p>
-          </article>
-        ))}
-      </div>
+        <div className="rule-principles">
+          {copy.rules.principles.map((principle, index) => (
+            <article key={principle.title}>
+              <span className="principle-icon" aria-hidden="true">{principleIcons[index]}</span>
+              <div>
+                <h3>{principle.title}</h3>
+                <p>{principle.body}</p>
+              </div>
+            </article>
+          ))}
+        </div>
 
-      <div className="tool-grid">
-        <ToolPanel
-          icon={<Search />}
-          signature="search(query)"
-          summary={copy.rules.search.summary}
-          input={copy.rules.search.input}
-          retrieval={copy.rules.search.retrieval}
-          response={copy.rules.search.response}
-          copy={copy}
-        />
-        <ToolPanel
-          icon={<FileText />}
-          signature="visit(document_id, goal)"
-          summary={copy.rules.visit.summary}
-          input={copy.rules.visit.input}
-          retrieval={copy.rules.visit.retrieval}
-          response={copy.rules.visit.response}
-          copy={copy}
-        />
-      </div>
+        <div className="tool-grid">
+          <ToolPanel
+            icon={<Search />}
+            signature="search(query)"
+            summary={copy.rules.search.summary}
+            input={copy.rules.search.input}
+            retrieval={copy.rules.search.retrieval}
+            response={copy.rules.search.response}
+            copy={copy}
+          />
+          <ToolPanel
+            icon={<FileText />}
+            signature="visit(document_id, goal)"
+            summary={copy.rules.visit.summary}
+            input={copy.rules.visit.input}
+            retrieval={copy.rules.visit.retrieval}
+            response={copy.rules.visit.response}
+            copy={copy}
+          />
+        </div>
 
-      <p className="turn-limit">{copy.rules.turnLimit}</p>
+        <p className="turn-limit">{copy.rules.turnLimit}</p>
+      </div>
     </section>
   );
 }

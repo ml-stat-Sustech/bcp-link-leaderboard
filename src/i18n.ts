@@ -25,8 +25,12 @@ export interface Translation {
   nav: {
     home: string;
     leaderboard: string;
+    comparison: string;
     rules: string;
     metrics: string;
+    label: string;
+    openMenu: string;
+    closeMenu: string;
   };
   language: {
     groupLabel: string;
@@ -51,6 +55,7 @@ export interface Translation {
     label: string;
     models: (count: number) => string;
     comparisons: (count: number) => string;
+    metrics: (count: number) => string;
   };
   leaderboard: {
     kicker: string;
@@ -62,6 +67,7 @@ export interface Translation {
     rank: string;
     model: string;
     sortBy: (metric: string) => string;
+    sortStatus: (metric: string, direction: "asc" | "desc") => string;
     noMatches: (query: string) => string;
     showing: (visible: number, total: number) => string;
   };
@@ -79,12 +85,18 @@ export interface Translation {
     detailHeading: string;
     emptyHeading: (metric: string) => string;
     emptyBody: string;
+    deltaLabel: string;
+    percentagePoints: string;
   };
   metricGuide: {
     kicker: string;
     heading: string;
     note: string;
-    categories: string;
+    groups: {
+      answerQuality: string;
+      toolBehavior: string;
+      linkFollowing: string;
+    };
     percentage: string;
     averageCount: string;
     footnote: string;
@@ -105,6 +117,14 @@ export interface Translation {
     heading: string;
     unknown: string;
   };
+  footer: {
+    description: string;
+    navigationLabel: string;
+    leaderboardLabel: string;
+    comparisonLabel: string;
+    rulesLabel: string;
+    sourcePrefix: string;
+  };
   metrics: Record<MetricKey, MetricText>;
 }
 
@@ -116,8 +136,12 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     nav: {
       home: "BCP-Link home",
       leaderboard: "Leaderboard",
+      comparison: "Comparison",
       rules: "Evaluation Rules",
       metrics: "Metric Guide",
+      label: "Primary navigation",
+      openMenu: "Open navigation",
+      closeMenu: "Close navigation",
     },
     language: {
       groupLabel: "Language",
@@ -143,7 +167,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     stats: {
       label: "Dataset summary",
       models: (count) => `${count} models`,
-      comparisons: (count) => `${count} full comparisons`,
+      comparisons: (count) => `${count} paired runs`,
+      metrics: (count) => `${count} metrics`,
     },
     leaderboard: {
       kicker: "Main results",
@@ -155,6 +180,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       rank: "Rank",
       model: "Model",
       sortBy: (metric) => `Sort by ${metric}`,
+      sortStatus: (metric, direction) =>
+        `Sorted by ${metric}, ${direction === "asc" ? "ascending" : "descending"}`,
       noMatches: (query) => `No models match “${query}”.`,
       showing: (visible, total) => `Showing ${visible} of ${total} models`,
     },
@@ -173,13 +200,18 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       detailHeading: "Per-model detail",
       emptyHeading: (metric) => `No comparable ${metric} data yet`,
       emptyBody: "Add both BCP and BCP-Link values to the results CSV to populate this chart.",
+      deltaLabel: "Difference",
+      percentagePoints: "pp",
     },
     metricGuide: {
       kicker: "Metric guide",
       heading: "How the leaderboard is measured",
       note: "All values are averages across the benchmark evaluation set.",
-      categories:
-        "Answer quality records Accuracy and Recall. Tool behavior records Search Calls, Visit Calls, and Turns. Link following records Link-following Visit Calls.",
+      groups: {
+        answerQuality: "Answer quality",
+        toolBehavior: "Tool behavior",
+        linkFollowing: "Link following",
+      },
       percentage: "Percentage",
       averageCount: "Average count",
       footnote:
@@ -224,6 +256,14 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       heading: "Results could not be loaded",
       unknown: "An unknown data error occurred.",
     },
+    footer: {
+      description: "A link-aware benchmark for deep-research agents.",
+      navigationLabel: "Footer navigation",
+      leaderboardLabel: "View leaderboard",
+      comparisonLabel: "View benchmark comparison",
+      rulesLabel: "View evaluation rules",
+      sourcePrefix: "Built on",
+    },
     metrics: {
       accuracy: {
         label: "Accuracy",
@@ -262,8 +302,12 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     nav: {
       home: "返回 BCP-Link 首页",
       leaderboard: "排行榜",
+      comparison: "基准对比",
       rules: "评测规则",
       metrics: "指标说明",
+      label: "主导航",
+      openMenu: "打开导航",
+      closeMenu: "关闭导航",
     },
     language: {
       groupLabel: "语言",
@@ -289,7 +333,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     stats: {
       label: "数据概览",
       models: (count) => `${count} 个模型`,
-      comparisons: (count) => `${count} 个完整对比`,
+      comparisons: (count) => `${count} 个配对结果`,
+      metrics: (count) => `${count} 个指标`,
     },
     leaderboard: {
       kicker: "主要结果",
@@ -301,6 +346,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       rank: "Rank",
       model: "Model",
       sortBy: (metric) => `按 ${metric} 排序`,
+      sortStatus: (metric, direction) =>
+        `当前按 ${metric} ${direction === "asc" ? "升序" : "降序"}排列`,
       noMatches: (query) => `没有与“${query}”匹配的模型。`,
       showing: (visible, total) => `正在显示 ${visible} / ${total} 个模型`,
     },
@@ -318,13 +365,18 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       detailHeading: "单模型详情",
       emptyHeading: (metric) => `暂无可比较的${metric}数据`,
       emptyBody: "请在结果 CSV 中同时添加 BCP 和 BCP-Link 数值。",
+      deltaLabel: "差值",
+      percentagePoints: "百分点",
     },
     metricGuide: {
       kicker: "指标说明",
       heading: "排行榜指标如何计算",
       note: "所有数值均为基准评测集上的平均结果。",
-      categories:
-        "答案质量记录 Accuracy 和 Recall；工具行为记录 Search Calls、Visit Calls 和 Turns；链接跟随记录 Link-following Visit Calls。",
+      groups: {
+        answerQuality: "答案质量",
+        toolBehavior: "工具行为",
+        linkFollowing: "链接跟随",
+      },
       percentage: "百分比",
       averageCount: "平均次数",
       footnote:
@@ -368,6 +420,14 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     errors: {
       heading: "无法加载评测结果",
       unknown: "发生未知数据错误。",
+    },
+    footer: {
+      description: "面向深度研究智能体的链接感知评测基准。",
+      navigationLabel: "页尾导航",
+      leaderboardLabel: "查看排行榜",
+      comparisonLabel: "查看基准对比",
+      rulesLabel: "查看评测规则",
+      sourcePrefix: "基于",
     },
     metrics: {
       accuracy: {

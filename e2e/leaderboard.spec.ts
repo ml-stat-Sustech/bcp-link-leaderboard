@@ -1,16 +1,25 @@
 import { expect, test } from "@playwright/test";
 
+async function openPrimaryNavigationIfNeeded(page: import("@playwright/test").Page) {
+  const trigger = page.getByRole("button", { name: /Open navigation|打开导航/ });
+  if (await trigger.isVisible()) await trigger.click();
+}
+
 test("renders real leaderboard data without page-level overflow", async ({ page }, testInfo) => {
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { name: "BCP-Link Leaderboard", exact: true, level: 1 }),
+    page.getByRole("heading", { name: "BCP-Link", exact: true, level: 1 }),
   ).toBeVisible();
   await expect(page.getByTestId("model-name")).toHaveCount(9);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();
   await expect(page.getByRole("heading", { name: "One environment, the same tools" })).toBeVisible();
   await expect(page.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
+  await expect(page.locator(".rank-medal")).toHaveCount(3);
+  await expect(page.locator(".percentage-data-bar")).toHaveCount(18);
+  await expect(page.locator("thead .metric-group-answerQuality")).toHaveText("Answer quality");
+  await expect(page.locator("thead .metric-group-toolBehavior")).toHaveText("Tool behavior");
   const comparisonChart = page.getByTestId("comparison-chart");
   await expect(comparisonChart).toHaveCount(1);
   const modelTrigger = page.getByRole("button", { name: "Choose comparison models" });
@@ -71,14 +80,62 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   });
 });
 
+test("keeps compact navigation and menus inside narrow viewports", async ({ page }) => {
+  for (const viewport of [
+    { width: 768, height: 1024 },
+    { width: 320, height: 800 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+
+    const menuTrigger = page.getByRole("button", { name: "Open navigation" });
+    await expect(menuTrigger).toBeVisible();
+    await menuTrigger.click();
+    const primaryNavigation = page.getByRole("navigation", { name: "Primary navigation" });
+    await expect(primaryNavigation).toBeVisible();
+    const navigationBox = await primaryNavigation.boundingBox();
+    expect(navigationBox).not.toBeNull();
+    expect(navigationBox!.x).toBeGreaterThanOrEqual(0);
+    expect(navigationBox!.x + navigationBox!.width).toBeLessThanOrEqual(viewport.width);
+    await page.keyboard.press("Escape");
+    await expect(menuTrigger).toBeFocused();
+
+    const themeTrigger = page.getByRole("button", { name: "Choose color theme" });
+    await themeTrigger.click();
+    const themeMenu = page.getByRole("menu", { name: "Color themes" });
+    const themeBox = await themeMenu.boundingBox();
+    expect(themeBox).not.toBeNull();
+    expect(themeBox!.x).toBeGreaterThanOrEqual(0);
+    expect(themeBox!.x + themeBox!.width).toBeLessThanOrEqual(viewport.width);
+    await page.keyboard.press("Escape");
+
+    const pageWidths = await page.evaluate(() => ({
+      client: document.documentElement.clientWidth,
+      scroll: document.documentElement.scrollWidth,
+      tableClient: document.querySelector(".table-scroll")?.clientWidth ?? 0,
+      tableScroll: document.querySelector(".table-scroll")?.scrollWidth ?? 0,
+    }));
+    expect(pageWidths.scroll).toBeLessThanOrEqual(pageWidths.client + 1);
+    expect(pageWidths.tableScroll).toBeGreaterThan(pageWidths.tableClient);
+  }
+});
+
 test("supports search, sorting, metric selection, and chart tooltips", async ({ page }, testInfo) => {
   await page.goto("/");
 
-  await page.getByRole("link", { name: "Evaluation Rules" }).click();
+  await openPrimaryNavigationIfNeeded(page);
+  await page
+    .getByRole("navigation", { name: "Primary navigation" })
+    .getByRole("link", { name: "Evaluation Rules", exact: true })
+    .click();
   await expect(page).toHaveURL(/#rules$/);
   await expect(page.getByText("Each run is capped at 50 agent turns.")).toBeVisible();
 
-  await page.getByRole("link", { name: "Metric Guide" }).click();
+  await openPrimaryNavigationIfNeeded(page);
+  await page
+    .getByRole("navigation", { name: "Primary navigation" })
+    .getByRole("link", { name: "Metric Guide", exact: true })
+    .click();
   await expect(page).toHaveURL(/#metrics$/);
   const navigationBottom = await page.locator(".site-header").evaluate((element) =>
     element.getBoundingClientRect().bottom,
@@ -100,6 +157,7 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   const comparisonChart = page.getByTestId("comparison-chart");
   await comparisonChart.locator(".recharts-bar-rectangle").first().hover();
   await expect(comparisonChart.locator(".recharts-tooltip-wrapper")).toBeVisible();
+  await expect(comparisonChart.locator(".comparison-tooltip")).toContainText("Difference");
 
   const modelTrigger = page.getByRole("button", { name: "Choose comparison models" });
   await modelTrigger.click();
@@ -120,7 +178,12 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   await page.getByRole("button", { name: "Choose color theme" }).click();
   await page.getByRole("menuitemradio", { name: "Teal Amber" }).click();
   await page.getByRole("button", { name: "使用中文" }).click();
-  await expect(page.getByRole("link", { name: "排行榜" })).toBeVisible();
+  await openPrimaryNavigationIfNeeded(page);
+  await expect(
+    page
+      .getByRole("navigation", { name: "主导航" })
+      .getByRole("link", { name: "排行榜", exact: true }),
+  ).toBeVisible();
   await expect(page.getByRole("searchbox", { name: "搜索模型" })).toHaveValue("WebExplorer");
   await expect(page.getByRole("combobox", { name: "选择对比指标" })).toHaveValue("recall");
   await expect(page.getByRole("button", { name: "选择对比模型" })).toHaveText("已选择 2 个模型");

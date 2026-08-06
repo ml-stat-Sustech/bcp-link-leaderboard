@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from "react";
 import {
   AlertTriangle,
   ArrowDown,
@@ -7,13 +7,16 @@ import {
   BarChart3,
   Check,
   ChevronDown,
-  Database,
-  GitCompareArrows,
+  ExternalLink,
   Info,
   Link2,
   ListFilter,
+  Menu,
   Palette,
   Search,
+  Target,
+  Wrench,
+  X,
 } from "lucide-react";
 import {
   Bar,
@@ -35,7 +38,12 @@ import {
   type Language,
   type Translation,
 } from "./i18n";
-import { formatMetricValue, getComparisonValuesDomain, METRICS } from "./metrics";
+import {
+  formatMetricValue,
+  getComparisonValuesDomain,
+  METRIC_BY_KEY,
+  METRICS,
+} from "./metrics";
 import {
   resolveInitialTheme,
   THEMES,
@@ -61,6 +69,28 @@ const DEFAULT_COMPARISON_MODEL_NAMES = [
   "WebExplorer-8B",
   "WebSailor-32B",
 ] as const;
+
+const METRIC_GROUPS = [
+  {
+    key: "answerQuality",
+    metrics: ["accuracy", "recall"],
+  },
+  {
+    key: "toolBehavior",
+    metrics: ["searchCalls", "visitCalls", "turns"],
+  },
+  {
+    key: "linkFollowing",
+    metrics: ["linkFollowingVisitCalls"],
+  },
+] as const satisfies readonly {
+  key: keyof Translation["metricGuide"]["groups"];
+  metrics: readonly MetricKey[];
+}[];
+
+const LEADERBOARD_METRICS = METRIC_GROUPS.flatMap((group) =>
+  group.metrics.map((metricKey) => METRIC_BY_KEY[metricKey]),
+);
 
 function ThemePicker({
   theme,
@@ -186,6 +216,68 @@ function LanguageSwitch({
   );
 }
 
+function PrimaryNavigation({ copy }: { copy: Translation }) {
+  const [open, setOpen] = useState(false);
+  const menuId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      triggerRef.current?.focus();
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
+  const links = [
+    ["#leaderboard", copy.nav.leaderboard],
+    ["#comparison", copy.nav.comparison],
+    ["#rules", copy.nav.rules],
+    ["#metrics", copy.nav.metrics],
+  ] as const;
+
+  return (
+    <div className="navigation-root" ref={rootRef}>
+      <button
+        ref={triggerRef}
+        className="mobile-menu-trigger"
+        type="button"
+        aria-label={open ? copy.nav.closeMenu : copy.nav.openMenu}
+        aria-expanded={open}
+        aria-controls={menuId}
+        onClick={() => setOpen((current) => !current)}
+      >
+        {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+      </button>
+      <nav
+        id={menuId}
+        className="primary-nav"
+        data-open={open ? "true" : "false"}
+        aria-label={copy.nav.label}
+      >
+        {links.map(([href, label]) => (
+          <a key={href} href={href} onClick={() => setOpen(false)}>
+            {label}
+          </a>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
 function compareModels(a: ModelResults, b: ModelResults, sort: SortState): number {
   const aValue = a.bcpLink?.[sort.key] ?? null;
   const bValue = b.bcpLink?.[sort.key] ?? null;
@@ -261,74 +353,130 @@ function LeaderboardTable({
   };
 
   return (
-    <section id="leaderboard" className="content-section" aria-labelledby="leaderboard-heading">
-      <div className="section-toolbar">
-        <div>
+    <section
+      id="leaderboard"
+      className="page-section leaderboard-section"
+      aria-labelledby="leaderboard-heading"
+    >
+      <div className="container section-inner">
+        <div className="section-heading">
           <p className="section-kicker">{copy.leaderboard.kicker}</p>
           <h2 id="leaderboard-heading">{copy.leaderboard.heading}</h2>
           <p className="section-note">{copy.leaderboard.note}</p>
         </div>
-        <label className="search-field">
-          <Search aria-hidden="true" />
-          <span className="sr-only">{copy.leaderboard.searchLabel}</span>
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={copy.leaderboard.searchPlaceholder}
-          />
-        </label>
-      </div>
 
-      <div className="table-shell">
-        <div className="table-scroll" tabIndex={0} aria-label={copy.leaderboard.tableScrollLabel}>
-          <table>
-            <thead>
-              <tr>
-                <th className="rank-column" scope="col">{copy.leaderboard.rank}</th>
-                <th className="model-column" scope="col">{copy.leaderboard.model}</th>
-                {METRICS.map((metric) => (
-                  <th key={metric.key} scope="col">
-                    <MetricHeader
-                      metricKey={metric.key}
-                      sort={sort}
-                      onSort={handleSort}
-                      copy={copy}
-                    />
+        <div className="leaderboard-toolbar">
+          <div className="leaderboard-status" aria-live="polite">
+            <strong>{copy.leaderboard.showing(visibleModels.length, models.length)}</strong>
+            <span>
+              {copy.leaderboard.sortStatus(copy.metrics[sort.key].label, sort.direction)}
+            </span>
+          </div>
+          <label className="search-field">
+            <Search aria-hidden="true" />
+            <span className="sr-only">{copy.leaderboard.searchLabel}</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={copy.leaderboard.searchPlaceholder}
+            />
+          </label>
+        </div>
+
+        <div className="table-shell">
+          <div className="table-scroll" tabIndex={0} aria-label={copy.leaderboard.tableScrollLabel}>
+            <table>
+              <thead>
+                <tr className="metric-group-row">
+                  <th className="rank-column" scope="col" rowSpan={2}>
+                    {copy.leaderboard.rank}
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {visibleModels.map((model) => (
-                <tr key={model.model}>
-                  <td className="rank-column rank-value">{ranks.get(model.model) ?? "—"}</td>
-                  <th className="model-column model-name" scope="row" data-testid="model-name">
-                    {model.model}
+                  <th className="model-column" scope="col" rowSpan={2}>
+                    {copy.leaderboard.model}
                   </th>
-                  {METRICS.map((metric) => {
-                    const value = model.bcpLink?.[metric.key] ?? null;
-                    return (
-                      <td key={metric.key} className={value === null ? "missing-value" : undefined}>
-                        {formatMetricValue(metric.key, value, language)}
-                      </td>
-                    );
-                  })}
+                  {METRIC_GROUPS.map((group) => (
+                    <th
+                      key={group.key}
+                      className={`metric-group metric-group-${group.key}`}
+                      scope="colgroup"
+                      colSpan={group.metrics.length}
+                    >
+                      {copy.metricGuide.groups[group.key]}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          {visibleModels.length === 0 && (
-            <div className="table-empty">
-              <Search aria-hidden="true" />
-              <p>{copy.leaderboard.noMatches(query)}</p>
-            </div>
-          )}
+                <tr className="metric-label-row">
+                  {LEADERBOARD_METRICS.map((metric) => (
+                    <th
+                      key={metric.key}
+                      className={`metric-column metric-column-${metric.key}`}
+                      scope="col"
+                    >
+                      <MetricHeader
+                        metricKey={metric.key}
+                        sort={sort}
+                        onSort={handleSort}
+                        copy={copy}
+                      />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {visibleModels.map((model) => {
+                  const rank = ranks.get(model.model) ?? null;
+                  return (
+                    <tr
+                      key={model.model}
+                      className={rank === 1 ? "leader-row leader-row-first" : "leader-row"}
+                    >
+                      <td className="rank-column rank-value">
+                        {rank !== null && rank <= 3 ? (
+                          <span className={`rank-medal rank-${rank}`}>{rank}</span>
+                        ) : (
+                          rank ?? "—"
+                        )}
+                      </td>
+                      <th className="model-column model-name" scope="row" data-testid="model-name">
+                        {model.model}
+                      </th>
+                      {LEADERBOARD_METRICS.map((metric) => {
+                        const value = model.bcpLink?.[metric.key] ?? null;
+                        const isPercentage = metric.format === "percent" && value !== null;
+                        const cellStyle = isPercentage
+                          ? ({
+                              "--metric-fill": `${Math.max(0, Math.min(100, value))}%`,
+                            } as CSSProperties)
+                          : undefined;
+                        const classNames = [
+                          "metric-value-cell",
+                          `metric-value-${metric.key}`,
+                          isPercentage ? "percentage-data-bar" : "",
+                          value === null ? "missing-value" : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ");
+                        return (
+                          <td key={metric.key} className={classNames} style={cellStyle}>
+                            <span>{formatMetricValue(metric.key, value, language)}</span>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {visibleModels.length === 0 && (
+              <div className="table-empty">
+                <Search aria-hidden="true" />
+                <p>{copy.leaderboard.noMatches(query)}</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-      <p className="results-count" aria-live="polite">
-        {copy.leaderboard.showing(visibleModels.length, models.length)}
-      </p>
     </section>
   );
 }
@@ -412,6 +560,115 @@ function ComparisonModelPicker({
   );
 }
 
+interface ComparisonDatum {
+  model: string;
+  bcp: number;
+  bcpLink: number;
+}
+
+function splitModelLabel(model: string): string[] {
+  if (model.length <= 22) return [model];
+
+  const parts = model.split("-");
+  let firstLine = parts.shift() ?? model;
+  while (parts.length > 0 && `${firstLine}-${parts[0]}`.length <= 22) {
+    firstLine += `-${parts.shift()}`;
+  }
+
+  const remainder = parts.join("-");
+  if (!remainder) return [model.slice(0, 21) + "…"];
+  return [firstLine, remainder.length > 26 ? remainder.slice(0, 25) + "…" : remainder];
+}
+
+function ComparisonXAxisTick({
+  x = 0,
+  y = 0,
+  payload,
+}: {
+  x?: number;
+  y?: number;
+  payload?: { value?: string };
+}) {
+  const model = payload?.value ?? "";
+  const lines = splitModelLabel(model);
+
+  return (
+    <g className="comparison-axis-label" transform={`translate(${x},${y})`}>
+      <title>{model}</title>
+      <text textAnchor="middle">
+        {lines.map((line, index) => (
+          <tspan key={line} x="0" dy={index === 0 ? 18 : 16}>
+            {line}
+          </tspan>
+        ))}
+      </text>
+    </g>
+  );
+}
+
+function formatComparisonDelta(
+  metricKey: MetricKey,
+  delta: number,
+  language: Language,
+  copy: Translation["comparison"],
+): string {
+  const metric = METRIC_BY_KEY[metricKey];
+  const sign = delta > 0 ? "+" : delta < 0 ? "−" : "";
+  const magnitude = Math.abs(delta);
+  const formatted = new Intl.NumberFormat(language === "zh" ? "zh-CN" : "en-US", {
+    minimumFractionDigits: metric.fractionDigits,
+    maximumFractionDigits: metric.fractionDigits,
+  }).format(magnitude);
+
+  return metric.format === "percent"
+    ? `${sign}${formatted} ${copy.percentagePoints}`
+    : `${sign}${formatted}`;
+}
+
+function ComparisonTooltip({
+  active,
+  payload,
+  metricKey,
+  language,
+  copy,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload?: ComparisonDatum }>;
+  metricKey: MetricKey;
+  language: Language;
+  copy: Translation;
+}) {
+  const datum = payload?.[0]?.payload;
+  if (!active || !datum) return null;
+
+  return (
+    <div className="comparison-tooltip" role="tooltip">
+      <p className="comparison-tooltip-title">{datum.model}</p>
+      <dl>
+        <div>
+          <dt><span className="tooltip-swatch tooltip-swatch-bcp-link" />BCP-Link</dt>
+          <dd>{formatMetricValue(metricKey, datum.bcpLink, language)}</dd>
+        </div>
+        <div>
+          <dt><span className="tooltip-swatch tooltip-swatch-bcp" />BCP</dt>
+          <dd>{formatMetricValue(metricKey, datum.bcp, language)}</dd>
+        </div>
+        <div className="tooltip-delta-row">
+          <dt>{copy.comparison.deltaLabel}</dt>
+          <dd>
+            {formatComparisonDelta(
+              metricKey,
+              datum.bcpLink - datum.bcp,
+              language,
+              copy.comparison,
+            )}
+          </dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
+
 function ComparisonChart({
   models,
   language,
@@ -463,7 +720,7 @@ function ComparisonChart({
     });
   };
 
-  const chartData = useMemo(() => {
+  const chartData = useMemo<ComparisonDatum[]>(() => {
     const modelsByName = new Map(models.map((model) => [model.model, model]));
     return availableModelNames.flatMap((modelName) => {
       if (!selectedModels.includes(modelName)) return [];
@@ -477,181 +734,242 @@ function ComparisonChart({
   const chartDomain = getComparisonValuesDomain(
     chartData.flatMap((datum) => [datum.bcpLink, datum.bcp]),
   );
-  const chartMinWidth = Math.max(760, chartData.length * 240);
+  const chartMinWidth = Math.max(720, chartData.length * 220);
 
   return (
-    <section id="comparison" className="content-section comparison-section" aria-labelledby="comparison-heading">
-      <div className="section-toolbar comparison-toolbar">
-        <div>
+    <section
+      id="comparison"
+      className="page-section comparison-section section-tinted"
+      aria-labelledby="comparison-heading"
+    >
+      <div className="container section-inner">
+        <div className="section-heading">
           <p className="section-kicker">{copy.comparison.kicker}</p>
           <h2 id="comparison-heading">{copy.comparison.heading}</h2>
           <p className="section-note">
             {copy.comparison.comparable(chartData.length, metricText.label)}
           </p>
         </div>
-        <div className="comparison-controls">
-          <ComparisonModelPicker
-            availableModels={availableModelNames}
-            selectedModels={selectedModels}
-            copy={copy.comparison}
-            onToggle={handleModelToggle}
-          />
-          <div className="select-group">
-            <label htmlFor={selectId}>{copy.comparison.metricLabel}</label>
-            <div className="select-wrap">
-              <select
-                id={selectId}
-                aria-label={copy.comparison.selectLabel}
-                value={selectedMetric}
-                onChange={(event) => setSelectedMetric(event.target.value as MetricKey)}
-              >
-                {METRICS.map((option) => (
-                  <option key={option.key} value={option.key}>
-                    {copy.metrics[option.key].label}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown aria-hidden="true" />
+
+        <div className="comparison-workspace">
+          <div className="comparison-controls">
+            <ComparisonModelPicker
+              availableModels={availableModelNames}
+              selectedModels={selectedModels}
+              copy={copy.comparison}
+              onToggle={handleModelToggle}
+            />
+            <div className="select-group">
+              <label htmlFor={selectId}>{copy.comparison.metricLabel}</label>
+              <div className="select-wrap">
+                <select
+                  id={selectId}
+                  aria-label={copy.comparison.selectLabel}
+                  value={selectedMetric}
+                  onChange={(event) => setSelectedMetric(event.target.value as MetricKey)}
+                >
+                  {METRICS.map((option) => (
+                    <option key={option.key} value={option.key}>
+                      {copy.metrics[option.key].label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown aria-hidden="true" />
+              </div>
             </div>
           </div>
+
+          {chartData.length > 0 ? (
+            <div
+              className="chart-scroll"
+              data-testid="comparison-chart"
+              tabIndex={0}
+              aria-label={copy.comparison.chartLabel(metricText.label)}
+            >
+              <div className="chart-canvas" style={{ minWidth: chartMinWidth }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={chartData}
+                    barGap={8}
+                    barCategoryGap="38%"
+                    margin={{ top: 18, right: 24, bottom: 54, left: 10 }}
+                  >
+                    <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
+                    <XAxis
+                      dataKey="model"
+                      interval={0}
+                      height={70}
+                      tick={<ComparisonXAxisTick />}
+                      tickLine={false}
+                      axisLine={{ stroke: "var(--border-strong)" }}
+                    />
+                    <YAxis
+                      domain={chartDomain}
+                      allowDataOverflow={false}
+                      tickCount={5}
+                      width={72}
+                      tick={{ fill: "var(--muted)", fontSize: 11 }}
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(value: number) =>
+                        formatMetricValue(selectedMetric, value, language)
+                      }
+                    />
+                    <Tooltip
+                      cursor={{ fill: "var(--chart-cursor)" }}
+                      content={
+                        <ComparisonTooltip
+                          metricKey={selectedMetric}
+                          language={language}
+                          copy={copy}
+                        />
+                      }
+                    />
+                    <Legend
+                      verticalAlign="top"
+                      align="right"
+                      height={36}
+                      iconType="square"
+                      wrapperStyle={{ color: "var(--text-subtle)", fontSize: 13 }}
+                    />
+                    <Bar
+                      className="chart-series-bcp-link"
+                      dataKey="bcpLink"
+                      name="BCP-Link"
+                      fill="var(--chart-bcp-link)"
+                      radius={[4, 4, 0, 0]}
+                      barSize={40}
+                      maxBarSize={48}
+                      isAnimationActive={false}
+                    />
+                    <Bar
+                      className="chart-series-bcp"
+                      dataKey="bcp"
+                      name="BCP"
+                      fill="var(--chart-bcp)"
+                      radius={[4, 4, 0, 0]}
+                      barSize={40}
+                      maxBarSize={48}
+                      isAnimationActive={false}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          ) : (
+            <div className="chart-empty" role="status">
+              <BarChart3 aria-hidden="true" />
+              <h3>{copy.comparison.emptyHeading(metricText.label)}</h3>
+              <p>{copy.comparison.emptyBody}</p>
+            </div>
+          )}
         </div>
       </div>
-
-      {chartData.length > 0 ? (
-        <div className="chart-shell" data-testid="comparison-chart">
-          <div
-            className="chart-scroll"
-            tabIndex={0}
-            aria-label={copy.comparison.chartLabel(metricText.label)}
-          >
-            <div className="chart-canvas" style={{ minWidth: chartMinWidth }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={chartData}
-                  barGap={8}
-                  barCategoryGap="38%"
-                  margin={{ top: 20, right: 24, bottom: 78, left: 10 }}
-                >
-                  <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false} />
-                  <XAxis
-                    dataKey="model"
-                    interval={0}
-                    angle={-20}
-                    textAnchor="end"
-                    height={92}
-                    tick={{ fill: "var(--text-subtle)", fontSize: 12 }}
-                    tickLine={false}
-                    axisLine={{ stroke: "var(--border-strong)" }}
-                  />
-                  <YAxis
-                    domain={chartDomain}
-                    allowDataOverflow={false}
-                    tickCount={5}
-                    width={72}
-                    tick={{ fill: "var(--muted)", fontSize: 11 }}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value: number) =>
-                      formatMetricValue(selectedMetric, value, language)
-                    }
-                  />
-                  <Tooltip
-                    cursor={{ fill: "var(--chart-cursor)" }}
-                    formatter={(value) =>
-                      formatMetricValue(selectedMetric, Number(value), language)
-                    }
-                    contentStyle={{
-                      border: "1px solid var(--border-strong)",
-                      borderRadius: 6,
-                      boxShadow: "0 8px 24px rgba(16, 24, 40, 0.10)",
-                      color: "var(--text)",
-                      background: "var(--surface)",
-                    }}
-                    labelStyle={{ fontWeight: 650, marginBottom: 8 }}
-                  />
-                  <Legend
-                    verticalAlign="top"
-                    align="right"
-                    height={36}
-                    iconType="square"
-                    wrapperStyle={{ color: "var(--text-subtle)", fontSize: 13 }}
-                  />
-                  <Bar
-                    className="chart-series-bcp-link"
-                    dataKey="bcpLink"
-                    name="BCP-Link"
-                    fill="var(--chart-bcp-link)"
-                    radius={[3, 3, 0, 0]}
-                    barSize={40}
-                    maxBarSize={48}
-                    isAnimationActive={false}
-                  />
-                  <Bar
-                    className="chart-series-bcp"
-                    dataKey="bcp"
-                    name="BCP"
-                    fill="var(--chart-bcp)"
-                    radius={[3, 3, 0, 0]}
-                    barSize={40}
-                    maxBarSize={48}
-                    isAnimationActive={false}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="chart-empty" role="status">
-          <BarChart3 aria-hidden="true" />
-          <h3>{copy.comparison.emptyHeading(metricText.label)}</h3>
-          <p>{copy.comparison.emptyBody}</p>
-        </div>
-      )}
     </section>
   );
 }
 
 function MetricGuide({ copy }: { copy: Translation }) {
+  const groupIcons = {
+    answerQuality: <Target />,
+    toolBehavior: <Wrench />,
+    linkFollowing: <Link2 />,
+  } satisfies Record<keyof Translation["metricGuide"]["groups"], React.ReactNode>;
+
   return (
-    <section id="metrics" className="content-section metric-guide-section" aria-labelledby="metrics-heading">
-      <div className="section-toolbar">
-        <div>
+    <section
+      id="metrics"
+      className="page-section metric-guide-section section-tinted"
+      aria-labelledby="metrics-heading"
+    >
+      <div className="container section-inner">
+        <div className="section-heading">
           <p className="section-kicker">{copy.metricGuide.kicker}</p>
           <h2 id="metrics-heading">{copy.metricGuide.heading}</h2>
           <p className="section-note">{copy.metricGuide.note}</p>
-          <p className="metric-categories">{copy.metricGuide.categories}</p>
         </div>
+        <div className="metric-guide-groups">
+          {METRIC_GROUPS.map((group) => (
+            <article key={group.key} className={`metric-guide-group metric-guide-${group.key}`}>
+              <div className="metric-group-heading">
+                <span aria-hidden="true">{groupIcons[group.key]}</span>
+                <h3>{copy.metricGuide.groups[group.key]}</h3>
+              </div>
+              <dl>
+                {group.metrics.map((metricKey) => {
+                  const metric = METRIC_BY_KEY[metricKey];
+                  return (
+                    <div key={metricKey} className="metric-definition">
+                      <dt>
+                        <span>{copy.metrics[metricKey].label}</span>
+                        <small>
+                          {metric.format === "percent"
+                            ? copy.metricGuide.percentage
+                            : copy.metricGuide.averageCount}
+                        </small>
+                      </dt>
+                      <dd>{copy.metrics[metricKey].definition}</dd>
+                    </div>
+                  );
+                })}
+              </dl>
+            </article>
+          ))}
+        </div>
+        <p className="metric-footnote">{copy.metricGuide.footnote}</p>
       </div>
-      <dl className="metric-guide">
-        {METRICS.map((metric) => (
-          <div key={metric.key} className="metric-definition">
-            <dt>
-              <span>{copy.metrics[metric.key].label}</span>
-              <small>
-                {metric.format === "percent"
-                  ? copy.metricGuide.percentage
-                  : copy.metricGuide.averageCount}
-              </small>
-            </dt>
-            <dd>{copy.metrics[metric.key].definition}</dd>
-          </div>
-        ))}
-      </dl>
-      <p className="metric-footnote">{copy.metricGuide.footnote}</p>
     </section>
+  );
+}
+
+function SiteFooter({ copy }: { copy: Translation }) {
+  return (
+    <footer className="site-footer">
+      <div className="container footer-inner">
+        <div className="footer-brand">
+          <span className="footer-brand-mark" aria-hidden="true"><Link2 /></span>
+          <div>
+            <strong>BCP-Link</strong>
+            <p>{copy.footer.description}</p>
+          </div>
+        </div>
+        <nav className="footer-nav" aria-label={copy.footer.navigationLabel}>
+          <a href="#leaderboard" aria-label={copy.footer.leaderboardLabel}>
+            {copy.nav.leaderboard}
+          </a>
+          <a href="#comparison" aria-label={copy.footer.comparisonLabel}>
+            {copy.nav.comparison}
+          </a>
+          <a href="#rules" aria-label={copy.footer.rulesLabel}>
+            {copy.nav.rules}
+          </a>
+        </nav>
+        <p className="footer-source">
+          {copy.footer.sourcePrefix}{" "}
+          <a
+            href="https://huggingface.co/spaces/Tevatron/BrowseComp-Plus"
+            target="_blank"
+            rel="noreferrer"
+          >
+            BrowseComp-Plus <ExternalLink aria-hidden="true" />
+          </a>
+        </p>
+      </div>
+    </footer>
   );
 }
 
 function ErrorState({ message, copy }: { message: string; copy: Translation }) {
   return (
-    <main className="page-main container">
-      <div className="error-state" role="alert">
-        <AlertTriangle aria-hidden="true" />
-        <div>
-          <h2>{copy.errors.heading}</h2>
-          <p>{message}</p>
-          <code>data/bcp-link-results.csv</code>
+    <main className="page-main error-main">
+      <div className="container">
+        <div className="error-state" role="alert">
+          <AlertTriangle aria-hidden="true" />
+          <div>
+            <h2>{copy.errors.heading}</h2>
+            <p>{message}</p>
+            <code>data/bcp-link-results.csv</code>
+          </div>
         </div>
       </div>
     </main>
@@ -699,17 +1017,13 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
       <header className="site-header">
         <div className="container nav-inner">
           <a className="brand-block" href="#top" aria-label={copy.nav.home}>
-            <div className="brand-mark" aria-hidden="true">
+            <span className="brand-mark" aria-hidden="true">
               <Link2 />
-            </div>
-            <h1>BCP-Link Leaderboard</h1>
+            </span>
+            <span className="brand-title">BCP-Link Leaderboard</span>
           </a>
-          <div className="primary-actions">
-            <nav className="primary-nav" aria-label="Primary navigation">
-              <a href="#leaderboard">{copy.nav.leaderboard}</a>
-              <a href="#rules">{copy.nav.rules}</a>
-              <a href="#metrics">{copy.nav.metrics}</a>
-            </nav>
+          <div className="header-actions">
+            <PrimaryNavigation copy={copy} />
             <div className="header-controls">
               <ThemePicker
                 theme={theme}
@@ -726,25 +1040,37 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
       {parsed.error ? (
         <ErrorState message={parsed.error} copy={copy} />
       ) : (
-        <main className="page-main container">
-          <section id="about" className="benchmark-intro" aria-labelledby="about-heading">
-            <h2 id="about-heading">{copy.intro.heading}</h2>
-            <p className="intro-subtitle">{copy.intro.subtitle}</p>
-            <div className="intro-body">
-              <p>
-                {copy.intro.bodyOneBeforeSearch}<code>search</code>
-                {copy.intro.bodyOneBetweenTools}<code>visit</code>{copy.intro.bodyOneAfterVisit}
-              </p>
-              <p>{copy.intro.bodyTwo}</p>
-            </div>
-            <div className="dataset-stats" aria-label={copy.stats.label}>
-              <div>
-                <Database aria-hidden="true" />
-                <span><strong>{parsed.models.length}</strong> {copy.stats.models(parsed.models.length).replace(`${parsed.models.length} `, "")}</span>
+        <main className="page-main">
+          <section
+            id="about"
+            className="page-section benchmark-intro"
+            aria-labelledby="about-heading"
+          >
+            <div className="container intro-inner">
+              <div className="intro-heading">
+                <h1 id="about-heading">{copy.intro.heading}</h1>
+                <p className="intro-subtitle">{copy.intro.subtitle}</p>
               </div>
-              <div>
-                <GitCompareArrows aria-hidden="true" />
-                <span><strong>{comparableModels}</strong> {copy.stats.comparisons(comparableModels).replace(`${comparableModels} `, "")}</span>
+              <div className="intro-body">
+                <p>
+                  {copy.intro.bodyOneBeforeSearch}<code>search</code>
+                  {copy.intro.bodyOneBetweenTools}<code>visit</code>{copy.intro.bodyOneAfterVisit}
+                </p>
+                <p>{copy.intro.bodyTwo}</p>
+                <dl className="dataset-stats" aria-label={copy.stats.label}>
+                  <div>
+                    <dt>{parsed.models.length}</dt>
+                    <dd>{` ${copy.stats.models(parsed.models.length).replace(String(parsed.models.length), "").trim()}`}</dd>
+                  </div>
+                  <div>
+                    <dt>{comparableModels}</dt>
+                    <dd>{` ${copy.stats.comparisons(comparableModels).replace(String(comparableModels), "").trim()}`}</dd>
+                  </div>
+                  <div>
+                    <dt>{METRICS.length}</dt>
+                    <dd>{` ${copy.stats.metrics(METRICS.length).replace(String(METRICS.length), "").trim()}`}</dd>
+                  </div>
+                </dl>
               </div>
             </div>
           </section>
@@ -754,6 +1080,7 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
           <MetricGuide copy={copy} />
         </main>
       )}
+      <SiteFooter copy={copy} />
     </div>
   );
 }

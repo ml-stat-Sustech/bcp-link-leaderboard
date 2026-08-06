@@ -29,9 +29,10 @@ describe("LeaderboardApp", () => {
     const { container } = render(<LeaderboardApp csvText={TEST_CSV} />);
 
     expect(screen.getByRole("link", { name: "Leaderboard" })).toHaveAttribute("href", "#leaderboard");
+    expect(screen.getByRole("link", { name: "Comparison" })).toHaveAttribute("href", "#comparison");
     expect(screen.getByRole("link", { name: "Evaluation Rules" })).toHaveAttribute("href", "#rules");
     expect(screen.getByRole("link", { name: "Metric Guide" })).toHaveAttribute("href", "#metrics");
-    expect(screen.getByRole("heading", { name: "BCP-Link", level: 2 })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "BCP-Link", level: 1 })).toBeVisible();
     expect(
       screen.getByText("Evaluating whether search agents can find and follow useful links."),
     ).toBeVisible();
@@ -45,6 +46,22 @@ describe("LeaderboardApp", () => {
 
     const sectionIds = Array.from(container.querySelectorAll("main > section"), (section) => section.id);
     expect(sectionIds).toEqual(["about", "leaderboard", "comparison", "rules", "metrics"]);
+  });
+
+  it("opens and dismisses the responsive navigation with focus restoration", async () => {
+    const user = userEvent.setup();
+    render(<LeaderboardApp csvText={TEST_CSV} />);
+    const trigger = screen.getByRole("button", { name: "Open navigation" });
+
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("navigation", { name: "Primary navigation" })).toHaveAttribute(
+      "data-open",
+      "true",
+    );
+    await user.keyboard("{Escape}");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveFocus();
   });
 
   it("selects Chinese from the browser locale on first visit", () => {
@@ -148,10 +165,14 @@ describe("LeaderboardApp", () => {
   });
 
   it("uses accuracy ranking by default and keeps missing values last", () => {
-    render(<LeaderboardApp csvText={TEST_CSV} />);
+    const { container } = render(<LeaderboardApp csvText={TEST_CSV} />);
     expect(modelNames()).toEqual(["Beta", "Alpha", "Gamma"]);
     expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("3 models");
     expect(screen.getByText("1 model with comparable Accuracy data")).toBeInTheDocument();
+    expect(container.querySelectorAll(".rank-medal")).toHaveLength(2);
+    expect(container.querySelector(".rank-medal.rank-1")).toHaveTextContent("1");
+    expect(container.querySelectorAll(".percentage-data-bar")).toHaveLength(2);
+    expect(container.querySelector(".percentage-data-bar")).toHaveStyle("--metric-fill: 60%");
   });
 
   it("selects one or more models for a shared comparison chart", async () => {
