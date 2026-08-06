@@ -161,15 +161,19 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
 
   const modelTrigger = page.getByRole("button", { name: "Choose comparison models" });
   await modelTrigger.click();
-  await page.getByRole("checkbox", { name: "SearchAgent-Zero" }).uncheck();
-  await page.getByRole("checkbox", { name: "WebExplorer-8B" }).uncheck();
-  await page.getByRole("checkbox", { name: "WebSailor-32B" }).uncheck();
+  const selectAllModels = page.getByRole("checkbox", { name: /Select all/ });
+  await expect(selectAllModels).toHaveJSProperty("indeterminate", true);
+  await selectAllModels.check();
+  await expect(modelTrigger).toHaveText("9 models selected");
+  await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(18);
+  await selectAllModels.uncheck();
+  await expect(modelTrigger).toHaveText("0 models selected");
+  await expect(page.getByRole("status")).toContainText("No models selected");
+  await expect(comparisonChart).toHaveCount(0);
+  await page.getByRole("checkbox", { name: "Tongyi-DeepResearch-30B-A3B" }).check();
   await expect(modelTrigger).toHaveText("1 model selected");
   await expect(page.getByText("1 model with comparable Recall data")).toBeVisible();
   await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(2);
-  await expect(
-    page.getByRole("checkbox", { name: "Tongyi-DeepResearch-30B-A3B" }),
-  ).toBeDisabled();
   await page.getByRole("checkbox", { name: "SearchAgent-Zero" }).check();
   await expect(modelTrigger).toHaveText("2 models selected");
   await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(4);

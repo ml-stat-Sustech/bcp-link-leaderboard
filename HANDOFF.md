@@ -70,7 +70,7 @@ Last updated: 2026-08-06
 
 - The comparison section offers every leaderboard model through a multi-select model picker. It
   initially selects Tongyi-DeepResearch-30B-A3B, SearchAgent-Zero, WebExplorer-8B, and WebSailor-32B;
-  at least one model remains selected.
+  a select-all checkbox can select every model or clear the selection.
 - Picker options follow the leaderboard Accuracy order and update automatically from the parsed CSV.
 - Selected models are rendered together in one grouped chart with BCP-Link as the left bar and BCP as
   the right bar; the metric selector applies to all selected models.
@@ -94,7 +94,7 @@ The current UI upgrade is complete.
 - Metric values use fixed per-column precision: two decimals for Accuracy, Recall, Search Calls,
   Visit Calls, and Turns; four decimals for Link-following Visit Calls.
 - Component tests cover all themes, persistence, picker dismissal, exact section order, fixed metric
-  precision, the all-model comparison picker, the minimum-one-selection rule, Chinese UI with English
+  precision, the all-model comparison picker, select-all/clear behavior, Chinese UI with English
   metrics, and state preservation.
 - Playwright covers both desktop and Pixel 7 viewports, page overflow, one/multiple comparison-model
   selection, shared-chart bar counts, BCP-Link/BCP geometry, tooltip behavior, theme-driven chart
@@ -119,8 +119,8 @@ Commands run from `/data/hs_dev/bcp-link-leaderboard`:
 ```text
 npm run typecheck  PASS
 npm run build      PASS
-npm test           PASS: 23 passed
-npm run test:e2e   PASS: 6 passed across desktop and mobile Chromium
+npm test           PASS: 24 passed
+npm run test:e2e   PASS: 8 passed across desktop and mobile Chromium
 ```
 
 Deployment verification completed on 2026-08-06:
@@ -132,8 +132,8 @@ Cloudflare unauthenticated    HTTP 401
 Cloudflare authenticated      HTTP 200
 Production HTML               current BCP-Link dashboard assets loaded
 Production data               9 models; WebSailor-32B included
-Comparison picker             9 models available; 4 selected by default
-Comparison rendering          1/2/5/9 selected models render 2/4/10/18 bars
+Comparison picker             9 models available; 4 selected by default; select-all/clear supported
+Comparison rendering          0/1/2/5/9 selected models render 0/2/4/10/18 bars
 ```
 
 ## 7. Current Deployment
@@ -142,8 +142,9 @@ Comparison rendering          1/2/5/9 selected models render 2/4/10/18 bars
 - Cloudflare Pages project: `bcp-link-leaderboard`
 - Production branch: `main`
 - Production URL: `https://bcp-link-leaderboard.pages.dev/`
-- Latest application deployment source: `72a08e2` (`Expose all leaderboard models in comparison`).
-- Latest immutable deployment URL: `https://95455171.bcp-link-leaderboard.pages.dev/`.
+- Production deployments are direct uploads from the current `main` build. Use
+  `npx wrangler@3.114.17 pages deployment list --project-name bcp-link-leaderboard` to inspect the
+  latest source commit and immutable deployment URL without relying on stale handoff metadata.
 - The initial production release was deployed with Wrangler direct upload from `dist`; the root
   `functions/` middleware and `_routes.json` were included.
 - `SITE_USERNAME` and `SITE_PASSWORD` are encrypted Cloudflare production secrets. Their values are
@@ -166,7 +167,7 @@ Comparison rendering          1/2/5/9 selected models render 2/4/10/18 bars
 - BCP-Link remains the left/brighter series; BCP remains the right/darker or quieter series.
 - Language and theme switching must preserve search, sorting, comparison metric, and selected-model
   state.
-- The comparison picker must expose every parsed leaderboard model, keep at least one selected, and
-  render all selected models in one chart.
+- The comparison picker must expose every parsed leaderboard model, support selecting or clearing
+  all models, and render all selected models in one chart.
 - Chinese explanatory prose remains Chinese, while leaderboard columns and metric names remain English.
 - Existing CSV parsing, ranking behavior, Cloudflare Basic Auth, and private deployment behavior should not change.

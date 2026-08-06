@@ -184,7 +184,9 @@ describe("LeaderboardApp", () => {
 
     const trigger = screen.getByRole("button", { name: "Choose comparison models" });
     await user.click(trigger);
-    expect(screen.getAllByRole("checkbox")).toHaveLength(9);
+    expect(screen.getAllByRole("checkbox")).toHaveLength(10);
+    const selectAll = screen.getByRole("checkbox", { name: /Select all/ });
+    expect(selectAll).toBePartiallyChecked();
     expect(screen.getByRole("checkbox", { name: "Qwen3.6-27B" })).not.toBeChecked();
     const tongyi = screen.getByRole("checkbox", { name: "Tongyi-DeepResearch-30B-A3B" });
     const searchAgent = screen.getByRole("checkbox", { name: "SearchAgent-Zero" });
@@ -195,12 +197,20 @@ describe("LeaderboardApp", () => {
     expect(webExplorer).toBeChecked();
     expect(webSailor).toBeChecked();
 
-    await user.click(searchAgent);
-    await user.click(webExplorer);
-    await user.click(webSailor);
+    await user.click(selectAll);
+    expect(selectAll).toBeChecked();
+    expect(trigger).toHaveTextContent("9 models selected");
+    expect(screen.getByText("9 models with comparable Accuracy data")).toBeInTheDocument();
+
+    await user.click(selectAll);
+    expect(trigger).toHaveTextContent("0 models selected");
+    expect(screen.getByRole("status")).toHaveTextContent("No models selected");
+    expect(screen.queryByTestId("comparison-chart")).not.toBeInTheDocument();
+
+    await user.click(tongyi);
     expect(trigger).toHaveTextContent("1 model selected");
     expect(screen.getByText("1 model with comparable Accuracy data")).toBeInTheDocument();
-    expect(tongyi).toBeDisabled();
+    expect(screen.getByTestId("comparison-chart")).toBeInTheDocument();
 
     await user.click(searchAgent);
     expect(trigger).toHaveTextContent("2 models selected");

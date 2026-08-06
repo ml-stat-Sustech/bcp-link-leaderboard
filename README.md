@@ -1,6 +1,6 @@
 # BCP-Link Leaderboard
 
-A bilingual static leaderboard for the BCP-Link research-agent benchmark. The site reads the
+A bilingual static leaderboard for the BCP-Link search-agent benchmark. The site reads the
 committed results CSV, presents the BCP-Link ranking, compares BCP with BCP-Link, and documents the
 shared evaluation tools and metrics.
 

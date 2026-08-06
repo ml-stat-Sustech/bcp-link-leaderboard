@@ -670,8 +670,9 @@ dd {
 }
 
 .section-heading {
-  max-width: 780px;
-  margin-bottom: 26px;
+  max-width: 720px;
+  margin: 0 auto 32px;
+  text-align: center;
 }
 
 .section-kicker {
@@ -691,7 +692,8 @@ h2 {
 }
 
 .section-note {
-  margin-top: 7px;
+  max-width: 640px;
+  margin: 8px auto 0;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.5;
@@ -1173,6 +1175,21 @@ tbody tr:hover .model-column {
   cursor: pointer;
 }
 
+.comparison-model-menu .comparison-select-all {
+  margin-bottom: 6px;
+  color: var(--text);
+  background: var(--surface-soft);
+  border-bottom: 1px solid var(--border);
+  font-weight: 720;
+}
+
+.comparison-select-all small {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
 .comparison-model-menu label:hover {
   color: var(--text);
   background: var(--surface-soft);
@@ -1183,11 +1200,6 @@ tbody tr:hover .model-column {
   height: 16px;
   flex: 0 0 16px;
   accent-color: var(--primary);
-}
-
-.comparison-model-menu label:has(input:disabled) {
-  opacity: 0.58;
-  cursor: not-allowed;
 }
 
 .chart-scroll {
@@ -1345,6 +1357,7 @@ tbody tr:hover .model-column {
 .rule-principles article {
   min-width: 0;
   position: relative;
+  text-align: center;
 }
 
 .principle-icon {
@@ -1354,7 +1367,7 @@ tbody tr:hover .model-column {
   z-index: 1;
   display: grid;
   place-items: center;
-  margin-bottom: 14px;
+  margin: 0 auto 14px;
   color: var(--primary);
   background: var(--primary-soft);
   border: 1px solid var(--border);
@@ -2013,22 +2026,15 @@ tbody tr:hover .model-column {
   }
 
   .rule-principles::before {
-    width: 1px;
-    height: auto;
-    top: 19px;
-    right: auto;
-    bottom: 19px;
-    left: 19px;
+    display: none;
   }
 
   .rule-principles article {
-    display: grid;
-    grid-template-columns: 38px minmax(0, 1fr);
-    gap: 13px;
+    display: block;
   }
 
   .principle-icon {
-    margin-bottom: 0;
+    margin: 0 auto 12px;
   }
 
   .tool-panel-heading {

@@ -79,12 +79,15 @@ export interface Translation {
     selectLabel: string;
     modelsLabel: string;
     modelPickerLabel: string;
+    selectAllModels: string;
     selectedModels: (count: number) => string;
     chartLabel: (metric: string) => string;
     overviewHeading: string;
     detailHeading: string;
     emptyHeading: (metric: string) => string;
     emptyBody: string;
+    emptySelectionHeading: string;
+    emptySelectionBody: string;
     deltaLabel: string;
     percentagePoints: string;
   };
@@ -158,11 +161,11 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       heading: "BCP-Link",
       subtitle: "Evaluating whether search agents can find and follow useful links.",
       bodyOneBeforeSearch:
-        "BCP-Link is a link-aware research agent benchmark built on BrowseComp-Plus. It uses a fixed corpus with standardized ",
+        "BCP-Link is a link-aware search-agent benchmark built on BrowseComp-Plus. It uses a fixed corpus with standardized ",
       bodyOneBetweenTools: " and ",
       bodyOneAfterVisit: " tools so model results remain reproducible and directly comparable.",
       bodyTwo:
-        "Gold evidence may not appear in the initial search results, but can be reached through links inside retrieved pages. This leaderboard shows which models can recognize those links, navigate to the right evidence, and complete the research task accurately.",
+        "Gold evidence may not appear in the initial search results, but can be reached through links inside retrieved pages. This leaderboard shows which models can recognize those links, navigate to the right evidence, and complete the search task accurately.",
     },
     stats: {
       label: "Dataset summary",
@@ -194,12 +197,15 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       selectLabel: "Comparison metric",
       modelsLabel: "Models",
       modelPickerLabel: "Choose comparison models",
+      selectAllModels: "Select all",
       selectedModels: (count) => `${count} ${count === 1 ? "model" : "models"} selected`,
       chartLabel: (metric) => `${metric} comparison chart`,
       overviewHeading: "Four-model overview",
       detailHeading: "Per-model detail",
       emptyHeading: (metric) => `No comparable ${metric} data yet`,
       emptyBody: "Add both BCP and BCP-Link values to the results CSV to populate this chart.",
+      emptySelectionHeading: "No models selected",
+      emptySelectionBody: "Select one or more models above to add them to the comparison.",
       deltaLabel: "Difference",
       percentagePoints: "pp",
     },
@@ -257,7 +263,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       unknown: "An unknown data error occurred.",
     },
     footer: {
-      description: "A link-aware benchmark for deep-research agents.",
+      description: "A link-aware benchmark for search agents.",
       navigationLabel: "Footer navigation",
       leaderboardLabel: "View leaderboard",
       comparisonLabel: "View benchmark comparison",
@@ -324,11 +330,11 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       heading: "BCP-Link",
       subtitle: "Evaluating whether search agents can find and follow useful links.",
       bodyOneBeforeSearch:
-        "BCP-Link 是基于 BrowseComp-Plus 构建的链接感知研究智能体基准。它使用固定语料，以及标准化的 ",
+        "BCP-Link 是基于 BrowseComp-Plus 构建的链接感知搜索智能体基准。它使用固定语料，以及标准化的 ",
       bodyOneBetweenTools: " 和 ",
       bodyOneAfterVisit: " 工具，使不同模型的结果可复现、可直接比较。",
       bodyTwo:
-        "关键证据不一定出现在初始搜索结果中，但可能通过检索页面内的链接到达。该排行榜用于衡量模型能否识别这些链接、导航至正确证据，并准确完成研究任务。",
+        "关键证据不一定出现在初始搜索结果中，但可能通过检索页面内的链接到达。该排行榜用于衡量模型能否识别这些链接、导航至正确证据，并准确完成搜索任务。",
     },
     stats: {
       label: "数据概览",
@@ -359,12 +365,15 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       selectLabel: "选择对比指标",
       modelsLabel: "模型",
       modelPickerLabel: "选择对比模型",
+      selectAllModels: "全选",
       selectedModels: (count) => `已选择 ${count} 个模型`,
       chartLabel: (metric) => `${metric}对比柱状图`,
       overviewHeading: "四个模型总览",
       detailHeading: "单模型详情",
       emptyHeading: (metric) => `暂无可比较的${metric}数据`,
       emptyBody: "请在结果 CSV 中同时添加 BCP 和 BCP-Link 数值。",
+      emptySelectionHeading: "尚未选择模型",
+      emptySelectionBody: "请在上方选择一个或多个模型加入对比。",
       deltaLabel: "差值",
       percentagePoints: "百分点",
     },
@@ -422,7 +431,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       unknown: "发生未知数据错误。",
     },
     footer: {
-      description: "面向深度研究智能体的链接感知评测基准。",
+      description: "面向搜索智能体的链接感知评测基准。",
       navigationLabel: "页尾导航",
       leaderboardLabel: "查看排行榜",
       comparisonLabel: "查看基准对比",

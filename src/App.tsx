@@ -486,11 +486,13 @@ function ComparisonModelPicker({
   selectedModels,
   copy,
   onToggle,
+  onToggleAll,
 }: {
   availableModels: string[];
   selectedModels: string[];
   copy: Translation["comparison"];
   onToggle: (model: string) => void;
+  onToggleAll: (selectAll: boolean) => void;
 }) {
   const [open, setOpen] = useState(false);
   const menuId = useId();
@@ -517,6 +519,10 @@ function ComparisonModelPicker({
     };
   }, [open]);
 
+  const allSelected =
+    availableModels.length > 0 && selectedModels.length === availableModels.length;
+  const someSelected = selectedModels.length > 0 && !allSelected;
+
   return (
     <div className="comparison-model-picker" ref={rootRef}>
       <span className="comparison-control-label">{copy.modelsLabel}</span>
@@ -540,6 +546,18 @@ function ComparisonModelPicker({
           role="group"
           aria-label={copy.modelPickerLabel}
         >
+          <label className="comparison-select-all">
+            <input
+              type="checkbox"
+              checked={allSelected}
+              ref={(input) => {
+                if (input) input.indeterminate = someSelected;
+              }}
+              onChange={() => onToggleAll(!allSelected)}
+            />
+            <span>{copy.selectAllModels}</span>
+            <small>{copy.selectedModels(selectedModels.length)}</small>
+          </label>
           {availableModels.map((modelName) => {
             const checked = selectedModels.includes(modelName);
             return (
@@ -547,7 +565,6 @@ function ComparisonModelPicker({
                 <input
                   type="checkbox"
                   checked={checked}
-                  disabled={checked && selectedModels.length === 1}
                   onChange={() => onToggle(modelName)}
                 />
                 <span>{modelName}</span>
@@ -702,8 +719,7 @@ function ComparisonChart({
 
   useEffect(() => {
     setSelectedModels((current) => {
-      const available = current.filter((modelName) => availableModelNames.includes(modelName));
-      return available.length > 0 ? available : availableModelNames.slice(0, 1);
+      return current.filter((modelName) => availableModelNames.includes(modelName));
     });
   }, [availableModelNames]);
 
@@ -711,13 +727,16 @@ function ComparisonChart({
     setSelectedModels((current) => {
       const next = new Set(current);
       if (next.has(modelName)) {
-        if (next.size === 1) return current;
         next.delete(modelName);
       } else {
         next.add(modelName);
       }
       return availableModelNames.filter((name) => next.has(name));
     });
+  };
+
+  const handleAllModelsToggle = (selectAll: boolean) => {
+    setSelectedModels(selectAll ? availableModelNames : []);
   };
 
   const chartData = useMemo<ComparisonDatum[]>(() => {
@@ -758,6 +777,7 @@ function ComparisonChart({
               selectedModels={selectedModels}
               copy={copy.comparison}
               onToggle={handleModelToggle}
+              onToggleAll={handleAllModelsToggle}
             />
             <div className="select-group">
               <label htmlFor={selectId}>{copy.comparison.metricLabel}</label>
@@ -859,8 +879,16 @@ function ComparisonChart({
           ) : (
             <div className="chart-empty" role="status">
               <BarChart3 aria-hidden="true" />
-              <h3>{copy.comparison.emptyHeading(metricText.label)}</h3>
-              <p>{copy.comparison.emptyBody}</p>
+              <h3>
+                {selectedModels.length === 0
+                  ? copy.comparison.emptySelectionHeading
+                  : copy.comparison.emptyHeading(metricText.label)}
+              </h3>
+              <p>
+                {selectedModels.length === 0
+                  ? copy.comparison.emptySelectionBody
+                  : copy.comparison.emptyBody}
+              </p>
             </div>
           )}
         </div>
