@@ -17,6 +17,19 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(modelTrigger).toHaveText("4 models selected");
   await modelTrigger.click();
   for (const model of [
+    "Qwen3.6-27B",
+    "Tongyi-DeepResearch-30B-A3B",
+    "Qwen3.6-35B-A3B",
+    "gemma-4-31B-it",
+    "Qwen3.5-9B",
+    "WebExplorer-8B",
+    "SearchAgent-Zero",
+    "WebSailor-32B",
+    "gemma-4-E4B-it",
+  ]) {
+    await expect(page.getByRole("checkbox", { name: model })).toBeVisible();
+  }
+  for (const model of [
     "Tongyi-DeepResearch-30B-A3B",
     "SearchAgent-Zero",
     "WebExplorer-8B",
@@ -24,6 +37,13 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   ]) {
     await expect(page.getByRole("checkbox", { name: model })).toBeChecked();
   }
+  const additionalModel = page.getByRole("checkbox", { name: "Qwen3.6-27B" });
+  await additionalModel.check();
+  await expect(modelTrigger).toHaveText("5 models selected");
+  await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(10);
+  await additionalModel.uncheck();
+  await expect(modelTrigger).toHaveText("4 models selected");
+  await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(8);
   await page.keyboard.press("Escape");
 
   const bcpLinkBars = comparisonChart.locator(".recharts-rectangle.chart-series-bcp-link");

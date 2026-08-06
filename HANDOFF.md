@@ -65,8 +65,9 @@ Last updated: 2026-08-06
 
 ### Chart Logic
 
-- The comparison section offers Tongyi-DeepResearch-30B-A3B, SearchAgent-Zero, WebExplorer-8B,
-  and WebSailor-32B through a multi-select model picker; at least one model remains selected.
+- The comparison section offers every leaderboard model through a multi-select model picker. It
+  initially selects Tongyi-DeepResearch-30B-A3B, SearchAgent-Zero, WebExplorer-8B, and WebSailor-32B;
+  at least one model remains selected.
 - Selected models are rendered together in one grouped chart with BCP-Link as the left bar and BCP as
   the right bar; the metric selector applies to all selected models.
 - The shared chart uses a focused padded Y-axis domain; it starts at zero only when one compared value

@@ -55,7 +55,7 @@ interface LeaderboardAppProps {
   csvText?: string;
 }
 
-const COMPARISON_MODEL_NAMES = [
+const DEFAULT_COMPARISON_MODEL_NAMES = [
   "Tongyi-DeepResearch-30B-A3B",
   "SearchAgent-Zero",
   "WebExplorer-8B",
@@ -334,10 +334,12 @@ function LeaderboardTable({
 }
 
 function ComparisonModelPicker({
+  availableModels,
   selectedModels,
   copy,
   onToggle,
 }: {
+  availableModels: string[];
   selectedModels: string[];
   copy: Translation["comparison"];
   onToggle: (model: string) => void;
@@ -390,7 +392,7 @@ function ComparisonModelPicker({
           role="group"
           aria-label={copy.modelPickerLabel}
         >
-          {COMPARISON_MODEL_NAMES.map((modelName) => {
+          {availableModels.map((modelName) => {
             const checked = selectedModels.includes(modelName);
             return (
               <label key={modelName}>
@@ -419,12 +421,34 @@ function ComparisonChart({
   language: Language;
   copy: Translation;
 }) {
+  const availableModelNames = useMemo(
+    () =>
+      [...models]
+        .sort((left, right) => {
+          const accuracyDifference =
+            (right.bcpLink?.accuracy ?? Number.NEGATIVE_INFINITY) -
+            (left.bcpLink?.accuracy ?? Number.NEGATIVE_INFINITY);
+          return accuracyDifference || left.model.localeCompare(right.model);
+        })
+        .map((model) => model.model),
+    [models],
+  );
   const [selectedMetric, setSelectedMetric] = useState<MetricKey>("accuracy");
-  const [selectedModels, setSelectedModels] = useState<string[]>(() => [
-    ...COMPARISON_MODEL_NAMES,
-  ]);
+  const [selectedModels, setSelectedModels] = useState<string[]>(() => {
+    const preferred = availableModelNames.filter((modelName) =>
+      DEFAULT_COMPARISON_MODEL_NAMES.includes(modelName as (typeof DEFAULT_COMPARISON_MODEL_NAMES)[number]),
+    );
+    return preferred.length > 0 ? preferred : availableModelNames.slice(0, 1);
+  });
   const selectId = useId();
   const metricText = copy.metrics[selectedMetric];
+
+  useEffect(() => {
+    setSelectedModels((current) => {
+      const available = current.filter((modelName) => availableModelNames.includes(modelName));
+      return available.length > 0 ? available : availableModelNames.slice(0, 1);
+    });
+  }, [availableModelNames]);
 
   const handleModelToggle = (modelName: string) => {
     setSelectedModels((current) => {
@@ -435,20 +459,20 @@ function ComparisonChart({
       } else {
         next.add(modelName);
       }
-      return COMPARISON_MODEL_NAMES.filter((name) => next.has(name));
+      return availableModelNames.filter((name) => next.has(name));
     });
   };
 
   const chartData = useMemo(() => {
     const modelsByName = new Map(models.map((model) => [model.model, model]));
-    return COMPARISON_MODEL_NAMES.flatMap((modelName) => {
+    return availableModelNames.flatMap((modelName) => {
       if (!selectedModels.includes(modelName)) return [];
       const model = modelsByName.get(modelName);
       const bcp = model?.bcp?.[selectedMetric] ?? null;
       const bcpLink = model?.bcpLink?.[selectedMetric] ?? null;
       return bcp === null || bcpLink === null ? [] : [{ model: modelName, bcp, bcpLink }];
     });
-  }, [models, selectedMetric, selectedModels]);
+  }, [availableModelNames, models, selectedMetric, selectedModels]);
 
   const chartDomain = getComparisonValuesDomain(
     chartData.flatMap((datum) => [datum.bcpLink, datum.bcp]),
@@ -467,6 +491,7 @@ function ComparisonChart({
         </div>
         <div className="comparison-controls">
           <ComparisonModelPicker
+            availableModels={availableModelNames}
             selectedModels={selectedModels}
             copy={copy.comparison}
             onToggle={handleModelToggle}

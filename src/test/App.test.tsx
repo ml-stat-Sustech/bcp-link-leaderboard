@@ -151,7 +151,7 @@ describe("LeaderboardApp", () => {
     render(<LeaderboardApp csvText={TEST_CSV} />);
     expect(modelNames()).toEqual(["Beta", "Alpha", "Gamma"]);
     expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("3 models");
-    expect(screen.getByText("0 models with comparable Accuracy data")).toBeInTheDocument();
+    expect(screen.getByText("1 model with comparable Accuracy data")).toBeInTheDocument();
   });
 
   it("selects one or more models for a shared comparison chart", async () => {
@@ -163,6 +163,8 @@ describe("LeaderboardApp", () => {
 
     const trigger = screen.getByRole("button", { name: "Choose comparison models" });
     await user.click(trigger);
+    expect(screen.getAllByRole("checkbox")).toHaveLength(9);
+    expect(screen.getByRole("checkbox", { name: "Qwen3.6-27B" })).not.toBeChecked();
     const tongyi = screen.getByRole("checkbox", { name: "Tongyi-DeepResearch-30B-A3B" });
     const searchAgent = screen.getByRole("checkbox", { name: "SearchAgent-Zero" });
     const webExplorer = screen.getByRole("checkbox", { name: "WebExplorer-8B" });
