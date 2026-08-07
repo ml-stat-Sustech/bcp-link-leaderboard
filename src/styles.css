@@ -1083,7 +1083,7 @@ tbody tr:hover .model-column {
 .metric-header {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 3px;
 }
 
@@ -1091,7 +1091,7 @@ tbody tr:hover .model-column {
   min-height: 34px;
   display: inline-flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 5px;
   padding: 3px 1px;
   color: inherit;
@@ -1139,25 +1139,8 @@ tbody tr:hover .model-column {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  text-align: left;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-}
-
-.metric-value-searchCalls,
-.metric-value-visitCalls,
-.metric-value-turns,
-.metric-value-linkFollowingVisitCalls {
-  text-align: center;
-}
-
-.metric-column-searchCalls .metric-header,
-.metric-column-visitCalls .metric-header,
-.metric-column-turns .metric-header,
-.metric-column-linkFollowingVisitCalls .metric-header,
-.metric-column-searchCalls .sort-button,
-.metric-column-visitCalls .sort-button,
-.metric-column-turns .sort-button,
-.metric-column-linkFollowingVisitCalls .sort-button {
-  justify-content: center;
 }
 
 .metric-column-searchCalls .sort-button span,

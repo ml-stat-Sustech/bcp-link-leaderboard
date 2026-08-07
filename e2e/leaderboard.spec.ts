@@ -103,9 +103,14 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     const legend = document.querySelector(".comparison-series-legend")!.getBoundingClientRect();
     const getFontSize = (selector: string) =>
       getComputedStyle(document.querySelector(selector)!).fontSize;
-    const valueCells = ["searchCalls", "visitCalls", "turns", "linkFollowingVisitCalls"].map(
-      (key) => getComputedStyle(document.querySelector(`.metric-value-${key}`)!).textAlign,
-    );
+    const valueCells = [
+      "accuracy",
+      "recall",
+      "searchCalls",
+      "visitCalls",
+      "turns",
+      "linkFollowingVisitCalls",
+    ].map((key) => getComputedStyle(document.querySelector(`.metric-value-${key}`)!).textAlign);
     const searchWidth = document
       .querySelector(".metric-column-searchCalls")!
       .getBoundingClientRect().width;
@@ -138,6 +143,12 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
         .trim(),
       rankHeaderTextAlign: getComputedStyle(document.querySelector("thead .rank-column")!).textAlign,
       modelHeaderTextAlign: getComputedStyle(document.querySelector("thead .model-column")!).textAlign,
+      metricHeaderAlignment: Array.from(document.querySelectorAll(".metric-header"), (header) =>
+        getComputedStyle(header).justifyContent,
+      ),
+      metricSortAlignment: Array.from(document.querySelectorAll(".sort-button"), (button) =>
+        getComputedStyle(button).justifyContent,
+      ),
       firstRowBackground: getComputedStyle(document.querySelector("tbody tr:nth-child(1) > :last-child")!)
         .backgroundColor,
       secondRowBackground: getComputedStyle(document.querySelector("tbody tr:nth-child(2) > :last-child")!)
@@ -198,13 +209,15 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     testInfo.project.name.startsWith("mobile") ? "15px" : "17px",
   );
   expect(visualDetails.introActionFont).toBe("14px");
-  expect(visualDetails.valueCells).toEqual(["center", "center", "center", "center"]);
+  expect(visualDetails.valueCells).toEqual(Array(6).fill("left"));
   expect(visualDetails.searchWidth).toBeGreaterThanOrEqual(visualDetails.accuracyWidth);
   expect(visualDetails.visitWidth).toBeGreaterThanOrEqual(visualDetails.accuracyWidth);
   expect(visualDetails.modelWidthToken).toBe(testInfo.project.name.startsWith("mobile") ? "210px" : "235px");
   expect(visualDetails.modelWidth).toBeLessThan(270);
   expect(visualDetails.rankHeaderTextAlign).toBe("center");
   expect(visualDetails.modelHeaderTextAlign).toBe("left");
+  expect(visualDetails.metricHeaderAlignment).toEqual(Array(6).fill("flex-start"));
+  expect(visualDetails.metricSortAlignment).toEqual(Array(6).fill("flex-start"));
   expect(visualDetails.firstRowBackground).toBe(visualDetails.secondRowBackground);
   expect(visualDetails.searchHeaderWhiteSpace).toBe("nowrap");
   expect(visualDetails.visitHeaderWhiteSpace).toBe("nowrap");
