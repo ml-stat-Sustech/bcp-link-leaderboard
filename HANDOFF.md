@@ -11,6 +11,8 @@ Last updated: 2026-08-07
 - GitHub private repository: `https://github.com/Samanthe-H/bcp-link-leaderboard`.
 - The local `main` branch tracks `origin/main` over SSH.
 - Cloudflare Pages production site: `https://bcp-link-leaderboard.pages.dev/`.
+- Current deployed UI source commit: `034ee08`.
+- Current immutable deployment: `https://e35b67a8.bcp-link-leaderboard.pages.dev/`.
 - The current data, theme, introduction, leaderboard, and comparison-chart work is complete.
   TypeScript, production build, unit/component tests, end-to-end tests, and desktop/mobile visual
   checks pass.
@@ -68,13 +70,15 @@ Last updated: 2026-08-07
 - Kept the 50-turn limit directly below the tool panels.
 - Evaluation Rules renders the three benchmark principles as separate framed cards, shows a six-step
   Query → Search → Visit → second-hop Visit → Evidence → Answer path with a directional arrow, and
-  uses simplified Search and Visit headings above the detailed tool contracts. The path line sits
-  slightly above the flow-node centers so the arrow has more visual breathing room.
+  uses simplified Search and Visit headings above the detailed tool contracts. The path line and
+  arrow were moved upward by 8px so the line aligns with the flow-node centers without crowding the
+  step labels.
 - Metric Guide uses a flat six-card grid instead of category columns: three cards per row on desktop,
   two on tablet, and one on mobile. Its taller cards show the unit, category, enlarged metric name,
   and concise definition directly on the surface. Each card carries its Answer quality, Tool behavior,
-  or Link following category in the upper-right badge; the three badge categories use distinct
-  theme-aware colors. Hover or keyboard focus previews a floating detail panel; clicking pins
+  or Link following category in the upper-right badge. Answer quality uses the theme primary color,
+  Tool behavior uses the dark chart-support color, and Link following uses the accent color. Hover
+  or keyboard focus previews a floating detail panel; clicking pins
   selectable detail text. Clicking inside the detail panel keeps it pinned; clicking anywhere else,
   clicking the trigger again, or pressing Escape clears it. Detail panels open downward for the first
   card row and upward for the second row so the lower cards are not obscured by the footer or viewport
@@ -92,6 +96,8 @@ Last updated: 2026-08-07
   is zero.
 - Multiple models share one chart. The chart uses internal horizontal scrolling when its stable
   minimum width exceeds the viewport, without causing page-level overflow.
+- The comparison workspace allows the model menu to escape the chart clipping boundary; the menu
+  uses a viewport-relative maximum height and remains inside desktop and mobile viewports.
 - Chart grid, axes, tooltip, cursor, BCP bars, and BCP-Link bars reference semantic CSS variables.
 - Intended series variables are `--chart-bcp` and `--chart-bcp-link`.
 
@@ -108,9 +114,10 @@ The current UI upgrade is complete.
 - The introduction includes compact links to the rankings and evaluation protocol. The leaderboard
   keeps search and internal table scrolling without a separate expanded dialog. Its Model column is
   narrower on desktop, Search Calls and Visit Calls stay on one line, and the long Link-following
-  Visit Calls column is compact enough to wrap its header instead of leaving excess empty space. All
-  metric headers and values are left-aligned; Rank stays centered and Model stays left-aligned. The
-  footer includes a right-aligned Back to top action.
+  Visit Calls column uses a 190px width token and wraps its header instead of leaving excess empty
+  space. All metric headers, including wrapped label text, and all metric values are left-aligned;
+  Rank stays centered and Model stays left-aligned. The footer includes a right-aligned Back to top
+  action.
 - The sticky header, theme picker, palette swatches, segmented language control, focus/hover states,
   and 320px+ responsive layouts are styled. Theme selection restores focus without changing the
   current page scroll position.
@@ -121,10 +128,12 @@ The current UI upgrade is complete.
   Visit Calls, and Turns; four decimals for Link-following Visit Calls.
 - Component tests cover all themes, persistence, picker dismissal, exact section order, fixed metric
   precision, the all-model comparison picker, select-all/clear behavior, Chinese UI with English
-  metrics, state preservation, leaderboard search, and Metric Guide preview/pinning.
+  metrics, state preservation, leaderboard search, and Metric Guide preview, pinning, inside-click,
+  outside-click, and Escape behavior.
 - Playwright covers both desktop and Pixel 7 viewports, page overflow, one/multiple comparison-model
   selection, shared-chart bar counts, BCP-Link/BCP geometry, tooltip behavior, theme-driven chart
-  fills, and all five palette screenshots.
+  fills, all six metric header/value alignments, lower-card popover placement, outside-click dismissal,
+  and all five palette screenshots.
 - Visual checks cover the single-column benchmark introduction, shared comparison chart, desktop and
   mobile layouts, model-menu containment, and internal chart scrolling.
 
@@ -149,13 +158,16 @@ npm test           PASS: 26 passed
 npm run test:e2e   PASS: 10 passed across desktop and mobile Chromium
 ```
 
-Deployment verification completed on 2026-08-06:
+Deployment verification completed on 2026-08-07:
 
 ```text
 GitHub repository visibility  PRIVATE
 GitHub default branch         main
-Cloudflare unauthenticated    HTTP 401
-Cloudflare authenticated      HTTP 200
+Deployed source commit        034ee08
+Immutable deployment          https://e35b67a8.bcp-link-leaderboard.pages.dev/
+Production unauthenticated    HTTP 401
+Immutable unauthenticated     HTTP 401
+Authenticated access          HTTP 200 (previously verified; secrets unchanged)
 Production HTML               current BCP-Link dashboard assets loaded
 Production data               9 models; WebSailor-32B included
 Comparison picker             9 models available; 4 selected by default; select-all/clear supported
@@ -168,6 +180,10 @@ Comparison rendering          0/1/2/5/9 selected models render 0/2/4/10/18 bars
 - Cloudflare Pages project: `bcp-link-leaderboard`
 - Production branch: `main`
 - Production URL: `https://bcp-link-leaderboard.pages.dev/`
+- Current deployed UI source commit: `034ee08`
+- Current immutable deployment URL: `https://e35b67a8.bcp-link-leaderboard.pages.dev/`
+- GitHub stores the private source and version history; the live site is hosted by Cloudflare Pages,
+  not GitHub Pages.
 - Production deployments are direct uploads from the current `main` build. Use
   `npx wrangler@3.114.17 pages deployment list --project-name bcp-link-leaderboard` to inspect the
   latest source commit and immutable deployment URL without relying on stale handoff metadata.
