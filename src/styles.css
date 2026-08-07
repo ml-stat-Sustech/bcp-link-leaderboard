@@ -1616,7 +1616,7 @@ tbody tr:hover .model-column {
   content: "";
   height: 2px;
   position: absolute;
-  top: 61px;
+  top: 53px;
   right: calc(100% / 12 - 18px);
   left: calc(100% / 12);
   background: var(--border-strong);
@@ -1625,7 +1625,7 @@ tbody tr:hover .model-column {
 .evaluation-flow::after {
   content: "";
   position: absolute;
-  top: 56px;
+  top: 48px;
   right: calc(100% / 12 - 25px);
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent;
@@ -1877,8 +1877,6 @@ tbody tr:hover .model-column {
 .metric-card-category {
   max-width: 124px;
   padding: 5px 7px;
-  color: var(--primary);
-  background: var(--primary-soft);
   border-radius: 5px;
   font-size: 10px;
   font-weight: 760;
@@ -1886,9 +1884,19 @@ tbody tr:hover .model-column {
   text-align: center;
 }
 
-.metric-card-category-linkFollowing {
+.metric-card-category-answerQuality {
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.metric-card-category-toolBehavior {
   color: var(--accent);
   background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+}
+
+.metric-card-category-linkFollowing {
+  color: var(--chart-bcp);
+  background: color-mix(in srgb, var(--chart-bcp) 10%, var(--surface));
 }
 
 .metric-card[data-active="true"] .metric-card-trigger,

@@ -161,6 +161,8 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       ).transitionDuration,
       flowArrowWidth: getComputedStyle(document.querySelector(".evaluation-flow")!, "::after")
         .borderLeftWidth,
+      flowLineTop: getComputedStyle(document.querySelector(".evaluation-flow")!, "::before").top,
+      flowArrowTop: getComputedStyle(document.querySelector(".evaluation-flow")!, "::after").top,
       principleParentBorder: getComputedStyle(document.querySelector(".rule-principles")!).borderWidth,
       principleCardBorder: getComputedStyle(document.querySelector(".rule-principles article")!)
         .borderWidth,
@@ -176,6 +178,10 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       ).display,
       languageCodeDisplay: getComputedStyle(document.querySelector(".language-code")!).display,
       languageNameDisplay: getComputedStyle(document.querySelector(".language-name")!).display,
+      metricCategoryColors: ["answerQuality", "toolBehavior", "linkFollowing"].map(
+        (category) =>
+          getComputedStyle(document.querySelector(`.metric-card-category-${category}`)!).color,
+      ),
     };
   });
   expect(visualDetails.legendInset).toBeGreaterThanOrEqual(
@@ -211,6 +217,8 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.chartOverflowY).toBe("hidden");
   expect(visualDetails.flowTransitionDuration).toBe("0s");
   expect(visualDetails.flowArrowWidth).toBe("8px");
+  expect(visualDetails.flowLineTop).toBe("53px");
+  expect(visualDetails.flowArrowTop).toBe("48px");
   expect(visualDetails.principleParentBorder).toBe("0px");
   expect(visualDetails.principleCardBorder).toBe("1px");
   expect(visualDetails.toolSpecsPaddingBottom).toBe("10px");
@@ -226,6 +234,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.languageNameDisplay === "none").toBe(
     testInfo.project.name.startsWith("mobile"),
   );
+  expect(new Set(visualDetails.metricCategoryColors).size).toBe(3);
 
   const ambientStartPosition = await page.evaluate(
     () => getComputedStyle(document.body, "::before").backgroundPosition,

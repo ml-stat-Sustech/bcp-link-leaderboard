@@ -68,13 +68,15 @@ Last updated: 2026-08-07
 - Kept the 50-turn limit directly below the tool panels.
 - Evaluation Rules renders the three benchmark principles as separate framed cards, shows a six-step
   Query → Search → Visit → second-hop Visit → Evidence → Answer path with a directional arrow, and
-  uses simplified Search and Visit headings above the detailed tool contracts.
+  uses simplified Search and Visit headings above the detailed tool contracts. The path line sits
+  slightly above the flow-node centers so the arrow has more visual breathing room.
 - Metric Guide uses a flat six-card grid instead of category columns: three cards per row on desktop,
   two on tablet, and one on mobile. Its taller cards show the unit, category, enlarged metric name,
   and concise definition directly on the surface. Each card carries its Answer quality, Tool behavior,
-  or Link following category in the upper-right badge. Hover or keyboard focus previews a floating
-  detail panel; clicking pins selectable detail text, clicking again returns to preview behavior, and
-  Escape clears a pinned panel.
+  or Link following category in the upper-right badge; the three badge categories use distinct
+  theme-aware colors. Hover or keyboard focus previews a floating detail panel; clicking pins
+  selectable detail text, clicking again returns to preview behavior, and Escape clears a pinned
+  panel.
 
 ### Chart Logic
 
