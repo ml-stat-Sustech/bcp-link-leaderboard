@@ -694,7 +694,7 @@ function ComparisonXAxisTick({
       <title>{displayName}</title>
       <text textAnchor="middle">
         {lines.map((line, index) => (
-          <tspan key={line} x="0" dy={index === 0 ? 18 : 16}>
+          <tspan key={line} x="0" dy={index === 0 ? 20 : 18}>
             {line}
           </tspan>
         ))}
@@ -833,7 +833,7 @@ function ComparisonChart({
   const chartDomain = getComparisonValuesDomain(
     chartData.flatMap((datum) => [datum.bcpLink, datum.bcp]),
   );
-  const chartMinWidth = Math.max(720, chartData.length * 180);
+  const chartMinWidth = Math.max(720, chartData.length * 220);
 
   return (
     <section
@@ -849,33 +849,6 @@ function ComparisonChart({
             {copy.comparison.comparable(chartData.length, metricText.label)}
           </p>
         </div>
-
-        <ol className="comparison-insights" aria-label={copy.comparison.insightsLabel}>
-          <li>
-            <span className="comparison-insight-index" aria-hidden="true">
-              01
-            </span>
-            <p>
-              {copy.comparison.trainedInsightBefore}
-              <strong>BCP-Link</strong>
-              {copy.comparison.trainedInsightBetween}
-              <strong>Accuracy</strong>
-              {copy.comparison.trainedInsightAfter}
-            </p>
-          </li>
-          <li>
-            <span className="comparison-insight-index" aria-hidden="true">
-              02
-            </span>
-            <p>
-              {copy.comparison.untrainedInsightBefore}
-              <strong>BCP</strong>
-              {copy.comparison.untrainedInsightBetween}
-              <strong>BCP-Link</strong>
-              {copy.comparison.untrainedInsightAfter}
-            </p>
-          </li>
-        </ol>
 
         <div className="comparison-workspace">
           <div className="comparison-controls">
@@ -931,13 +904,13 @@ function ComparisonChart({
                     data={chartData}
                     barGap={6}
                     barCategoryGap="20%"
-                    margin={{ top: 18, right: 24, bottom: 54, left: 10 }}
+                    margin={{ top: 18, right: 24, bottom: 66, left: 10 }}
                   >
                     <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
                     <XAxis
                       dataKey="model"
                       interval={0}
-                      height={70}
+                      height={82}
                       tick={<ComparisonXAxisTick />}
                       tickLine={false}
                       axisLine={{ stroke: "var(--border-strong)" }}
@@ -947,7 +920,7 @@ function ComparisonChart({
                       allowDataOverflow={false}
                       tickCount={5}
                       width={72}
-                      tick={{ fill: "var(--muted)", fontSize: 11 }}
+                      tick={{ fill: "var(--muted)", fontSize: 13 }}
                       tickLine={false}
                       axisLine={false}
                       tickFormatter={(value: number) =>
@@ -1004,6 +977,25 @@ function ComparisonChart({
             </div>
           )}
         </div>
+
+        <ol className="comparison-insights" aria-label={copy.comparison.insightsLabel}>
+          <li>
+            <span className="comparison-insight-index" aria-hidden="true">
+              01
+            </span>
+            <p>
+              {copy.comparison.trainedInsightBefore}
+              <strong>{copy.comparison.trainedInsightEmphasis}</strong>
+              {copy.comparison.trainedInsightAfter}
+            </p>
+          </li>
+          <li>
+            <span className="comparison-insight-index" aria-hidden="true">
+              02
+            </span>
+            <p>{copy.comparison.untrainedInsight}</p>
+          </li>
+        </ol>
       </div>
     </section>
   );

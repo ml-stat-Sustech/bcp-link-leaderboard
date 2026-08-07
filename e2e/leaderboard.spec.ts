@@ -184,6 +184,8 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       modelValueFont: getFontSize(".comparison-model-trigger"),
       metricValueFont: getFontSize(".select-wrap select"),
       axisFont: getFontSize(".comparison-axis-label text"),
+      sectionHeadingFont: getFontSize(".section-heading h2"),
+      sectionNoteFont: getFontSize(".section-note"),
       searchFont: getFontSize(".search-field input"),
       introSubtitleFont: getFontSize(".intro-subtitle"),
       introBodyFont: getFontSize(".intro-body p"),
@@ -209,6 +211,15 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       insightBorder: getComputedStyle(document.querySelector(".comparison-insights")!).borderWidth,
       insightBackground: getComputedStyle(document.querySelector(".comparison-insights")!)
         .backgroundColor,
+      insightFollowsChart:
+        document.querySelector(".comparison-workspace")!.nextElementSibling ===
+        document.querySelector(".comparison-insights"),
+      insightStrongText: Array.from(
+        document.querySelectorAll(".comparison-insights strong"),
+        (element) => element.textContent,
+      ),
+      principleBodyFont: getFontSize(".rule-principles p"),
+      metricSummaryFont: getFontSize(".metric-card-summary"),
       valueCells,
       searchWidth,
       visitWidth,
@@ -279,13 +290,19 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   );
   expect(visualDetails.controlLabelFont).toBe(visualDetails.modelValueFont);
   expect(visualDetails.controlLabelFont).toBe(visualDetails.metricValueFont);
-  expect(Number.parseFloat(visualDetails.axisFont)).toBeGreaterThanOrEqual(13);
-  expect(visualDetails.searchFont).toBe("13px");
+  expect(Number.parseFloat(visualDetails.axisFont)).toBeGreaterThanOrEqual(15);
+  expect(visualDetails.sectionHeadingFont).toBe(
+    testInfo.project.name.startsWith("mobile") ? "29px" : "36px",
+  );
+  expect(visualDetails.sectionNoteFont).toBe(
+    testInfo.project.name.startsWith("mobile") ? "15px" : "16px",
+  );
+  expect(visualDetails.searchFont).toBe("14px");
   expect(visualDetails.introSubtitleFont).toBe(
     testInfo.project.name.startsWith("mobile") ? "17px" : "21px",
   );
   expect(visualDetails.introBodyFont).toBe(
-    testInfo.project.name.startsWith("mobile") ? "15px" : "17px",
+    testInfo.project.name.startsWith("mobile") ? "16px" : "17px",
   );
   expect(visualDetails.introActionFont).toBe("14px");
   expect(visualDetails.tableValueFont).toBe("16px");
@@ -302,10 +319,14 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.downloadBorder).toBe("0px");
   expect(visualDetails.downloadBackground).toBe("rgba(0, 0, 0, 0)");
   expect(visualDetails.insightFont).toBe(
-    testInfo.project.name.startsWith("mobile") ? "16px" : "18px",
+    testInfo.project.name.startsWith("mobile") ? "17px" : "18px",
   );
   expect(visualDetails.insightBorder).toBe("0px");
   expect(visualDetails.insightBackground).toBe("rgba(0, 0, 0, 0)");
+  expect(visualDetails.insightFollowsChart).toBe(true);
+  expect(visualDetails.insightStrongText).toEqual(["higher Accuracy"]);
+  expect(Number.parseFloat(visualDetails.principleBodyFont)).toBeGreaterThanOrEqual(15);
+  expect(Number.parseFloat(visualDetails.metricSummaryFont)).toBeGreaterThanOrEqual(15);
   expect(visualDetails.valueCells).toEqual(Array(6).fill("left"));
   expect(visualDetails.searchWidth).toBeGreaterThanOrEqual(visualDetails.accuracyWidth);
   expect(visualDetails.visitWidth).toBeGreaterThanOrEqual(visualDetails.accuracyWidth);
@@ -336,7 +357,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.toolSpecsPaddingBottom).toBe("10px");
   expect(visualDetails.metricGridColumns).toBe(testInfo.project.name.startsWith("mobile") ? 1 : 3);
   expect(visualDetails.metricCardHeight).toBeGreaterThanOrEqual(
-    testInfo.project.name.startsWith("mobile") ? 176 : 196,
+    testInfo.project.name.startsWith("mobile") ? 192 : 208,
   );
   expect(Number.parseFloat(visualDetails.metricNameFont)).toBeGreaterThanOrEqual(19);
   expect(visualDetails.metricSummaryDisplay).not.toBe("none");

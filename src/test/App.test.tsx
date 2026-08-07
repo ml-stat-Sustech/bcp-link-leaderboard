@@ -73,6 +73,11 @@ describe("LeaderboardApp", () => {
     expect(comparisonInsights).toHaveTextContent(
       "For models without relevant tool-use training, the overall performance difference between BCP and BCP-Link is limited.",
     );
+    expect(comparisonInsights.querySelectorAll("strong")).toHaveLength(1);
+    expect(comparisonInsights.querySelector("strong")).toHaveTextContent("higher Accuracy");
+    expect(container.querySelector(".comparison-workspace")?.nextElementSibling).toBe(
+      comparisonInsights,
+    );
     expect(screen.getByText(/Gold evidence may not appear/)).toBeVisible();
     expect(screen.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
     expect(screen.getByText(/40,000-character limit · no summarizer/)).toBeVisible();
