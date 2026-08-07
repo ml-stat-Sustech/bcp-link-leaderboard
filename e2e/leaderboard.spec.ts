@@ -23,13 +23,25 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.locator(".intro-body p > strong").first()).toHaveText("BCP-Link");
   await expect(page.getByRole("button", { name: "Code on GitHub, coming soon" })).toBeDisabled();
   await expect(
-    page.getByRole("button", { name: "Dataset on Hugging Face, coming soon" }),
-  ).toBeDisabled();
+    page.getByRole("link", { name: "Tevatron/browsecomp-plus-corpus", exact: true }),
+  ).toHaveAttribute("href", "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus");
+  await expect(
+    page.getByRole("link", {
+      name: "Open Tevatron/browsecomp-plus-corpus on Hugging Face",
+    }),
+  ).toHaveAttribute("href", "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus");
   await expect(page.getByTestId("model-name")).toHaveCount(9);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "One environment, the same tools" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "One fixed process, two standard tools" }),
+  ).toBeVisible();
   await expect(page.locator(".rule-principles article")).toHaveCount(3);
+  await expect(page.locator(".rule-principles h3")).toHaveText([
+    "Reproducible by design",
+    "Link-aware navigation",
+    "Two standard tools",
+  ]);
   await expect(page.locator(".evaluation-flow li")).toHaveCount(6);
   await expect(page.getByRole("heading", { name: "Search", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Visit", exact: true })).toBeVisible();
@@ -55,7 +67,30 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     "href",
     "#rules",
   );
+  const downloadCsv = page.getByRole("link", { name: "Download leaderboard results as CSV" });
+  await expect(downloadCsv).toHaveAttribute("download", "bcp-link-results.csv");
   await expect(page.getByRole("link", { name: "Back to top" })).toHaveAttribute("href", "#top");
+
+  const tableShell = page.locator(".table-shell");
+  const tableScroll = page.locator(".table-scroll");
+  await expect(tableShell).toHaveAttribute("data-scrollable", "true");
+  await expect(tableShell).toHaveAttribute("data-at-bottom", "false");
+  await expect
+    .poll(() => tableShell.evaluate((element) => getComputedStyle(element, "::after").opacity))
+    .toBe("1");
+  await tableScroll.evaluate((element) => {
+    element.scrollTop = element.scrollHeight;
+    element.dispatchEvent(new Event("scroll"));
+  });
+  await expect(tableShell).toHaveAttribute("data-at-bottom", "true");
+  await expect
+    .poll(() => tableShell.evaluate((element) => getComputedStyle(element, "::after").opacity))
+    .toBe("0");
+  await tableScroll.evaluate((element) => {
+    element.scrollTop = 0;
+    element.dispatchEvent(new Event("scroll"));
+  });
+  await expect(tableShell).toHaveAttribute("data-at-bottom", "false");
   const comparisonChart = page.getByTestId("comparison-chart");
   await expect(comparisonChart).toHaveCount(1);
   const modelTrigger = page.getByRole("button", { name: "Choose comparison models" });
@@ -287,6 +322,10 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     path: testInfo.outputPath("leaderboard-full.png"),
     fullPage: true,
   });
+
+  const downloadEvent = page.waitForEvent("download");
+  await downloadCsv.click();
+  expect((await downloadEvent).suggestedFilename()).toBe("bcp-link-results.csv");
 });
 
 test("keeps compact navigation and menus inside narrow viewports", async ({ page }) => {

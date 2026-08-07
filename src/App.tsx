@@ -10,6 +10,7 @@ import {
   Check,
   ChevronDown,
   Database,
+  Download,
   Github,
   Info,
   Link2,
@@ -63,6 +64,9 @@ interface SortState {
 interface LeaderboardAppProps {
   csvText?: string;
 }
+
+const BROWSECOMP_PLUS_CORPUS_URL =
+  "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus";
 
 const DEFAULT_COMPARISON_MODEL_NAMES = [
   "Tongyi-DeepResearch-30B-A3B",
@@ -340,16 +344,27 @@ function MetricHeader({
 
 function LeaderboardTable({
   models,
+  csvText,
   language,
   copy,
 }: {
   models: ModelResults[];
+  csvText: string;
   language: Language;
   copy: Translation;
 }) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortState>({ key: "accuracy", direction: "desc" });
+  const [tableScrollState, setTableScrollState] = useState({
+    scrollable: false,
+    atBottom: true,
+  });
+  const tableScrollRef = useRef<HTMLDivElement>(null);
   const ranks = useMemo(() => getAccuracyRanks(models), [models]);
+  const csvDownloadHref = useMemo(
+    () => `data:text/csv;charset=utf-8,${encodeURIComponent(csvText)}`,
+    [csvText],
+  );
 
   const visibleModels = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -364,6 +379,27 @@ function LeaderboardTable({
       direction: current.key === key && current.direction === "desc" ? "asc" : "desc",
     }));
   };
+
+  const updateTableScrollState = (element: HTMLDivElement) => {
+    const scrollable = element.scrollHeight > element.clientHeight + 1;
+    const atBottom =
+      !scrollable || element.scrollTop + element.clientHeight >= element.scrollHeight - 2;
+    setTableScrollState((current) =>
+      current.scrollable === scrollable && current.atBottom === atBottom
+        ? current
+        : { scrollable, atBottom },
+    );
+  };
+
+  useEffect(() => {
+    const tableScroll = tableScrollRef.current;
+    if (!tableScroll) return;
+
+    const update = () => updateTableScrollState(tableScroll);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [visibleModels.length]);
 
   const renderLeaderboardSurface = () => (
     <div className="leaderboard-surface">
@@ -386,8 +422,18 @@ function LeaderboardTable({
         </label>
       </div>
 
-      <div className="table-shell">
-        <div className="table-scroll" tabIndex={0} aria-label={copy.leaderboard.tableScrollLabel}>
+      <div
+        className="table-shell"
+        data-scrollable={tableScrollState.scrollable ? "true" : "false"}
+        data-at-bottom={tableScrollState.atBottom ? "true" : "false"}
+      >
+        <div
+          ref={tableScrollRef}
+          className="table-scroll"
+          tabIndex={0}
+          aria-label={copy.leaderboard.tableScrollLabel}
+          onScroll={(event) => updateTableScrollState(event.currentTarget)}
+        >
           <table>
             <colgroup>
               <col className="rank-column-track" />
@@ -481,6 +527,17 @@ function LeaderboardTable({
             </div>
           )}
         </div>
+      </div>
+      <div className="leaderboard-footer">
+        <a
+          className="download-csv"
+          href={csvDownloadHref}
+          download="bcp-link-results.csv"
+          aria-label={copy.leaderboard.downloadCsvLabel}
+        >
+          <Download aria-hidden="true" />
+          <span>{copy.leaderboard.downloadCsv}</span>
+        </a>
       </div>
     </div>
   );
@@ -1139,15 +1196,6 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
     }
   }, [copy.errors.unknown, csvText]);
 
-  const comparableModels = parsed.models.filter(
-    (model) =>
-      model.bcp !== null &&
-      model.bcpLink !== null &&
-      METRICS.every(
-        (metric) => model.bcp?.[metric.key] !== null && model.bcpLink?.[metric.key] !== null,
-      ),
-  ).length;
-
   return (
     <div id="top" className="app-shell">
       <header className="site-header">
@@ -1192,7 +1240,19 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                   <strong>BCP-Link</strong>{copy.intro.bodyOneAfterName}<code>search</code>
                   {copy.intro.bodyOneBetweenTools}<code>visit</code>{copy.intro.bodyOneAfterVisit}
                 </p>
-                <p>{copy.intro.bodyTwo}</p>
+                <p>
+                  {copy.intro.datasetBodyBeforeName}
+                  <a
+                    className="intro-dataset-link"
+                    href={BROWSECOMP_PLUS_CORPUS_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Tevatron/browsecomp-plus-corpus
+                  </a>
+                  {copy.intro.datasetBodyAfterName}
+                </p>
+                <p>{copy.intro.bodyThree}</p>
                 <div className="intro-actions">
                   <a className="intro-action intro-action-primary" href="#leaderboard">
                     {copy.intro.rankingsAction} <ArrowDownRight aria-hidden="true" />
@@ -1209,34 +1269,39 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                   >
                     <Github aria-hidden="true" /> <span>{copy.intro.codeAction}</span>
                   </button>
-                  <button
+                  <a
                     className="intro-action intro-action-resource"
-                    type="button"
-                    disabled
-                    title={`Hugging Face · ${copy.intro.comingSoon}`}
+                    href={BROWSECOMP_PLUS_CORPUS_URL}
+                    target="_blank"
+                    rel="noreferrer"
                     aria-label={copy.intro.datasetActionLabel}
                   >
                     <Database aria-hidden="true" /> <span>{copy.intro.datasetAction}</span>
-                  </button>
+                  </a>
                 </div>
                 <dl className="dataset-stats" aria-label={copy.stats.label}>
                   <div>
-                    <dt>{parsed.models.length}</dt>
-                    <dd>{` ${copy.stats.models(parsed.models.length).replace(String(parsed.models.length), "").trim()}`}</dd>
+                    <dt>{copy.stats.placeholder}</dt>
+                    <dd>{copy.stats.documents}</dd>
                   </div>
                   <div>
-                    <dt>{comparableModels}</dt>
-                    <dd>{` ${copy.stats.comparisons(comparableModels).replace(String(comparableModels), "").trim()}`}</dd>
+                    <dt>{copy.stats.placeholder}</dt>
+                    <dd>{copy.stats.links}</dd>
                   </div>
                   <div>
-                    <dt>{METRICS.length}</dt>
-                    <dd>{` ${copy.stats.metrics(METRICS.length).replace(String(METRICS.length), "").trim()}`}</dd>
+                    <dt>{copy.stats.placeholder}</dt>
+                    <dd>{copy.stats.queries}</dd>
                   </div>
                 </dl>
               </div>
             </div>
           </section>
-          <LeaderboardTable models={parsed.models} language={language} copy={copy} />
+          <LeaderboardTable
+            models={parsed.models}
+            csvText={csvText}
+            language={language}
+            copy={copy}
+          />
           <ComparisonChart models={parsed.models} language={language} copy={copy} />
           <EvaluationRules copy={copy} />
           <MetricGuide copy={copy} />

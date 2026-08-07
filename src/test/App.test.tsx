@@ -38,7 +38,12 @@ describe("LeaderboardApp", () => {
     );
     expect(screen.getByRole("link", { name: "Review protocol" })).toHaveAttribute("href", "#rules");
     expect(screen.getByRole("link", { name: "Back to top" })).toHaveAttribute("href", "#top");
-    expect(screen.queryByRole("link", { name: /BrowseComp-Plus/i })).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Tevatron/browsecomp-plus-corpus" }),
+    ).toHaveAttribute(
+      "href",
+      "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus",
+    );
     expect(screen.getByRole("heading", { name: "BCP-Link", level: 1 })).toBeVisible();
     expect(
       screen.getByText("Evaluating whether search agents can find and follow useful links."),
@@ -48,9 +53,16 @@ describe("LeaderboardApp", () => {
     );
     expect(screen.getByRole("button", { name: "Code on GitHub, coming soon" })).toBeDisabled();
     expect(
-      screen.getByRole("button", { name: "Dataset on Hugging Face, coming soon" }),
-    ).toBeDisabled();
-    expect(screen.getByRole("heading", { name: "One environment, the same tools" })).toBeVisible();
+      screen.getByRole("link", {
+        name: "Open Tevatron/browsecomp-plus-corpus on Hugging Face",
+      }),
+    ).toHaveAttribute(
+      "href",
+      "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus",
+    );
+    expect(
+      screen.getByRole("heading", { name: "One fixed process, two standard tools" }),
+    ).toBeVisible();
     expect(screen.getByRole("heading", { name: "How the leaderboard is measured" })).toBeVisible();
     expect(screen.getByText(/Gold evidence may not appear/)).toBeVisible();
     expect(screen.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
@@ -59,6 +71,9 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("heading", { name: /^Search$/ })).toBeVisible();
     expect(screen.getByRole("heading", { name: /^Visit$/ })).toBeVisible();
     expect(container.querySelectorAll(".rule-principles article")).toHaveLength(3);
+    expect(
+      Array.from(container.querySelectorAll(".rule-principles h3"), (heading) => heading.textContent),
+    ).toEqual(["Reproducible by design", "Link-aware navigation", "Two standard tools"]);
     expect(container.querySelectorAll(".evaluation-flow li")).toHaveLength(6);
     expect(container.querySelectorAll(".flow-step-search")).toHaveLength(1);
     expect(container.querySelectorAll(".flow-step-visit")).toHaveLength(2);
@@ -86,6 +101,14 @@ describe("LeaderboardApp", () => {
       "Link following",
     ]);
     expect(container.querySelector(".metric-group-heading")).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("Corpus documents");
+    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("Links");
+    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("Evaluation queries");
+    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("TBD");
+    expect(screen.getByRole("link", { name: "Download leaderboard results as CSV" })).toHaveAttribute(
+      "download",
+      "bcp-link-results.csv",
+    );
 
     const sectionIds = Array.from(container.querySelectorAll("main > section"), (section) => section.id);
     expect(sectionIds).toEqual(["about", "leaderboard", "comparison", "rules", "metrics"]);
@@ -116,7 +139,7 @@ describe("LeaderboardApp", () => {
 
     expect(screen.getByRole("link", { name: "排行榜" })).toBeVisible();
     expect(screen.getByRole("link", { name: "评测规则" })).toBeVisible();
-    expect(screen.getByRole("heading", { name: "统一环境，统一工具" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "固定流程，两种标准工具" })).toBeVisible();
     expect(document.documentElement.lang).toBe("zh-CN");
     expect(document.title).toBe("BCP-Link 模型排行榜");
   });
@@ -210,7 +233,9 @@ describe("LeaderboardApp", () => {
   it("uses accuracy ranking by default and keeps missing values last", () => {
     const { container } = render(<LeaderboardApp csvText={TEST_CSV} />);
     expect(modelNames()).toEqual(["Beta", "Alpha", "Gamma"]);
-    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("3 models");
+    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent(
+      "TBDCorpus documentsTBDLinksTBDEvaluation queries",
+    );
     expect(screen.getByText("1 model with comparable Accuracy data")).toBeInTheDocument();
     expect(container.querySelectorAll(".rank-medal")).toHaveLength(2);
     expect(container.querySelector(".rank-medal.rank-1")).toHaveTextContent("1");

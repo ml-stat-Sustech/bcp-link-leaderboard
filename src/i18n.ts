@@ -58,7 +58,9 @@ export interface Translation {
     bodyOneAfterName: string;
     bodyOneBetweenTools: string;
     bodyOneAfterVisit: string;
-    bodyTwo: string;
+    datasetBodyBeforeName: string;
+    datasetBodyAfterName: string;
+    bodyThree: string;
     rankingsAction: string;
     protocolAction: string;
     codeAction: string;
@@ -69,9 +71,10 @@ export interface Translation {
   };
   stats: {
     label: string;
-    models: (count: number) => string;
-    comparisons: (count: number) => string;
-    metrics: (count: number) => string;
+    placeholder: string;
+    documents: string;
+    links: string;
+    queries: string;
   };
   leaderboard: {
     kicker: string;
@@ -86,6 +89,8 @@ export interface Translation {
     sortStatus: (metric: string, direction: "asc" | "desc") => string;
     noMatches: (query: string) => string;
     showing: (visible: number, total: number) => string;
+    downloadCsv: string;
+    downloadCsvLabel: string;
   };
   comparison: {
     kicker: string;
@@ -188,7 +193,10 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         " is a link-aware search-agent benchmark built on BrowseComp-Plus. It uses a fixed corpus with standardized ",
       bodyOneBetweenTools: " and ",
       bodyOneAfterVisit: " tools so model results remain reproducible and directly comparable.",
-      bodyTwo:
+      datasetBodyBeforeName: "The frozen retrieval corpus is published as ",
+      datasetBodyAfterName:
+        ". It provides the shared BrowseComp-Plus document collection used by every run, keeping retrieval and followed links grounded in the same versioned snapshot rather than a changing live web.",
+      bodyThree:
         "Gold evidence may not appear in the initial search results, but can be reached through links inside retrieved pages. This leaderboard shows which models can recognize those links, navigate to the right evidence, and complete the search task accurately.",
       rankingsAction: "View rankings",
       protocolAction: "Review protocol",
@@ -196,13 +204,14 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       datasetAction: "Dataset",
       comingSoon: "Coming soon",
       codeActionLabel: "Code on GitHub, coming soon",
-      datasetActionLabel: "Dataset on Hugging Face, coming soon",
+      datasetActionLabel: "Open Tevatron/browsecomp-plus-corpus on Hugging Face",
     },
     stats: {
       label: "Dataset summary",
-      models: (count) => `${count} models`,
-      comparisons: (count) => `${count} paired runs`,
-      metrics: (count) => `${count} metrics`,
+      placeholder: "TBD",
+      documents: "Corpus documents",
+      links: "Links",
+      queries: "Evaluation queries",
     },
     leaderboard: {
       kicker: "Main results",
@@ -218,6 +227,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         `Sorted by ${metric}, ${direction === "asc" ? "ascending" : "descending"}`,
       noMatches: (query) => `No models match “${query}”.`,
       showing: (visible, total) => `Showing ${visible} of ${total} models`,
+      downloadCsv: "Download CSV",
+      downloadCsvLabel: "Download leaderboard results as CSV",
     },
     comparison: {
       kicker: "Benchmark comparison",
@@ -262,20 +273,21 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     },
     rules: {
       kicker: "Evaluation rules",
-      heading: "One environment, the same tools",
-      note: "Every model is evaluated against the same fixed resources and tool contract.",
+      heading: "One fixed process, two standard tools",
+      note:
+        "Every model is evaluated through the same reproducible pipeline with the same search and visit interfaces.",
       principles: [
         {
-          title: "Fixed benchmark environment",
-          body: "The corpus, query set, Elasticsearch index, prompts, and evaluation scripts stay fixed across model runs.",
-        },
-        {
-          title: "No live web access",
-          body: "Search and visit operate only on the local benchmark corpus, avoiding changes and failures from the live web.",
+          title: "Reproducible by design",
+          body: "Every run follows one fixed evaluation process: the same corpus, query set, Elasticsearch index, prompts, turn limit, and scoring scripts.",
         },
         {
           title: "Link-aware navigation",
           body: "Gold evidence can sit beyond the first search results, so agents must recognize and follow useful text links.",
+        },
+        {
+          title: "Two standard tools",
+          body: "All models receive the same two tools, search and visit, with identical inputs and outputs for a fair comparison.",
         },
       ],
       flowScrollLabel: "Evaluation path from query to answer",
@@ -399,7 +411,10 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         " 是基于 BrowseComp-Plus 构建的链接感知搜索智能体基准。它使用固定语料，以及标准化的 ",
       bodyOneBetweenTools: " 和 ",
       bodyOneAfterVisit: " 工具，使不同模型的结果可复现、可直接比较。",
-      bodyTwo:
+      datasetBodyBeforeName: "评测使用的冻结检索语料发布于 ",
+      datasetBodyAfterName:
+        "。它为每次运行提供同一版本的 BrowseComp-Plus 文档集合，使初始检索和链接跟随都基于固定快照，而不受实时网页变化影响。",
+      bodyThree:
         "关键证据不一定出现在初始搜索结果中，但可能通过检索页面内的链接到达。该排行榜用于衡量模型能否识别这些链接、导航至正确证据，并准确完成搜索任务。",
       rankingsAction: "查看排行榜",
       protocolAction: "阅读评测规则",
@@ -407,13 +422,14 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       datasetAction: "Dataset",
       comingSoon: "即将开放",
       codeActionLabel: "GitHub 上的代码，即将开放",
-      datasetActionLabel: "Hugging Face 上的数据集，即将开放",
+      datasetActionLabel: "在 Hugging Face 打开 Tevatron/browsecomp-plus-corpus",
     },
     stats: {
       label: "数据概览",
-      models: (count) => `${count} 个模型`,
-      comparisons: (count) => `${count} 个配对结果`,
-      metrics: (count) => `${count} 个指标`,
+      placeholder: "待补",
+      documents: "语料文档",
+      links: "链接",
+      queries: "评测问题",
     },
     leaderboard: {
       kicker: "主要结果",
@@ -421,7 +437,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       note: "统一 search 和 visit 工具 · 按答案准确率排名",
       searchLabel: "搜索模型",
       searchPlaceholder: "搜索模型",
-      tableScrollLabel: "可横向滚动的排行榜表格",
+      tableScrollLabel: "可横向和纵向滚动的排行榜表格",
       rank: "Rank",
       model: "Model",
       sortBy: (metric) => `按 ${metric} 排序`,
@@ -429,6 +445,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         `当前按 ${metric} ${direction === "asc" ? "升序" : "降序"}排列`,
       noMatches: (query) => `没有与“${query}”匹配的模型。`,
       showing: (visible, total) => `正在显示 ${visible} / ${total} 个模型`,
+      downloadCsv: "下载 CSV",
+      downloadCsvLabel: "下载排行榜结果 CSV",
     },
     comparison: {
       kicker: "基准对比",
@@ -472,20 +490,20 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     },
     rules: {
       kicker: "评测规则",
-      heading: "统一环境，统一工具",
-      note: "所有模型均使用相同的固定资源和工具协议进行评测。",
+      heading: "固定流程，两种标准工具",
+      note: "所有模型均在同一套可复现流程中，使用相同的 search 与 visit 工具接口进行评测。",
       principles: [
         {
-          title: "固定评测环境",
-          body: "不同模型运行时使用相同的语料、问题集、Elasticsearch 索引、提示词和评估脚本。",
+          title: "可复现评测",
+          body: "每次运行都遵循同一套固定流程：使用相同的语料、问题集、Elasticsearch 索引、提示词、turn 上限和评分脚本。",
         },
         {
-          title: "不访问实时互联网",
-          body: "search 和 visit 只访问本地基准语料，避免实时网页变化或访问失败影响结果。",
-        },
-        {
-          title: "链接导航能力",
+          title: "链接感知导航",
           body: "关键证据可能位于初始搜索结果之外，智能体需要识别并跟随有用的文本链接。",
+        },
+        {
+          title: "两种标准工具",
+          body: "所有模型都使用输入与输出完全一致的 search 和 visit 两种标准工具，确保模型间比较公平。",
         },
       ],
       flowScrollLabel: "从 Query 到 Answer 的评测流程",

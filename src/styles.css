@@ -653,6 +653,18 @@ dd {
   font-weight: 780;
 }
 
+.intro-dataset-link {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration-color: color-mix(in srgb, var(--primary) 48%, transparent);
+  text-underline-offset: 3px;
+}
+
+.intro-dataset-link:hover {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
+
 .intro-body p + p {
   margin-top: 11px;
 }
@@ -886,10 +898,81 @@ h2 {
   -webkit-backdrop-filter: blur(8px);
 }
 
+.table-shell {
+  position: relative;
+}
+
+.table-shell::after {
+  content: "";
+  height: 82px;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 0;
+  z-index: 12;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--surface) 92%, transparent)
+  );
+  -webkit-backdrop-filter: blur(1.5px);
+  backdrop-filter: blur(1.5px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 54%);
+  mask-image: linear-gradient(to bottom, transparent, #000 54%);
+  transition: opacity 180ms ease;
+}
+
+.table-shell[data-scrollable="true"][data-at-bottom="false"]::after {
+  opacity: 1;
+}
+
 .table-scroll,
 .chart-scroll {
   overflow-x: auto;
   scrollbar-color: var(--border-strong) var(--surface-soft);
+}
+
+.table-scroll {
+  max-height: min(470px, 62vh);
+  overflow-y: auto;
+}
+
+.leaderboard-footer {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+
+.download-csv {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 13px;
+  color: var(--text);
+  background: var(--control-bg);
+  border: 1px solid var(--control-border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.download-csv svg {
+  width: 16px;
+  height: 16px;
+  color: var(--primary);
+}
+
+.download-csv:hover {
+  transform: translateY(-1px);
+  border-color: var(--primary);
+  box-shadow: var(--pressed-shadow);
 }
 
 table {

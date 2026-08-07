@@ -1,4 +1,4 @@
-import { Database, FileText, GlobeLock, Route, Search } from "lucide-react";
+import { FileText, RefreshCw, Route, Search, Wrench } from "lucide-react";
 import type { Translation } from "./i18n";
 
 function ToolPanel({
@@ -46,7 +46,7 @@ function ToolPanel({
 }
 
 export function EvaluationRules({ copy }: { copy: Translation }) {
-  const principleIcons = [<Database />, <GlobeLock />, <Route />];
+  const principleIcons = [<RefreshCw />, <Route />, <Wrench />];
 
   return (
     <section
