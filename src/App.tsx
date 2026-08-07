@@ -994,16 +994,19 @@ function MetricGuide({ copy }: { copy: Translation }) {
                     setPinnedMetric((current) => (current === metricKey ? null : metricKey));
                   }}
                 >
-                  <span className="metric-card-copy">
-                    <strong>{metricCopy.label}</strong>
+                  <span className="metric-card-topline">
                     <small>
                       {metric.format === "percent"
                         ? copy.metricGuide.percentage
                         : copy.metricGuide.averageCount}
                     </small>
+                    <span className={`metric-card-category metric-card-category-${categoryKey}`}>
+                      {copy.metricGuide.groups[categoryKey]}
+                    </span>
                   </span>
-                  <span className={`metric-card-category metric-card-category-${categoryKey}`}>
-                    {copy.metricGuide.groups[categoryKey]}
+                  <span className="metric-card-copy">
+                    <strong>{metricCopy.label}</strong>
+                    <span className="metric-card-summary">{metricCopy.definition}</span>
                   </span>
                 </button>
                 {isActive && (

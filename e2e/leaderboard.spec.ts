@@ -170,6 +170,12 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       metricCardHeight: document
         .querySelector(".metric-card-trigger")!
         .getBoundingClientRect().height,
+      metricNameFont: getFontSize(".metric-card-copy strong"),
+      metricSummaryDisplay: getComputedStyle(
+        document.querySelector(".metric-card-summary")!,
+      ).display,
+      languageCodeDisplay: getComputedStyle(document.querySelector(".language-code")!).display,
+      languageNameDisplay: getComputedStyle(document.querySelector(".language-name")!).display,
     };
   });
   expect(visualDetails.legendInset).toBeGreaterThanOrEqual(
@@ -210,7 +216,15 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.toolSpecsPaddingBottom).toBe("10px");
   expect(visualDetails.metricGridColumns).toBe(testInfo.project.name.startsWith("mobile") ? 1 : 3);
   expect(visualDetails.metricCardHeight).toBeGreaterThanOrEqual(
-    testInfo.project.name.startsWith("mobile") ? 116 : 132,
+    testInfo.project.name.startsWith("mobile") ? 176 : 196,
+  );
+  expect(Number.parseFloat(visualDetails.metricNameFont)).toBeGreaterThanOrEqual(19);
+  expect(visualDetails.metricSummaryDisplay).not.toBe("none");
+  expect(visualDetails.languageCodeDisplay === "none").toBe(
+    !testInfo.project.name.startsWith("mobile"),
+  );
+  expect(visualDetails.languageNameDisplay === "none").toBe(
+    testInfo.project.name.startsWith("mobile"),
   );
 
   const ambientStartPosition = await page.evaluate(

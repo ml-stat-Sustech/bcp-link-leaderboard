@@ -576,6 +576,7 @@ dd {
 }
 
 .language-code {
+  display: none;
   font-weight: 800;
 }
 
@@ -1820,12 +1821,12 @@ tbody tr:hover .model-column {
 
 .metric-card-trigger {
   width: 100%;
-  min-height: 132px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 20px;
+  min-height: 196px;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 24px;
+  padding: 22px 24px 24px;
   color: var(--text);
   background: var(--raised-bg);
   border: 1px solid var(--border);
@@ -1840,20 +1841,37 @@ tbody tr:hover .model-column {
 .metric-card-copy {
   min-width: 0;
   display: grid;
-  gap: 7px;
+  align-content: start;
+  gap: 10px;
 }
 
 .metric-card-copy strong {
   color: var(--text);
-  font-size: 15px;
-  line-height: 1.35;
+  font-size: 21px;
+  line-height: 1.25;
+  font-weight: 780;
 }
 
-.metric-card-copy small {
+.metric-card-topline {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.metric-card-topline > small {
   color: var(--placeholder);
-  font-size: 10px;
-  font-weight: 720;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.35;
   text-transform: uppercase;
+}
+
+.metric-card-summary {
+  color: var(--text-subtle);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .metric-card-category {
@@ -2125,6 +2143,10 @@ tbody tr:hover .model-column {
   .primary-nav a {
     padding-inline: 8px;
     font-size: 12px;
+  }
+
+  .language-code {
+    display: inline;
   }
 
   .language-name {
@@ -2481,7 +2503,13 @@ tbody tr:hover .model-column {
   }
 
   .metric-card-trigger {
-    min-height: 116px;
+    min-height: 176px;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .metric-card-copy strong {
+    font-size: 19px;
   }
 
   .metric-detail-popover {

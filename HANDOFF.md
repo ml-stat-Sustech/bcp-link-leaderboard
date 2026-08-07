@@ -41,9 +41,9 @@ Last updated: 2026-08-07
 
 ### Language And Copy
 
-- Replaced the old single language button in React with a two-option segmented control:
-  - `EN English`
-  - `中 中文`
+- Replaced the old single language button in React with a two-option segmented control. Desktop
+  shows only the full names (`English` and `中文`); viewports at 1080px and below show only the compact
+  forms (`EN` and `中`).
 - Both buttons expose `aria-pressed`; switching languages does not remount the table or chart.
 - Chinese leaderboard fields and metric names are now English:
   - `Rank`, `Model`, `Accuracy`, `Recall`, `Search Calls`, `Visit Calls`, `Link-following Visit Calls`, `Turns`.
@@ -70,10 +70,11 @@ Last updated: 2026-08-07
   Query → Search → Visit → second-hop Visit → Evidence → Answer path with a directional arrow, and
   uses simplified Search and Visit headings above the detailed tool contracts.
 - Metric Guide uses a flat six-card grid instead of category columns: three cards per row on desktop,
-  two on tablet, and one on mobile. Each card carries its Answer quality, Tool behavior, or Link
-  following category in the upper-right badge. Hover or keyboard focus previews a floating detail
-  panel; clicking pins selectable detail text, clicking again returns to preview behavior, and Escape
-  clears a pinned panel.
+  two on tablet, and one on mobile. Its taller cards show the unit, category, enlarged metric name,
+  and concise definition directly on the surface. Each card carries its Answer quality, Tool behavior,
+  or Link following category in the upper-right badge. Hover or keyboard focus previews a floating
+  detail panel; clicking pins selectable detail text, clicking again returns to preview behavior, and
+  Escape clears a pinned panel.
 
 ### Chart Logic
 
