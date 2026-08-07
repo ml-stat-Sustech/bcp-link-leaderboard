@@ -1890,13 +1890,13 @@ tbody tr:hover .model-column {
 }
 
 .metric-card-category-toolBehavior {
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--chart-bcp);
+  background: color-mix(in srgb, var(--chart-bcp) 10%, var(--surface));
 }
 
 .metric-card-category-linkFollowing {
-  color: var(--chart-bcp);
-  background: color-mix(in srgb, var(--chart-bcp) 10%, var(--surface));
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
 }
 
 .metric-card[data-active="true"] .metric-card-trigger,
