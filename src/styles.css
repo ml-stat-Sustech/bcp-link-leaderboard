@@ -1914,7 +1914,7 @@ tbody tr:hover .model-column {
   z-index: 30;
   padding: 14px;
   color: var(--text-subtle);
-  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  background: var(--surface);
   border: 1px solid var(--border-strong);
   border-radius: 8px;
   box-shadow: 0 20px 46px color-mix(in srgb, var(--primary-strong) 18%, transparent);
@@ -1924,6 +1924,12 @@ tbody tr:hover .model-column {
   animation: metric-detail-in 140ms ease-out;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+}
+
+.metric-card[data-popover-placement="top"] .metric-detail-popover {
+  top: auto;
+  bottom: calc(100% - 5px);
+  animation-name: metric-detail-in-up;
 }
 
 .metric-card:not([data-pinned="true"]) .metric-detail-popover {
@@ -1980,6 +1986,17 @@ tbody tr:hover .model-column {
   from {
     opacity: 0;
     transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes metric-detail-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
   }
   to {
     opacity: 1;

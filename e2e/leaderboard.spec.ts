@@ -369,6 +369,22 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   await page.keyboard.press("Escape");
   await expect(metricCard).toBeFocused();
 
+  const bottomMetricCard = page.getByRole("button", {
+    name: "View Link-following Visit Calls details",
+  });
+  await bottomMetricCard.hover();
+  const bottomMetricPopover = page.getByRole("tooltip");
+  await expect(bottomMetricPopover).toBeVisible();
+  const bottomCardBox = await bottomMetricCard.boundingBox();
+  const bottomPopoverBox = await bottomMetricPopover.boundingBox();
+  expect(bottomCardBox).not.toBeNull();
+  expect(bottomPopoverBox).not.toBeNull();
+  expect(bottomPopoverBox!.y + bottomPopoverBox!.height).toBeLessThanOrEqual(
+    bottomCardBox!.y + 6,
+  );
+  await page.mouse.move(0, 0);
+  await expect(bottomMetricPopover).not.toBeVisible();
+
   await expect(page.getByRole("button", { name: "Expand leaderboard" })).toHaveCount(0);
   await expect(page.getByRole("dialog", { name: "Expanded BCP-Link leaderboard" })).toHaveCount(0);
 

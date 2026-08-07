@@ -958,7 +958,7 @@ function MetricGuide({ copy }: { copy: Translation }) {
           <p className="section-note">{copy.metricGuide.note}</p>
         </div>
         <div className="metric-guide-grid">
-          {LEADERBOARD_METRICS.map((metric) => {
+          {LEADERBOARD_METRICS.map((metric, index) => {
             const metricKey = metric.key;
             const categoryKey = METRIC_CATEGORY_BY_KEY[metricKey];
             const metricCopy = copy.metrics[metricKey];
@@ -970,6 +970,7 @@ function MetricGuide({ copy }: { copy: Translation }) {
                 className="metric-card"
                 data-active={isActive ? "true" : "false"}
                 data-pinned={isPinned ? "true" : "false"}
+                data-popover-placement={index < 3 ? "bottom" : "top"}
                 onMouseEnter={() => setPreviewMetric(metricKey)}
                 onMouseLeave={() => setPreviewMetric(null)}
               >

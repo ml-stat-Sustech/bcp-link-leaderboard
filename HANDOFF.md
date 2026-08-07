@@ -76,7 +76,8 @@ Last updated: 2026-08-07
   or Link following category in the upper-right badge; the three badge categories use distinct
   theme-aware colors. Hover or keyboard focus previews a floating detail panel; clicking pins
   selectable detail text, clicking again returns to preview behavior, and Escape clears a pinned
-  panel.
+  panel. Detail panels open downward for the first card row and upward for the second row so the
+  lower cards are not obscured by the footer or viewport edge.
 
 ### Chart Logic
 
