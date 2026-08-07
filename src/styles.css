@@ -894,7 +894,7 @@ h2 {
 
 table {
   width: 100%;
-  min-width: 1250px;
+  min-width: 1190px;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
@@ -923,7 +923,7 @@ table {
 }
 
 .metric-track-linkFollowingVisitCalls {
-  width: 250px;
+  width: 190px;
 }
 
 th,
@@ -991,7 +991,7 @@ thead th {
 }
 
 .metric-column-linkFollowingVisitCalls {
-  width: 250px;
+  width: 190px;
 }
 
 tbody tr:last-child > * {

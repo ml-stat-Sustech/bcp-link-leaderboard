@@ -222,6 +222,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.searchHeaderWhiteSpace).toBe("nowrap");
   expect(visualDetails.visitHeaderWhiteSpace).toBe("nowrap");
   expect(visualDetails.linkWidth).toBeGreaterThan(visualDetails.accuracyWidth);
+  expect(visualDetails.linkWidth).toBeLessThanOrEqual(225);
   expect(visualDetails.ambientPosition).toBe("fixed");
   expect(visualDetails.ambientAnimation).toBe("ambient-gradient-drift");
   expect(visualDetails.ambientAnimationDuration).toBe("18s");

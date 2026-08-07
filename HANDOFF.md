@@ -106,9 +106,10 @@ The current UI upgrade is complete.
   an 18-second cycle; only the color field moves, and `prefers-reduced-motion` disables the animation.
 - The introduction includes compact links to the rankings and evaluation protocol. The leaderboard
   keeps search and internal table scrolling without a separate expanded dialog. Its Model column is
-  narrower on desktop, while Search Calls and Visit Calls stay on one line. All metric headers and
-  values are left-aligned; Rank stays centered and Model stays left-aligned. The footer includes a
-  right-aligned Back to top action.
+  narrower on desktop, Search Calls and Visit Calls stay on one line, and the long Link-following
+  Visit Calls column is compact enough to wrap its header instead of leaving excess empty space. All
+  metric headers and values are left-aligned; Rank stays centered and Model stays left-aligned. The
+  footer includes a right-aligned Back to top action.
 - The sticky header, theme picker, palette swatches, segmented language control, focus/hover states,
   and 320px+ responsive layouts are styled. Theme selection restores focus without changing the
   current page scroll position.
