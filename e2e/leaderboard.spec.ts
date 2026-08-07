@@ -61,6 +61,13 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   const modelTrigger = page.getByRole("button", { name: "Choose comparison models" });
   await expect(modelTrigger).toHaveText("4 models selected");
   await modelTrigger.click();
+  const modelMenuBox = await page
+    .getByRole("group", { name: "Choose comparison models" })
+    .boundingBox();
+  expect(modelMenuBox).not.toBeNull();
+  expect(modelMenuBox!.y + modelMenuBox!.height).toBeLessThanOrEqual(
+    page.viewportSize()!.height + 1,
+  );
   for (const model of [
     "Qwen3.6-27B",
     "Tongyi-DeepResearch-30B-A3B",
@@ -147,6 +154,8 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       ambientAnimation: getComputedStyle(document.body, "::before").animationName,
       ambientAnimationDuration: getComputedStyle(document.body, "::before").animationDuration,
       ambientBackgroundSize: getComputedStyle(document.body, "::before").backgroundSize,
+      workspaceOverflow: getComputedStyle(document.querySelector(".comparison-workspace")!).overflow,
+      chartOverflowY: getComputedStyle(document.querySelector(".chart-scroll")!).overflowY,
       flowTransitionDuration: getComputedStyle(
         document.querySelector(".evaluation-flow-scroll")!,
       ).transitionDuration,
@@ -183,7 +192,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.modelWidthToken).toBe(testInfo.project.name.startsWith("mobile") ? "210px" : "235px");
   expect(visualDetails.modelWidth).toBeLessThan(270);
   expect(visualDetails.rankHeaderTextAlign).toBe("center");
-  expect(visualDetails.modelHeaderTextAlign).toBe("center");
+  expect(visualDetails.modelHeaderTextAlign).toBe("left");
   expect(visualDetails.firstRowBackground).toBe(visualDetails.secondRowBackground);
   expect(visualDetails.searchHeaderWhiteSpace).toBe("nowrap");
   expect(visualDetails.visitHeaderWhiteSpace).toBe("nowrap");
@@ -192,6 +201,8 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.ambientAnimation).toBe("ambient-gradient-drift");
   expect(visualDetails.ambientAnimationDuration).toBe("18s");
   expect(visualDetails.ambientBackgroundSize).toBe("400% 400%");
+  expect(visualDetails.workspaceOverflow).toBe("visible");
+  expect(visualDetails.chartOverflowY).toBe("hidden");
   expect(visualDetails.flowTransitionDuration).toBe("0s");
   expect(visualDetails.flowArrowWidth).toBe("8px");
   expect(visualDetails.principleParentBorder).toBe("0px");
