@@ -64,6 +64,15 @@ describe("LeaderboardApp", () => {
       screen.getByRole("heading", { name: "One fixed process, two standard tools" }),
     ).toBeVisible();
     expect(screen.getByRole("heading", { name: "How the leaderboard is measured" })).toBeVisible();
+    const comparisonInsights = screen.getByRole("list", {
+      name: "Key findings from the BCP and BCP-Link comparison",
+    });
+    expect(comparisonInsights).toHaveTextContent(
+      "For models trained to use comparable tools, BCP-Link achieves higher Accuracy than BCP with fewer agent turns.",
+    );
+    expect(comparisonInsights).toHaveTextContent(
+      "For models without relevant tool-use training, the overall performance difference between BCP and BCP-Link is limited.",
+    );
     expect(screen.getByText(/Gold evidence may not appear/)).toBeVisible();
     expect(screen.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
     expect(screen.getByText(/40,000-character limit · no summarizer/)).toBeVisible();
@@ -101,6 +110,21 @@ describe("LeaderboardApp", () => {
       "Link following",
     ]);
     expect(container.querySelector(".metric-group-heading")).not.toBeInTheDocument();
+    expect(
+      Array.from(container.querySelectorAll("thead th"), (header) => header.textContent),
+    ).toEqual([
+      "Rank",
+      "Model",
+      "Accuracy",
+      "Recall",
+      "Search Calls",
+      "Visit Calls",
+      "Link-following Visit Calls",
+      "Turns",
+    ]);
+    expect(container.querySelector("thead")).not.toHaveTextContent("Answer quality");
+    expect(container.querySelector("thead")).not.toHaveTextContent("Tool behavior");
+    expect(container.querySelector("thead")).not.toHaveTextContent("Link following");
     expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("Corpus documents");
     expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("Links");
     expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("Evaluation queries");
@@ -169,6 +193,9 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("columnheader", { name: /^Accuracy/ })).toBeVisible();
     expect(screen.getByRole("columnheader", { name: /^Link-following Visit Calls/ })).toBeVisible();
     expect(screen.getByRole("button", { name: "按 Accuracy 排序" })).toBeVisible();
+    expect(screen.getByRole("list", { name: "BCP 与 BCP-Link 对比的主要结论" })).toHaveTextContent(
+      "对于接受过相关工具使用训练的模型，BCP-Link 能以更少的对话轮数取得优于 BCP 的 Accuracy。",
+    );
     expect(
       within(screen.getByRole("combobox", { name: "选择对比指标" })).getByRole("option", {
         name: "Link-following Visit Calls",

@@ -96,6 +96,13 @@ export interface Translation {
     kicker: string;
     heading: string;
     comparable: (count: number, metric: string) => string;
+    insightsLabel: string;
+    trainedInsightBefore: string;
+    trainedInsightBetween: string;
+    trainedInsightAfter: string;
+    untrainedInsightBefore: string;
+    untrainedInsightBetween: string;
+    untrainedInsightAfter: string;
     metricLabel: string;
     selectLabel: string;
     modelsLabel: string;
@@ -235,6 +242,14 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       heading: "BCP vs. BCP-Link",
       comparable: (count, metric) =>
         `${count} ${count === 1 ? "model" : "models"} with comparable ${metric} data`,
+      insightsLabel: "Key findings from the BCP and BCP-Link comparison",
+      trainedInsightBefore: "For models trained to use comparable tools, ",
+      trainedInsightBetween: " achieves higher ",
+      trainedInsightAfter: " than BCP with fewer agent turns.",
+      untrainedInsightBefore:
+        "For models without relevant tool-use training, the overall performance difference between ",
+      untrainedInsightBetween: " and ",
+      untrainedInsightAfter: " is limited.",
       metricLabel: "Metric",
       selectLabel: "Comparison metric",
       modelsLabel: "Models",
@@ -452,6 +467,13 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       kicker: "基准对比",
       heading: "BCP 与 BCP-Link 对比",
       comparable: (count, metric) => `${count} 个模型具备可比较的${metric}数据`,
+      insightsLabel: "BCP 与 BCP-Link 对比的主要结论",
+      trainedInsightBefore: "对于接受过相关工具使用训练的模型，",
+      trainedInsightBetween: " 能以更少的对话轮数取得优于 BCP 的 ",
+      trainedInsightAfter: "。",
+      untrainedInsightBefore: "对于未接受过相关工具使用训练的模型，",
+      untrainedInsightBetween: " 与 ",
+      untrainedInsightAfter: " 的整体表现差异不明显。",
       metricLabel: "指标",
       selectLabel: "选择对比指标",
       modelsLabel: "模型",

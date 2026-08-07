@@ -10,7 +10,6 @@ import {
   Check,
   ChevronDown,
   Database,
-  Download,
   Github,
   Info,
   Link2,
@@ -93,9 +92,18 @@ const METRIC_GROUPS = [
   metrics: readonly MetricKey[];
 }[];
 
-const LEADERBOARD_METRICS = METRIC_GROUPS.flatMap((group) =>
+const METRIC_GUIDE_METRICS = METRIC_GROUPS.flatMap((group) =>
   group.metrics.map((metricKey) => METRIC_BY_KEY[metricKey]),
 );
+
+const LEADERBOARD_METRICS = [
+  "accuracy",
+  "recall",
+  "searchCalls",
+  "visitCalls",
+  "linkFollowingVisitCalls",
+  "turns",
+] satisfies readonly MetricKey[];
 
 const METRIC_CATEGORY_BY_KEY = Object.fromEntries(
   METRIC_GROUPS.flatMap((group) => group.metrics.map((metricKey) => [metricKey, group.key])),
@@ -438,38 +446,29 @@ function LeaderboardTable({
             <colgroup>
               <col className="rank-column-track" />
               <col className="model-column-track" />
-              {LEADERBOARD_METRICS.map((metric) => (
-                <col key={metric.key} className={`metric-column-track metric-track-${metric.key}`} />
+              {LEADERBOARD_METRICS.map((metricKey) => (
+                <col
+                  key={metricKey}
+                  className={`metric-column-track metric-track-${metricKey}`}
+                />
               ))}
             </colgroup>
             <thead>
-              <tr className="metric-group-row">
-                <th className="rank-column" scope="col" rowSpan={2}>
+              <tr className="metric-label-row">
+                <th className="rank-column" scope="col">
                   {copy.leaderboard.rank}
                 </th>
-                <th className="model-column" scope="col" rowSpan={2}>
+                <th className="model-column" scope="col">
                   {copy.leaderboard.model}
                 </th>
-                {METRIC_GROUPS.map((group) => (
+                {LEADERBOARD_METRICS.map((metricKey) => (
                   <th
-                    key={group.key}
-                    className={`metric-group metric-group-${group.key}`}
-                    scope="colgroup"
-                    colSpan={group.metrics.length}
-                  >
-                    {copy.metricGuide.groups[group.key]}
-                  </th>
-                ))}
-              </tr>
-              <tr className="metric-label-row">
-                {LEADERBOARD_METRICS.map((metric) => (
-                  <th
-                    key={metric.key}
-                    className={`metric-column metric-column-${metric.key}`}
+                    key={metricKey}
+                    className={`metric-column metric-column-${metricKey}`}
                     scope="col"
                   >
                     <MetricHeader
-                      metricKey={metric.key}
+                      metricKey={metricKey}
                       sort={sort}
                       onSort={handleSort}
                       copy={copy}
@@ -493,7 +492,8 @@ function LeaderboardTable({
                     <th className="model-column model-name" scope="row" data-testid="model-name">
                       {formatModelDisplayName(model.model)}
                     </th>
-                    {LEADERBOARD_METRICS.map((metric) => {
+                    {LEADERBOARD_METRICS.map((metricKey) => {
+                      const metric = METRIC_BY_KEY[metricKey];
                       const value = model.bcpLink?.[metric.key] ?? null;
                       const isPercentage = metric.format === "percent" && value !== null;
                       const cellStyle = isPercentage
@@ -535,7 +535,6 @@ function LeaderboardTable({
           download="bcp-link-results.csv"
           aria-label={copy.leaderboard.downloadCsvLabel}
         >
-          <Download aria-hidden="true" />
           <span>{copy.leaderboard.downloadCsv}</span>
         </a>
       </div>
@@ -851,6 +850,33 @@ function ComparisonChart({
           </p>
         </div>
 
+        <ol className="comparison-insights" aria-label={copy.comparison.insightsLabel}>
+          <li>
+            <span className="comparison-insight-index" aria-hidden="true">
+              01
+            </span>
+            <p>
+              {copy.comparison.trainedInsightBefore}
+              <strong>BCP-Link</strong>
+              {copy.comparison.trainedInsightBetween}
+              <strong>Accuracy</strong>
+              {copy.comparison.trainedInsightAfter}
+            </p>
+          </li>
+          <li>
+            <span className="comparison-insight-index" aria-hidden="true">
+              02
+            </span>
+            <p>
+              {copy.comparison.untrainedInsightBefore}
+              <strong>BCP</strong>
+              {copy.comparison.untrainedInsightBetween}
+              <strong>BCP-Link</strong>
+              {copy.comparison.untrainedInsightAfter}
+            </p>
+          </li>
+        </ol>
+
         <div className="comparison-workspace">
           <div className="comparison-controls">
             <div className="comparison-series-legend" aria-hidden="true">
@@ -1027,7 +1053,7 @@ function MetricGuide({ copy }: { copy: Translation }) {
           <p className="section-note">{copy.metricGuide.note}</p>
         </div>
         <div className="metric-guide-grid">
-          {LEADERBOARD_METRICS.map((metric, index) => {
+          {METRIC_GUIDE_METRICS.map((metric, index) => {
             const metricKey = metric.key;
             const categoryKey = METRIC_CATEGORY_BY_KEY[metricKey];
             const metricCopy = copy.metrics[metricKey];

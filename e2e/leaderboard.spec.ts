@@ -33,6 +33,16 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.getByTestId("model-name")).toHaveCount(9);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();
+  const comparisonInsights = page.getByRole("list", {
+    name: "Key findings from the BCP and BCP-Link comparison",
+  });
+  await expect(comparisonInsights.locator("li")).toHaveCount(2);
+  await expect(comparisonInsights).toContainText(
+    "BCP-Link achieves higher Accuracy than BCP with fewer agent turns",
+  );
+  await expect(comparisonInsights).toContainText(
+    "the overall performance difference between BCP and BCP-Link is limited",
+  );
   await expect(
     page.getByRole("heading", { name: "One fixed process, two standard tools" }),
   ).toBeVisible();
@@ -48,8 +58,17 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
   await expect(page.locator(".rank-medal")).toHaveCount(3);
   await expect(page.locator(".percentage-data-bar")).toHaveCount(18);
-  await expect(page.locator("thead .metric-group-answerQuality")).toHaveText("Answer quality");
-  await expect(page.locator("thead .metric-group-toolBehavior")).toHaveText("Tool behavior");
+  await expect(page.locator("thead th")).toHaveText([
+    "Rank",
+    "Model",
+    "Accuracy",
+    "Recall",
+    "Search Calls",
+    "Visit Calls",
+    "Link-following Visit Calls",
+    "Turns",
+  ]);
+  await expect(page.locator("thead .metric-group")).toHaveCount(0);
   await expect(page.locator(".metric-card")).toHaveCount(6);
   await expect(page.locator(".metric-card-category")).toHaveText([
     "Answer quality",
@@ -169,6 +188,27 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       introSubtitleFont: getFontSize(".intro-subtitle"),
       introBodyFont: getFontSize(".intro-body p"),
       introActionFont: getFontSize(".intro-action"),
+      tableValueFont: getFontSize("tbody .metric-value-cell"),
+      tableModelFont: getFontSize("tbody .model-name"),
+      tableHeaderFont: getFontSize("thead .metric-label-row > th"),
+      tableRowHeight: document.querySelector("tbody tr")!.getBoundingClientRect().height,
+      tableTransform: getComputedStyle(document.querySelector(".table-shell")!).transform,
+      tableBackground: getComputedStyle(document.querySelector(".table-shell")!).backgroundColor,
+      tableMask: getComputedStyle(document.querySelector(".table-shell")!).maskImage,
+      fadeBackground: getComputedStyle(document.querySelector(".table-shell")!, "::after")
+        .backgroundImage,
+      fadeBlur: getComputedStyle(document.querySelector(".table-shell")!, "::after")
+        .backdropFilter,
+      modelColumnShadow: getComputedStyle(document.querySelector("tbody .model-column")!).boxShadow,
+      searchColumnBorderLeft: getComputedStyle(
+        document.querySelector(".metric-column-searchCalls")!,
+      ).borderLeftWidth,
+      downloadBorder: getComputedStyle(document.querySelector(".download-csv")!).borderTopWidth,
+      downloadBackground: getComputedStyle(document.querySelector(".download-csv")!).backgroundColor,
+      insightFont: getFontSize(".comparison-insights p"),
+      insightBorder: getComputedStyle(document.querySelector(".comparison-insights")!).borderWidth,
+      insightBackground: getComputedStyle(document.querySelector(".comparison-insights")!)
+        .backgroundColor,
       valueCells,
       searchWidth,
       visitWidth,
@@ -248,6 +288,24 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     testInfo.project.name.startsWith("mobile") ? "15px" : "17px",
   );
   expect(visualDetails.introActionFont).toBe("14px");
+  expect(visualDetails.tableValueFont).toBe("16px");
+  expect(visualDetails.tableModelFont).toBe("17px");
+  expect(visualDetails.tableHeaderFont).toBe("17px");
+  expect(visualDetails.tableRowHeight).toBeGreaterThanOrEqual(70);
+  expect(visualDetails.tableTransform).toBe("none");
+  expect(visualDetails.tableBackground).not.toBe("rgb(255, 255, 255)");
+  expect(visualDetails.tableMask).not.toBe("none");
+  expect(visualDetails.fadeBackground).toBe("none");
+  expect(visualDetails.fadeBlur).toBe("blur(2px)");
+  expect(visualDetails.modelColumnShadow).toBe("none");
+  expect(visualDetails.searchColumnBorderLeft).toBe("0px");
+  expect(visualDetails.downloadBorder).toBe("0px");
+  expect(visualDetails.downloadBackground).toBe("rgba(0, 0, 0, 0)");
+  expect(visualDetails.insightFont).toBe(
+    testInfo.project.name.startsWith("mobile") ? "16px" : "18px",
+  );
+  expect(visualDetails.insightBorder).toBe("0px");
+  expect(visualDetails.insightBackground).toBe("rgba(0, 0, 0, 0)");
   expect(visualDetails.valueCells).toEqual(Array(6).fill("left"));
   expect(visualDetails.searchWidth).toBeGreaterThanOrEqual(visualDetails.accuracyWidth);
   expect(visualDetails.visitWidth).toBeGreaterThanOrEqual(visualDetails.accuracyWidth);
