@@ -149,6 +149,10 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       metricSortAlignment: Array.from(document.querySelectorAll(".sort-button"), (button) =>
         getComputedStyle(button).justifyContent,
       ),
+      metricLabelTextAlignment: Array.from(
+        document.querySelectorAll(".sort-button span"),
+        (label) => getComputedStyle(label).textAlign,
+      ),
       firstRowBackground: getComputedStyle(document.querySelector("tbody tr:nth-child(1) > :last-child")!)
         .backgroundColor,
       secondRowBackground: getComputedStyle(document.querySelector("tbody tr:nth-child(2) > :last-child")!)
@@ -218,6 +222,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.modelHeaderTextAlign).toBe("left");
   expect(visualDetails.metricHeaderAlignment).toEqual(Array(6).fill("flex-start"));
   expect(visualDetails.metricSortAlignment).toEqual(Array(6).fill("flex-start"));
+  expect(visualDetails.metricLabelTextAlignment).toEqual(Array(6).fill("left"));
   expect(visualDetails.firstRowBackground).toBe(visualDetails.secondRowBackground);
   expect(visualDetails.searchHeaderWhiteSpace).toBe("nowrap");
   expect(visualDetails.visitHeaderWhiteSpace).toBe("nowrap");
