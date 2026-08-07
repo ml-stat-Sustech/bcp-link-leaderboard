@@ -835,13 +835,13 @@ h2 {
 
 .leaderboard-status strong {
   color: var(--text);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .leaderboard-status span {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .search-field {
@@ -875,7 +875,7 @@ h2 {
   width: 100%;
   height: 100%;
   padding: 0 14px 0 40px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .search-field input:hover,
@@ -975,7 +975,7 @@ h2 {
   background: transparent;
   border: 0;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
   text-decoration: none;
   transition: color 140ms ease;

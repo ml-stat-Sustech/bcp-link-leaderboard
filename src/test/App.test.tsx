@@ -283,6 +283,17 @@ describe("LeaderboardApp", () => {
     await user.type(search, "alpha");
     expect(search).toHaveValue("alpha");
     expect(screen.getByTestId("model-name")).toHaveTextContent("Alpha");
+    const downloadHref = screen
+      .getByRole("link", { name: "Download leaderboard results as CSV" })
+      .getAttribute("href");
+    expect(downloadHref).not.toBeNull();
+    const exportedCsv = decodeURIComponent(downloadHref!.slice(downloadHref!.indexOf(",") + 1))
+      .replace(/^\uFEFF/, "")
+      .trimEnd();
+    expect(exportedCsv.split("\r\n")).toEqual([
+      "Rank,Model,Accuracy,Recall,Search Calls,Visit Calls,Link-following Visit Calls,Turns",
+      "2,Alpha,40.00%,,4.00,3.00,,",
+    ]);
     expect(screen.queryByRole("button", { name: "Expand leaderboard" })).not.toBeInTheDocument();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });

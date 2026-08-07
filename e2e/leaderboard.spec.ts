@@ -1,4 +1,6 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { readFile } from "node:fs/promises";
+import Papa from "papaparse";
 
 async function openPrimaryNavigationIfNeeded(page: Page) {
   const trigger = page.getByRole("button", { name: /Open navigation|打开导航/ });
@@ -297,7 +299,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.sectionNoteFont).toBe(
     testInfo.project.name.startsWith("mobile") ? "15px" : "16px",
   );
-  expect(visualDetails.searchFont).toBe("14px");
+  expect(visualDetails.searchFont).toBe("13px");
   expect(visualDetails.introSubtitleFont).toBe(
     testInfo.project.name.startsWith("mobile") ? "17px" : "21px",
   );
@@ -404,7 +406,39 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
 
   const downloadEvent = page.waitForEvent("download");
   await downloadCsv.click();
-  expect((await downloadEvent).suggestedFilename()).toBe("bcp-link-results.csv");
+  const download = await downloadEvent;
+  expect(download.suggestedFilename()).toBe("bcp-link-results.csv");
+  const downloadPath = await download.path();
+  expect(downloadPath).not.toBeNull();
+  const downloadedCsv = await readFile(downloadPath!, "utf8");
+  expect(downloadedCsv.charCodeAt(0)).toBe(0xfeff);
+  const parsedDownload = Papa.parse<string[]>(downloadedCsv.replace(/^\uFEFF/, ""), {
+    skipEmptyLines: true,
+  });
+  expect(parsedDownload.errors).toEqual([]);
+  expect(parsedDownload.data[0]).toEqual([
+    "Rank",
+    "Model",
+    "Accuracy",
+    "Recall",
+    "Search Calls",
+    "Visit Calls",
+    "Link-following Visit Calls",
+    "Turns",
+  ]);
+  expect(parsedDownload.data).toHaveLength(10);
+  expect(parsedDownload.data[1]).toEqual([
+    "1",
+    "Qwen3.6-27B",
+    "61.93%",
+    "62.79%",
+    "30.78",
+    "2.12",
+    "0.0220",
+    "26.33",
+  ]);
+  expect(parsedDownload.data.every((row) => row.length === 8)).toBe(true);
+  expect(downloadedCsv).not.toContain("benchmark");
 });
 
 test("keeps compact navigation and menus inside narrow viewports", async ({ page }) => {

@@ -29,6 +29,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import Papa from "papaparse";
 import resultsCsv from "../data/bcp-link-results.csv?raw";
 import { getAccuracyRanks, parseBenchmarkCsv } from "./data";
 import { EvaluationRules } from "./EvaluationRules";
@@ -105,12 +106,38 @@ const LEADERBOARD_METRICS = [
   "turns",
 ] satisfies readonly MetricKey[];
 
+const LEADERBOARD_EXPORT_HEADERS = [
+  "Rank",
+  "Model",
+  "Accuracy",
+  "Recall",
+  "Search Calls",
+  "Visit Calls",
+  "Link-following Visit Calls",
+  "Turns",
+] as const;
+
 const METRIC_CATEGORY_BY_KEY = Object.fromEntries(
   METRIC_GROUPS.flatMap((group) => group.metrics.map((metricKey) => [metricKey, group.key])),
 ) as Record<MetricKey, keyof Translation["metricGuide"]["groups"]>;
 
 function formatModelDisplayName(model: string): string {
   return model.replace(/^gemma(?=-)/i, "Gemma");
+}
+
+function createLeaderboardCsv(models: ModelResults[], ranks: Map<string, number>): string {
+  const rows = models.map((model) => [
+    ranks.get(model.model) ?? "",
+    formatModelDisplayName(model.model),
+    ...LEADERBOARD_METRICS.map((metricKey) => {
+      const value = model.bcpLink?.[metricKey] ?? null;
+      return value === null ? "" : formatMetricValue(metricKey, value, "en");
+    }),
+  ]);
+
+  return `\uFEFF${Papa.unparse([LEADERBOARD_EXPORT_HEADERS, ...rows], {
+    newline: "\r\n",
+  })}\r\n`;
 }
 
 function ThemePicker({
@@ -352,12 +379,10 @@ function MetricHeader({
 
 function LeaderboardTable({
   models,
-  csvText,
   language,
   copy,
 }: {
   models: ModelResults[];
-  csvText: string;
   language: Language;
   copy: Translation;
 }) {
@@ -369,10 +394,6 @@ function LeaderboardTable({
   });
   const tableScrollRef = useRef<HTMLDivElement>(null);
   const ranks = useMemo(() => getAccuracyRanks(models), [models]);
-  const csvDownloadHref = useMemo(
-    () => `data:text/csv;charset=utf-8,${encodeURIComponent(csvText)}`,
-    [csvText],
-  );
 
   const visibleModels = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -380,6 +401,13 @@ function LeaderboardTable({
       .filter((model) => model.model.toLocaleLowerCase().includes(normalizedQuery))
       .sort((a, b) => compareModels(a, b, sort));
   }, [models, query, sort]);
+  const csvDownloadHref = useMemo(
+    () =>
+      `data:text/csv;charset=utf-8,${encodeURIComponent(
+        createLeaderboardCsv(visibleModels, ranks),
+      )}`,
+    [ranks, visibleModels],
+  );
 
   const handleSort = (key: MetricKey) => {
     setSort((current) => ({
@@ -1316,7 +1344,6 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
           </section>
           <LeaderboardTable
             models={parsed.models}
-            csvText={csvText}
             language={language}
             copy={copy}
           />
