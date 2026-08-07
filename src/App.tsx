@@ -934,6 +934,14 @@ function MetricGuide({ copy }: { copy: Translation }) {
   useEffect(() => {
     if (!pinnedMetric) return;
 
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+      const trigger = metricButtonRefs.current[pinnedMetric];
+      const popover = document.getElementById(`metric-detail-${pinnedMetric}`);
+      if (trigger?.contains(target) || popover?.contains(target)) return;
+      setPinnedMetric(null);
+      setPreviewMetric(null);
+    };
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       const metricKey = pinnedMetric;
@@ -941,8 +949,12 @@ function MetricGuide({ copy }: { copy: Translation }) {
       setPreviewMetric(null);
       metricButtonRefs.current[metricKey]?.focus();
     };
+    document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [pinnedMetric]);
 
   return (

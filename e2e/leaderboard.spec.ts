@@ -380,6 +380,11 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   await expect(page.getByRole("region", { name: /Accuracy:/ })).toContainText("Pinned");
   await page.mouse.move(0, 0);
   await expect(page.getByRole("region", { name: /Accuracy:/ })).toBeVisible();
+  await page.getByRole("heading", { name: "How the leaderboard is measured" }).click();
+  await expect(page.getByRole("region", { name: /Accuracy:/ })).toHaveCount(0);
+
+  await metricCard.click();
+  await expect(page.getByRole("region", { name: /Accuracy:/ })).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(metricCard).toBeFocused();
 

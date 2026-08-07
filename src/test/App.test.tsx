@@ -238,12 +238,18 @@ describe("LeaderboardApp", () => {
     await user.hover(accuracy);
     expect(screen.getByRole("tooltip")).toHaveTextContent("Calculation or source");
     await user.click(accuracy);
-    expect(screen.getByRole("region", { name: /Accuracy:/ })).toHaveTextContent("Pinned");
+    const pinnedAccuracy = screen.getByRole("region", { name: /Accuracy:/ });
+    expect(pinnedAccuracy).toHaveTextContent("Pinned");
     await user.unhover(accuracy);
+    expect(pinnedAccuracy).toBeVisible();
+    await user.click(within(pinnedAccuracy).getByText("Calculation or source"));
     expect(screen.getByRole("region", { name: /Accuracy:/ })).toBeVisible();
 
+    await user.click(screen.getByRole("heading", { name: "How the leaderboard is measured" }));
+    expect(screen.queryByRole("region", { name: /Accuracy:/ })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "View Accuracy details" }));
     await user.click(screen.getByRole("button", { name: "Unpin Accuracy details" }));
-    await user.unhover(accuracy);
     expect(screen.queryByRole("region", { name: /Accuracy:/ })).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "View Accuracy details" }));
