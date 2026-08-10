@@ -58,8 +58,8 @@ export interface Translation {
     bodyOneAfterName: string;
     bodyOneBetweenTools: string;
     bodyOneAfterVisit: string;
-    datasetBodyBeforeName: string;
-    datasetBodyAfterName: string;
+    corpusBodyBeforeLink: string;
+    corpusBodyAfterLink: string;
     bodyThree: string;
     rankingsAction: string;
     protocolAction: string;
@@ -198,18 +198,18 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         " is a link-aware search-agent benchmark built on BrowseComp-Plus. It uses a fixed corpus with standardized ",
       bodyOneBetweenTools: " and ",
       bodyOneAfterVisit: " tools so model results remain reproducible and directly comparable.",
-      datasetBodyBeforeName: "The frozen retrieval corpus is published as ",
-      datasetBodyAfterName:
-        ". It provides the shared BrowseComp-Plus document collection used by every run, keeping retrieval and followed links grounded in the same versioned snapshot rather than a changing live web.",
+      corpusBodyBeforeLink: "The BCP-Link evaluation corpus extends the ",
+      corpusBodyAfterLink:
+        " (BCP) corpus. The expanded corpus supports direct navigation between related documents, allowing an agent to move from the document it is reading to relevant follow-up documents and continue gathering evidence, reducing repeated searches and result rematching.",
       bodyThree:
-        "Gold evidence may not appear in the initial search results, but can be reached through links inside retrieved pages. This leaderboard shows which models can recognize those links, navigate to the right evidence, and complete the search task accurately.",
+        "Key evidence may therefore lie beyond the initial search results and require following links across documents. BCP-Link evaluates not only answer accuracy, but also whether models can recognize useful links, navigate across documents, and reach the correct evidence efficiently.",
       rankingsAction: "View rankings",
       protocolAction: "Review protocol",
       codeAction: "Code",
       datasetAction: "Dataset",
       comingSoon: "Coming soon",
       codeActionLabel: "Code on GitHub, coming soon",
-      datasetActionLabel: "Open Tevatron/browsecomp-plus-corpus on Hugging Face",
+      datasetActionLabel: "Dataset, coming soon",
     },
     stats: {
       label: "Dataset summary",
@@ -423,18 +423,18 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         " 是基于 BrowseComp-Plus 构建的链接感知搜索智能体基准。它使用固定语料，以及标准化的 ",
       bodyOneBetweenTools: " 和 ",
       bodyOneAfterVisit: " 工具，使不同模型的结果可复现、可直接比较。",
-      datasetBodyBeforeName: "评测使用的冻结检索语料发布于 ",
-      datasetBodyAfterName:
-        "。它为每次运行提供同一版本的 BrowseComp-Plus 文档集合，使初始检索和链接跟随都基于固定快照，而不受实时网页变化影响。",
+      corpusBodyBeforeLink: "BCP-Link 的评测语料基于 ",
+      corpusBodyAfterLink:
+        "（BCP）语料扩充而来。扩充后的语料支持相关文档之间的直接跳转，使智能体能够在阅读当前文档时进入后续文档并继续收集证据，从而减少反复搜索与重新匹配的过程。",
       bodyThree:
-        "关键证据不一定出现在初始搜索结果中，但可能通过检索页面内的链接到达。该排行榜用于衡量模型能否识别这些链接、导航至正确证据，并准确完成搜索任务。",
+        "因此，关键证据未必出现在初始搜索结果中，也可能需要沿文档链接进一步获取。BCP-Link 不仅考察答案准确性，还衡量模型能否识别有用链接、完成跨文档导航，并高效找到正确证据。",
       rankingsAction: "查看排行榜",
       protocolAction: "阅读评测规则",
       codeAction: "Code",
       datasetAction: "Dataset",
       comingSoon: "即将开放",
       codeActionLabel: "GitHub 上的代码，即将开放",
-      datasetActionLabel: "在 Hugging Face 打开 Tevatron/browsecomp-plus-corpus",
+      datasetActionLabel: "数据集，即将开放",
     },
     stats: {
       label: "数据概览",

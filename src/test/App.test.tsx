@@ -38,12 +38,10 @@ describe("LeaderboardApp", () => {
     );
     expect(screen.getByRole("link", { name: "Review protocol" })).toHaveAttribute("href", "#rules");
     expect(screen.getByRole("link", { name: "Back to top" })).toHaveAttribute("href", "#top");
-    expect(
-      screen.getByRole("link", { name: "Tevatron/browsecomp-plus-corpus" }),
-    ).toHaveAttribute(
-      "href",
-      "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus",
-    );
+    const browseCompPlusPaper = screen.getByRole("link", { name: "BrowseComp-Plus" });
+    expect(browseCompPlusPaper).toHaveAttribute("href", "https://arxiv.org/pdf/2508.06600");
+    expect(browseCompPlusPaper).toHaveAttribute("target", "_blank");
+    expect(browseCompPlusPaper).toHaveAttribute("rel", "noreferrer");
     expect(screen.getByRole("heading", { name: "BCP-Link", level: 1 })).toBeVisible();
     expect(
       screen.getByText("Evaluating whether search agents can find and follow useful links."),
@@ -52,13 +50,13 @@ describe("LeaderboardApp", () => {
       "BCP-Link",
     );
     expect(screen.getByRole("button", { name: "Code on GitHub, coming soon" })).toBeDisabled();
-    expect(
-      screen.getByRole("link", {
-        name: "Open Tevatron/browsecomp-plus-corpus on Hugging Face",
-      }),
-    ).toHaveAttribute(
-      "href",
-      "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus",
+    expect(screen.getByRole("button", { name: "Dataset, coming soon" })).toBeDisabled();
+    expect(screen.queryByText("Tevatron/browsecomp-plus-corpus")).not.toBeInTheDocument();
+    expect(container).toHaveTextContent(
+      "The BCP-Link evaluation corpus extends the BrowseComp-Plus (BCP) corpus.",
+    );
+    expect(container).toHaveTextContent(
+      "BCP-Link evaluates not only answer accuracy, but also whether models can recognize useful links",
     );
     expect(
       screen.getByRole("heading", { name: "One fixed process, two standard tools" }),
@@ -78,7 +76,7 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector(".comparison-workspace")?.nextElementSibling).toBe(
       comparisonInsights,
     );
-    expect(screen.getByText(/Gold evidence may not appear/)).toBeVisible();
+    expect(screen.getByText(/Key evidence may therefore lie beyond/)).toBeVisible();
     expect(screen.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
     expect(screen.getByText(/40,000-character limit · no summarizer/)).toBeVisible();
     expect(screen.getByText("Each run is capped at 50 agent turns.")).toBeVisible();
@@ -201,6 +199,10 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("list", { name: "BCP 与 BCP-Link 对比的主要结论" })).toHaveTextContent(
       "对于接受过相关工具使用训练的模型，BCP-Link 能以更少的对话轮数取得优于 BCP 的 Accuracy。",
     );
+    expect(screen.getByText(/BCP-Link 的评测语料基于/)).toHaveTextContent(
+      "BCP-Link 的评测语料基于 BrowseComp-Plus（BCP）语料扩充而来。",
+    );
+    expect(screen.getByRole("button", { name: "数据集，即将开放" })).toBeDisabled();
     expect(
       within(screen.getByRole("combobox", { name: "选择对比指标" })).getByRole("option", {
         name: "Link-following Visit Calls",

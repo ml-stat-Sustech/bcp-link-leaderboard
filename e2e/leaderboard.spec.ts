@@ -24,14 +24,15 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   ).toBeVisible();
   await expect(page.locator(".intro-body p > strong").first()).toHaveText("BCP-Link");
   await expect(page.getByRole("button", { name: "Code on GitHub, coming soon" })).toBeDisabled();
-  await expect(
-    page.getByRole("link", { name: "Tevatron/browsecomp-plus-corpus", exact: true }),
-  ).toHaveAttribute("href", "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus");
-  await expect(
-    page.getByRole("link", {
-      name: "Open Tevatron/browsecomp-plus-corpus on Hugging Face",
-    }),
-  ).toHaveAttribute("href", "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus");
+  const browseCompPlusPaper = page.getByRole("link", { name: "BrowseComp-Plus", exact: true });
+  await expect(browseCompPlusPaper).toHaveAttribute(
+    "href",
+    "https://arxiv.org/pdf/2508.06600",
+  );
+  await expect(browseCompPlusPaper).toHaveAttribute("target", "_blank");
+  await expect(browseCompPlusPaper).toHaveAttribute("rel", "noreferrer");
+  await expect(page.getByRole("button", { name: "Dataset, coming soon" })).toBeDisabled();
+  await expect(page.getByText("Tevatron/browsecomp-plus-corpus")).toHaveCount(0);
   await expect(page.getByTestId("model-name")).toHaveCount(9);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();

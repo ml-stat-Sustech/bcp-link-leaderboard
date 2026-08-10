@@ -65,8 +65,7 @@ interface LeaderboardAppProps {
   csvText?: string;
 }
 
-const BROWSECOMP_PLUS_CORPUS_URL =
-  "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus";
+const BROWSECOMP_PLUS_PAPER_URL = "https://arxiv.org/pdf/2508.06600";
 
 const DEFAULT_COMPARISON_MODEL_NAMES = [
   "Tongyi-DeepResearch-30B-A3B",
@@ -1287,16 +1286,16 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                   {copy.intro.bodyOneBetweenTools}<code>visit</code>{copy.intro.bodyOneAfterVisit}
                 </p>
                 <p>
-                  {copy.intro.datasetBodyBeforeName}
+                  {copy.intro.corpusBodyBeforeLink}
                   <a
                     className="intro-dataset-link"
-                    href={BROWSECOMP_PLUS_CORPUS_URL}
+                    href={BROWSECOMP_PLUS_PAPER_URL}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    Tevatron/browsecomp-plus-corpus
+                    BrowseComp-Plus
                   </a>
-                  {copy.intro.datasetBodyAfterName}
+                  {copy.intro.corpusBodyAfterLink}
                 </p>
                 <p>{copy.intro.bodyThree}</p>
                 <div className="intro-actions">
@@ -1315,15 +1314,15 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                   >
                     <Github aria-hidden="true" /> <span>{copy.intro.codeAction}</span>
                   </button>
-                  <a
+                  <button
                     className="intro-action intro-action-resource"
-                    href={BROWSECOMP_PLUS_CORPUS_URL}
-                    target="_blank"
-                    rel="noreferrer"
+                    type="button"
+                    disabled
+                    title={`${copy.intro.datasetAction} · ${copy.intro.comingSoon}`}
                     aria-label={copy.intro.datasetActionLabel}
                   >
                     <Database aria-hidden="true" /> <span>{copy.intro.datasetAction}</span>
-                  </a>
+                  </button>
                 </div>
                 <dl className="dataset-stats" aria-label={copy.stats.label}>
                   <div>
