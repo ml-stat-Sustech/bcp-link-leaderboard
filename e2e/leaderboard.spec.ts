@@ -33,8 +33,9 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(browseCompPlusPaper).toHaveAttribute("rel", "noreferrer");
   await expect(page.getByRole("button", { name: "Dataset, coming soon" })).toBeDisabled();
   await expect(page.getByText("Tevatron/browsecomp-plus-corpus")).toHaveCount(0);
-  await expect(page.getByTestId("model-name")).toHaveCount(9);
+  await expect(page.getByTestId("model-name")).toHaveCount(14);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
+  await expect(page.getByTestId("model-name").filter({ hasText: "deepseek-v4-pro" })).toHaveCount(1);
   await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();
   const comparisonInsights = page.getByRole("list", {
     name: "Key findings from the BCP and BCP-Link comparison",
@@ -60,7 +61,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.getByRole("heading", { name: "Visit", exact: true })).toBeVisible();
   await expect(page.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
   await expect(page.locator(".rank-medal")).toHaveCount(3);
-  await expect(page.locator(".percentage-data-bar")).toHaveCount(18);
+  await expect(page.locator(".percentage-data-bar")).toHaveCount(28);
   await expect(page.locator("thead th")).toHaveText([
     "Rank",
     "Model",
@@ -135,6 +136,11 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     "SearchAgent-Zero",
     "WebSailor-32B",
     "Gemma-4-E4B-it",
+    "DR-Venus-4B-RL",
+    "AgentCPM-Explore",
+    "MiroThinker-1.7-mini",
+    "deepseek-v4-pro",
+    "qwen3.7-plus",
   ]) {
     await expect(page.getByRole("checkbox", { name: model })).toBeVisible();
   }
@@ -427,16 +433,16 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     "Link-following Visit Calls",
     "Turns",
   ]);
-  expect(parsedDownload.data).toHaveLength(10);
+  expect(parsedDownload.data).toHaveLength(15);
   expect(parsedDownload.data[1]).toEqual([
     "1",
-    "Qwen3.6-27B",
-    "61.93%",
-    "62.79%",
-    "30.78",
-    "2.12",
-    "0.0220",
-    "26.33",
+    "deepseek-v4-pro",
+    "74.94%",
+    "73.38%",
+    "29.09",
+    "3.11",
+    "0.0827",
+    "23.61",
   ]);
   expect(parsedDownload.data.every((row) => row.length === 8)).toBe(true);
   expect(downloadedCsv).not.toContain("benchmark");
@@ -518,11 +524,11 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   expect(metricSectionTop).toBeGreaterThanOrEqual(navigationBottom - 1);
 
   await page.getByRole("button", { name: "Sort by Recall" }).click();
-  await expect(page.getByTestId("model-name").first()).toHaveText("Qwen3.6-27B");
+  await expect(page.getByTestId("model-name").first()).toHaveText("deepseek-v4-pro");
 
   await page.getByRole("searchbox", { name: "Search models" }).fill("WebExplorer");
   await expect(page.getByTestId("model-name")).toHaveCount(1);
-  await expect(page.getByText("Showing 1 of 9 models")).toBeVisible();
+  await expect(page.getByText("Showing 1 of 14 models")).toBeVisible();
 
   await page.getByRole("combobox", { name: "Comparison metric" }).selectOption("recall");
   await expect(page.getByText("4 models with comparable Recall data")).toBeVisible();
@@ -570,8 +576,9 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   const selectAllModels = page.getByRole("checkbox", { name: /Select all/ });
   await expect(selectAllModels).toHaveJSProperty("indeterminate", true);
   await selectAllModels.check();
-  await expect(modelTrigger).toHaveText("9 models selected");
-  await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(18);
+  await expect(modelTrigger).toHaveText("14 models selected");
+  await expect(page.getByText("12 models with comparable Recall data")).toBeVisible();
+  await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(24);
   await selectAllModels.uncheck();
   await expect(modelTrigger).toHaveText("0 models selected");
   await expect(page.getByRole("status")).toContainText("No models selected");
