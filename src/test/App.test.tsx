@@ -344,7 +344,7 @@ describe("LeaderboardApp", () => {
 
     const trigger = screen.getByRole("button", { name: "Choose comparison models" });
     await user.click(trigger);
-    expect(screen.getAllByRole("checkbox")).toHaveLength(15);
+    expect(screen.getAllByRole("checkbox")).toHaveLength(16);
     const selectAll = screen.getByRole("checkbox", { name: /Select all/ });
     expect(selectAll).toBePartiallyChecked();
     expect(screen.getByRole("checkbox", { name: "Qwen3.6-27B" })).not.toBeChecked();
@@ -360,7 +360,7 @@ describe("LeaderboardApp", () => {
 
     await user.click(selectAll);
     expect(selectAll).toBeChecked();
-    expect(trigger).toHaveTextContent("14 models selected");
+    expect(trigger).toHaveTextContent("15 models selected");
     expect(screen.getByText("12 models with comparable Accuracy data")).toBeInTheDocument();
 
     await user.click(selectAll);

@@ -33,7 +33,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(browseCompPlusPaper).toHaveAttribute("rel", "noreferrer");
   await expect(page.getByRole("button", { name: "Dataset, coming soon" })).toBeDisabled();
   await expect(page.getByText("Tevatron/browsecomp-plus-corpus")).toHaveCount(0);
-  await expect(page.getByTestId("model-name")).toHaveCount(14);
+  await expect(page.getByTestId("model-name")).toHaveCount(15);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByTestId("model-name").filter({ hasText: "Deepseek-v4-pro" })).toHaveCount(1);
   await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();
@@ -61,7 +61,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.getByRole("heading", { name: "Visit", exact: true })).toBeVisible();
   await expect(page.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
   await expect(page.locator(".rank-medal")).toHaveCount(3);
-  await expect(page.locator(".percentage-data-bar")).toHaveCount(28);
+  await expect(page.locator(".percentage-data-bar")).toHaveCount(30);
   await expect(page.locator("thead th")).toHaveText([
     "Rank",
     "Model",
@@ -141,6 +141,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     "MiroThinker-1.7-mini",
     "deepseek-v4-pro",
     "qwen3.7-plus",
+    "glm-5.2",
   ]) {
     await expect(page.getByRole("checkbox", { name: model })).toBeVisible();
   }
@@ -433,7 +434,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     "Link-following Visit Calls",
     "Turns",
   ]);
-  expect(parsedDownload.data).toHaveLength(15);
+  expect(parsedDownload.data).toHaveLength(16);
   expect(parsedDownload.data[1]).toEqual([
     "1",
     "deepseek-v4-pro",
@@ -528,7 +529,7 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
 
   await page.getByRole("searchbox", { name: "Search models" }).fill("WebExplorer");
   await expect(page.getByTestId("model-name")).toHaveCount(1);
-  await expect(page.getByText("Showing 1 of 14 models")).toBeVisible();
+  await expect(page.getByText("Showing 1 of 15 models")).toBeVisible();
 
   await page.getByRole("combobox", { name: "Comparison metric" }).selectOption("recall");
   await expect(page.getByText("4 models with comparable Recall data")).toBeVisible();
@@ -576,7 +577,7 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   const selectAllModels = page.getByRole("checkbox", { name: /Select all/ });
   await expect(selectAllModels).toHaveJSProperty("indeterminate", true);
   await selectAllModels.check();
-  await expect(modelTrigger).toHaveText("14 models selected");
+  await expect(modelTrigger).toHaveText("15 models selected");
   await expect(page.getByText("12 models with comparable Recall data")).toBeVisible();
   await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(24);
   await selectAllModels.uncheck();
