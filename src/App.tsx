@@ -124,6 +124,11 @@ function formatModelDisplayName(model: string): string {
   return model.replace(/^gemma(?=-)/i, "Gemma");
 }
 
+function formatLeaderboardModelName(model: string): string {
+  const displayName = formatModelDisplayName(model);
+  return displayName.charAt(0).toLocaleUpperCase() + displayName.slice(1);
+}
+
 function createLeaderboardCsv(models: ModelResults[], ranks: Map<string, number>): string {
   const rows = models.map((model) => [
     ranks.get(model.model) ?? "",
@@ -517,7 +522,7 @@ function LeaderboardTable({
                       )}
                     </td>
                     <th className="model-column model-name" scope="row" data-testid="model-name">
-                      {formatModelDisplayName(model.model)}
+                      {formatLeaderboardModelName(model.model)}
                     </th>
                     {LEADERBOARD_METRICS.map((metricKey) => {
                       const metric = METRIC_BY_KEY[metricKey];

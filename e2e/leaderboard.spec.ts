@@ -35,7 +35,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.getByText("Tevatron/browsecomp-plus-corpus")).toHaveCount(0);
   await expect(page.getByTestId("model-name")).toHaveCount(14);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
-  await expect(page.getByTestId("model-name").filter({ hasText: "deepseek-v4-pro" })).toHaveCount(1);
+  await expect(page.getByTestId("model-name").filter({ hasText: "Deepseek-v4-pro" })).toHaveCount(1);
   await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();
   const comparisonInsights = page.getByRole("list", {
     name: "Key findings from the BCP and BCP-Link comparison",
@@ -524,7 +524,7 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   expect(metricSectionTop).toBeGreaterThanOrEqual(navigationBottom - 1);
 
   await page.getByRole("button", { name: "Sort by Recall" }).click();
-  await expect(page.getByTestId("model-name").first()).toHaveText("deepseek-v4-pro");
+  await expect(page.getByTestId("model-name").first()).toHaveText("Deepseek-v4-pro");
 
   await page.getByRole("searchbox", { name: "Search models" }).fill("WebExplorer");
   await expect(page.getByTestId("model-name")).toHaveCount(1);

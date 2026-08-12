@@ -25,6 +25,12 @@ describe("LeaderboardApp", () => {
     });
   });
 
+  it("capitalizes the first character of model names in the leaderboard", () => {
+    render(<LeaderboardApp csvText={TEST_CSV.replace("Alpha,bcp-link", "alpha,bcp-link")} />);
+
+    expect(modelNames()).toContain("Alpha");
+  });
+
   it("provides primary navigation, benchmark context, and metric definitions", () => {
     const { container } = render(<LeaderboardApp csvText={TEST_CSV} />);
 
