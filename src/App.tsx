@@ -1336,18 +1336,19 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                   </button>
                 </div>
                 <dl className="dataset-stats" aria-label={copy.stats.label}>
-                  <div>
-                    <dt>{copy.stats.placeholder}</dt>
-                    <dd>{copy.stats.documents}</dd>
-                  </div>
-                  <div>
-                    <dt>{copy.stats.placeholder}</dt>
-                    <dd>{copy.stats.links}</dd>
-                  </div>
-                  <div>
-                    <dt>{copy.stats.placeholder}</dt>
-                    <dd>{copy.stats.queries}</dd>
-                  </div>
+                  {[
+                    copy.stats.uniqueLinks,
+                    copy.stats.averageOutgoingLinks,
+                    copy.stats.wikipediaTargets,
+                  ].map((stat) => (
+                    <div key={stat.label}>
+                      <dt>{stat.value}</dt>
+                      <dd>
+                        <strong>{stat.label}</strong>
+                        <span>{stat.description}</span>
+                      </dd>
+                    </div>
+                  ))}
                 </dl>
               </div>
             </div>

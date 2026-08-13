@@ -134,10 +134,11 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector("thead")).not.toHaveTextContent("Answer quality");
     expect(container.querySelector("thead")).not.toHaveTextContent("Tool behavior");
     expect(container.querySelector("thead")).not.toHaveTextContent("Link following");
-    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("Corpus documents");
-    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("Links");
-    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("Evaluation queries");
-    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("TBD");
+    const datasetSummary = screen.getByLabelText("Dataset summary");
+    expect(datasetSummary).toHaveTextContent("63,371Unique links");
+    expect(datasetSummary).toHaveTextContent("4.59Avg. outgoing links");
+    expect(datasetSummary).toHaveTextContent("84.18%Wikipedia targets");
+    expect(datasetSummary).toHaveTextContent("Unique links targeting en.wikipedia.org");
     expect(screen.getByRole("link", { name: "Download leaderboard results as CSV" })).toHaveAttribute(
       "download",
       "bcp-link-results.csv",
@@ -273,9 +274,7 @@ describe("LeaderboardApp", () => {
   it("uses accuracy ranking by default and keeps missing values last", () => {
     const { container } = render(<LeaderboardApp csvText={TEST_CSV} />);
     expect(modelNames()).toEqual(["Beta", "Alpha", "Gamma"]);
-    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent(
-      "TBDCorpus documentsTBDLinksTBDEvaluation queries",
-    );
+    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("63,371");
     expect(screen.getByText("1 model with comparable Accuracy data")).toBeInTheDocument();
     expect(container.querySelectorAll(".rank-medal")).toHaveLength(2);
     expect(container.querySelector(".rank-medal.rank-1")).toHaveTextContent("1");

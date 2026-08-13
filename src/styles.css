@@ -761,11 +761,12 @@ dd {
 
 .dataset-stats > div {
   min-width: 0;
-  display: flex;
-  align-items: baseline;
-  gap: 9px;
-  justify-content: center;
-  padding: 14px 18px 11px;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 5px;
+  padding: 17px 18px 15px;
+  text-align: center;
 }
 
 .dataset-stats > div + div {
@@ -781,9 +782,25 @@ dd {
 
 .dataset-stats dd {
   color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.dataset-stats dd strong,
+.dataset-stats dd span {
+  display: block;
+}
+
+.dataset-stats dd strong {
+  color: var(--text-subtle);
   font-size: 12px;
-  font-weight: 650;
+  font-weight: 720;
   text-transform: uppercase;
+}
+
+.dataset-stats dd span {
+  margin-top: 3px;
+  text-wrap: balance;
 }
 
 .section-heading {
@@ -2045,7 +2062,7 @@ tbody tr:hover .model-column {
 
 .metric-card[data-popover-placement="top"] .metric-detail-popover {
   top: auto;
-  bottom: calc(100% - 5px);
+  bottom: calc(100% + 4px);
   animation-name: metric-detail-in-up;
 }
 
@@ -2521,23 +2538,36 @@ tbody tr:hover .model-column {
   }
 
   .dataset-stats {
+    grid-template-columns: 1fr;
     margin-top: 22px;
   }
 
   .dataset-stats > div {
-    display: block;
-    padding: 11px 10px;
-    text-align: center;
+    grid-template-columns: 82px minmax(0, 1fr);
+    align-items: center;
+    justify-items: stretch;
+    gap: 12px;
+    padding: 12px 14px;
+    text-align: left;
+  }
+
+  .dataset-stats > div + div {
+    border-top: 1px solid var(--border);
+    border-left: 0;
   }
 
   .dataset-stats dt {
     font-size: 20px;
+    text-align: center;
   }
 
-  .dataset-stats dd {
-    margin-top: 2px;
-    font-size: 10px;
-    line-height: 1.25;
+  .dataset-stats dd strong {
+    font-size: 11px;
+  }
+
+  .dataset-stats dd span {
+    font-size: 10.5px;
+    line-height: 1.4;
   }
 
   .section-heading {

@@ -71,10 +71,21 @@ export interface Translation {
   };
   stats: {
     label: string;
-    placeholder: string;
-    documents: string;
-    links: string;
-    queries: string;
+    uniqueLinks: {
+      value: string;
+      label: string;
+      description: string;
+    };
+    averageOutgoingLinks: {
+      value: string;
+      label: string;
+      description: string;
+    };
+    wikipediaTargets: {
+      value: string;
+      label: string;
+      description: string;
+    };
   };
   leaderboard: {
     kicker: string;
@@ -213,10 +224,21 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     },
     stats: {
       label: "Dataset summary",
-      placeholder: "TBD",
-      documents: "Corpus documents",
-      links: "Links",
-      queries: "Evaluation queries",
+      uniqueLinks: {
+        value: "63,371",
+        label: "Unique links",
+        description: "Deduplicated links in the BCP-Link corpus",
+      },
+      averageOutgoingLinks: {
+        value: "4.59",
+        label: "Avg. outgoing links",
+        description: "Per document containing at least one link",
+      },
+      wikipediaTargets: {
+        value: "84.18%",
+        label: "Wikipedia targets",
+        description: "Unique links targeting en.wikipedia.org",
+      },
     },
     leaderboard: {
       kicker: "Main results",
@@ -438,10 +460,21 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     },
     stats: {
       label: "数据概览",
-      placeholder: "待补",
-      documents: "语料文档",
-      links: "链接",
-      queries: "评测问题",
+      uniqueLinks: {
+        value: "63,371",
+        label: "唯一链接数",
+        description: "BCP-Link 语料中的去重链接总数",
+      },
+      averageOutgoingLinks: {
+        value: "4.59",
+        label: "平均出链数",
+        description: "每篇含链接文档的平均出链数",
+      },
+      wikipediaTargets: {
+        value: "84.18%",
+        label: "Wikipedia 目标占比",
+        description: "目标为 en.wikipedia.org 的唯一链接占比",
+      },
     },
     leaderboard: {
       kicker: "主要结果",

@@ -33,6 +33,14 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(browseCompPlusPaper).toHaveAttribute("rel", "noreferrer");
   await expect(page.getByRole("button", { name: "Dataset, coming soon" })).toBeDisabled();
   await expect(page.getByText("Tevatron/browsecomp-plus-corpus")).toHaveCount(0);
+  const datasetSummary = page.getByLabel("Dataset summary");
+  await expect(datasetSummary.locator("dt")).toHaveText(["63,371", "4.59", "84.18%"]);
+  await expect(datasetSummary.locator("dd strong")).toHaveText([
+    "Unique links",
+    "Avg. outgoing links",
+    "Wikipedia targets",
+  ]);
+  await expect(datasetSummary).toContainText("Unique links targeting en.wikipedia.org");
   await expect(page.getByTestId("model-name")).toHaveCount(15);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByTestId("model-name").filter({ hasText: "Deepseek-v4-pro" })).toHaveCount(1);
