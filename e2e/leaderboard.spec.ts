@@ -36,6 +36,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.getByTestId("model-name")).toHaveCount(15);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByTestId("model-name").filter({ hasText: "Deepseek-v4-pro" })).toHaveCount(1);
+  await expect(page.getByTestId("model-name").nth(2)).toHaveText("Qwen3.7-plus");
   await expect(page.getByText("4 models with comparable Accuracy data")).toBeVisible();
   const comparisonInsights = page.getByRole("list", {
     name: "Key findings from the BCP and BCP-Link comparison",
