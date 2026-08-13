@@ -512,6 +512,7 @@ function LeaderboardTable({
             <tbody>
               {visibleModels.map((model) => {
                 const rank = ranks.get(model.model) ?? null;
+                const modelNameLines = splitModelLabel(formatLeaderboardModelName(model.model));
                 return (
                   <tr key={model.model} className="leader-row">
                     <td className="rank-column rank-value">
@@ -522,7 +523,11 @@ function LeaderboardTable({
                       )}
                     </td>
                     <th className="model-column model-name" scope="row" data-testid="model-name">
-                      {formatLeaderboardModelName(model.model)}
+                      <span className="model-name-lines">
+                        {modelNameLines.map((line) => (
+                          <span key={line}>{line}</span>
+                        ))}
+                      </span>
                     </th>
                     {LEADERBOARD_METRICS.map((metricKey) => {
                       const metric = METRIC_BY_KEY[metricKey];

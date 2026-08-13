@@ -246,7 +246,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       trainedInsightEmphasis: "higher Accuracy",
       trainedInsightAfter: " than BCP with fewer agent turns.",
       untrainedInsight:
-        "For models without relevant tool-use training, the overall performance difference between BCP and BCP-Link is limited.",
+        "For models without relevant tool-use training, or trained with materially different tool interfaces (such as summary-returning Visit tools), the overall performance difference between BCP and BCP-Link is limited.",
       metricLabel: "Metric",
       selectLabel: "Comparison metric",
       modelsLabel: "Models",
@@ -468,7 +468,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       trainedInsightBefore: "对于接受过相关工具使用训练的模型，BCP-Link 能以更少的对话轮数取得",
       trainedInsightEmphasis: "优于 BCP 的 Accuracy",
       trainedInsightAfter: "。",
-      untrainedInsight: "对于未接受过相关工具使用训练的模型，BCP 与 BCP-Link 的整体表现差异不明显。",
+      untrainedInsight:
+        "对于未接受过相关工具使用训练，或训练时使用的工具形态与本评测存在明显差异（例如 Visit 工具返回摘要）的模型，BCP 与 BCP-Link 的整体表现差异不明显。",
       metricLabel: "指标",
       selectLabel: "选择对比指标",
       modelsLabel: "模型",

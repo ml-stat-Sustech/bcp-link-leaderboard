@@ -75,7 +75,7 @@ describe("LeaderboardApp", () => {
       "For models trained to use comparable tools, BCP-Link achieves higher Accuracy than BCP with fewer agent turns.",
     );
     expect(comparisonInsights).toHaveTextContent(
-      "For models without relevant tool-use training, the overall performance difference between BCP and BCP-Link is limited.",
+      "For models without relevant tool-use training, or trained with materially different tool interfaces (such as summary-returning Visit tools), the overall performance difference between BCP and BCP-Link is limited.",
     );
     expect(comparisonInsights.querySelectorAll("strong")).toHaveLength(1);
     expect(comparisonInsights.querySelector("strong")).toHaveTextContent("higher Accuracy");

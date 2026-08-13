@@ -46,7 +46,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     "BCP-Link achieves higher Accuracy than BCP with fewer agent turns",
   );
   await expect(comparisonInsights).toContainText(
-    "the overall performance difference between BCP and BCP-Link is limited",
+    "or trained with materially different tool interfaces (such as summary-returning Visit tools), the overall performance difference between BCP and BCP-Link is limited",
   );
   await expect(
     page.getByRole("heading", { name: "One fixed process, two standard tools" }),
@@ -183,6 +183,18 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       .querySelector(".metric-column-visitCalls")!
       .getBoundingClientRect().width;
     const modelWidth = document.querySelector(".model-column")!.getBoundingClientRect().width;
+    const tableScroll = document.querySelector(".table-scroll")!;
+    const tableRows = Array.from(document.querySelectorAll("tbody tr"));
+    const rowHeights = tableRows.map((row) => row.getBoundingClientRect().height);
+    const tongyiModel = Array.from(document.querySelectorAll<HTMLElement>("tbody .model-name")).find(
+      (cell) => cell.textContent?.includes("Tongyi-DeepResearch"),
+    )!;
+    const tongyiText = tongyiModel.querySelector(".model-name-lines")!;
+    const tongyiRange = document.createRange();
+    tongyiRange.selectNodeContents(tongyiText);
+    const tongyiLineTops = new Set(
+      Array.from(tongyiRange.getClientRects(), (rect) => Math.round(rect.top)),
+    );
     const accuracyWidth = document
       .querySelector(".metric-column-accuracy")!
       .getBoundingClientRect().width;
@@ -235,6 +247,12 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       searchWidth,
       visitWidth,
       modelWidth,
+      tableViewportHeight: tableScroll.clientHeight,
+      tableRowHeights: rowHeights,
+      tongyiLineCount: tongyiLineTops.size,
+      tongyiLines: Array.from(tongyiText.children, (line) => line.textContent),
+      tongyiModelScrollHeight: tongyiText.scrollHeight,
+      tongyiModelClientHeight: tongyiText.clientHeight,
       modelWidthToken: getComputedStyle(document.documentElement)
         .getPropertyValue("--model-width")
         .trim(),
@@ -320,6 +338,13 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.tableModelFont).toBe("17px");
   expect(visualDetails.tableHeaderFont).toBe("17px");
   expect(visualDetails.tableRowHeight).toBeGreaterThanOrEqual(70);
+  expect(visualDetails.tableViewportHeight).toBe(630);
+  expect(new Set(visualDetails.tableRowHeights)).toEqual(new Set([70]));
+  expect(visualDetails.tongyiLineCount).toBe(2);
+  expect(visualDetails.tongyiLines).toEqual(["Tongyi-DeepResearch", "30B-A3B"]);
+  expect(visualDetails.tongyiModelScrollHeight).toBeLessThanOrEqual(
+    visualDetails.tongyiModelClientHeight,
+  );
   expect(visualDetails.tableTransform).toBe("none");
   expect(visualDetails.tableBackground).not.toBe("rgb(255, 255, 255)");
   expect(visualDetails.tableMask).not.toBe("none");

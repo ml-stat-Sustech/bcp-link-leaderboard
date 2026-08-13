@@ -954,7 +954,7 @@ h2 {
 }
 
 .table-scroll {
-  max-height: min(570px, 66vh);
+  max-height: 630px;
   overflow-y: auto;
 }
 
@@ -1156,7 +1156,20 @@ tbody tr:hover .model-column {
   color: var(--text);
   font-size: 17px;
   font-weight: 700;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.model-name-lines {
+  display: grid;
+  overflow: hidden;
+  gap: 1px;
+}
+
+.model-name-lines > span {
+  overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .metric-header {
