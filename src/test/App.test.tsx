@@ -344,9 +344,12 @@ describe("LeaderboardApp", () => {
 
     const trigger = screen.getByRole("button", { name: "Choose comparison models" });
     await user.click(trigger);
-    expect(screen.getAllByRole("checkbox")).toHaveLength(16);
+    expect(screen.getAllByRole("checkbox")).toHaveLength(13);
     const selectAll = screen.getByRole("checkbox", { name: /Select all/ });
     expect(selectAll).toBePartiallyChecked();
+    expect(screen.queryByRole("checkbox", { name: "deepseek-v4-pro" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "qwen3.7-plus" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "glm-5.2" })).not.toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Qwen3.6-27B" })).not.toBeChecked();
     expect(screen.getByRole("checkbox", { name: "Gemma-4-31B-it" })).not.toBeChecked();
     const tongyi = screen.getByRole("checkbox", { name: "Tongyi-DeepResearch-30B-A3B" });
@@ -360,7 +363,7 @@ describe("LeaderboardApp", () => {
 
     await user.click(selectAll);
     expect(selectAll).toBeChecked();
-    expect(trigger).toHaveTextContent("15 models selected");
+    expect(trigger).toHaveTextContent("12 models selected");
     expect(screen.getByText("12 models with comparable Accuracy data")).toBeInTheDocument();
 
     await user.click(selectAll);

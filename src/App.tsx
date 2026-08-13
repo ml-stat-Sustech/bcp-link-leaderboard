@@ -810,6 +810,7 @@ function ComparisonChart({
   const availableModelNames = useMemo(
     () =>
       [...models]
+        .filter((model) => model.bcp !== null && model.bcpLink !== null)
         .sort((left, right) => {
           const accuracyDifference =
             (right.bcpLink?.accuracy ?? Number.NEGATIVE_INFINITY) -

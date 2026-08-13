@@ -139,11 +139,11 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     "DR-Venus-4B-RL",
     "AgentCPM-Explore",
     "MiroThinker-1.7-mini",
-    "deepseek-v4-pro",
-    "qwen3.7-plus",
-    "glm-5.2",
   ]) {
     await expect(page.getByRole("checkbox", { name: model })).toBeVisible();
+  }
+  for (const model of ["deepseek-v4-pro", "qwen3.7-plus", "glm-5.2"]) {
+    await expect(page.getByRole("checkbox", { name: model })).toHaveCount(0);
   }
   for (const model of [
     "Tongyi-DeepResearch-30B-A3B",
@@ -577,7 +577,7 @@ test("supports search, sorting, metric selection, and chart tooltips", async ({ 
   const selectAllModels = page.getByRole("checkbox", { name: /Select all/ });
   await expect(selectAllModels).toHaveJSProperty("indeterminate", true);
   await selectAllModels.check();
-  await expect(modelTrigger).toHaveText("15 models selected");
+  await expect(modelTrigger).toHaveText("12 models selected");
   await expect(page.getByText("12 models with comparable Recall data")).toBeVisible();
   await expect(comparisonChart.locator(".recharts-bar-rectangle")).toHaveCount(24);
   await selectAllModels.uncheck();
