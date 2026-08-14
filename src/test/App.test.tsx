@@ -72,7 +72,7 @@ describe("LeaderboardApp", () => {
       name: "Key findings from the BCP and BCP-Link comparison",
     });
     expect(comparisonInsights).toHaveTextContent(
-      "For models trained to use comparable tools, BCP-Link achieves higher Accuracy than BCP with fewer agent turns.",
+      "For models trained with the same tools, BCP-Link achieves higher Accuracy than BCP with fewer agent turns.",
     );
     expect(comparisonInsights).toHaveTextContent(
       "For models without relevant tool-use training, or trained with materially different tool interfaces (such as summary-returning Visit tools), the overall performance difference between BCP and BCP-Link is limited.",
@@ -205,7 +205,7 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("columnheader", { name: /^Link-following Visit Calls/ })).toBeVisible();
     expect(screen.getByRole("button", { name: "按 Accuracy 排序" })).toBeVisible();
     expect(screen.getByRole("list", { name: "BCP 与 BCP-Link 对比的主要结论" })).toHaveTextContent(
-      "对于接受过相关工具使用训练的模型，BCP-Link 能以更少的对话轮数取得优于 BCP 的 Accuracy。",
+      "对于使用相同工具训练的模型，BCP-Link 能以更少的对话轮数取得更高的 Accuracy，优于 BCP。",
     );
     expect(container).toHaveTextContent(
       "BCP-Link 的评测语料是基于 BrowseComp-Plus（BCP）固定语料构建的静态链接增强版本。",

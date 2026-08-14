@@ -265,7 +265,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         `${count} ${count === 1 ? "model" : "models"} with comparable ${metric} data`,
       insightsLabel: "Key findings from the BCP and BCP-Link comparison",
       trainedInsightBefore:
-        "For models trained to use comparable tools, BCP-Link achieves ",
+        "For models trained with the same tools, BCP-Link achieves ",
       trainedInsightEmphasis: "higher Accuracy",
       trainedInsightAfter: " than BCP with fewer agent turns.",
       untrainedInsight:
@@ -499,9 +499,9 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       heading: "BCP 与 BCP-Link 对比",
       comparable: (count, metric) => `${count} 个模型具备可比较的${metric}数据`,
       insightsLabel: "BCP 与 BCP-Link 对比的主要结论",
-      trainedInsightBefore: "对于接受过相关工具使用训练的模型，BCP-Link 能以更少的对话轮数取得",
-      trainedInsightEmphasis: "优于 BCP 的 Accuracy",
-      trainedInsightAfter: "。",
+      trainedInsightBefore: "对于使用相同工具训练的模型，BCP-Link 能以更少的对话轮数取得",
+      trainedInsightEmphasis: "更高的 Accuracy",
+      trainedInsightAfter: "，优于 BCP。",
       untrainedInsight:
         "对于未接受过相关工具使用训练，或训练时使用的工具形态与本评测存在明显差异（例如 Visit 工具返回摘要）的模型，BCP 与 BCP-Link 的整体表现差异不明显。",
       metricLabel: "指标",
