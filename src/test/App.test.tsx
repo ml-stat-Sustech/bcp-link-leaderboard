@@ -59,7 +59,7 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("button", { name: "Dataset, coming soon" })).toBeDisabled();
     expect(screen.queryByText("Tevatron/browsecomp-plus-corpus")).not.toBeInTheDocument();
     expect(container).toHaveTextContent(
-      "The BCP-Link evaluation corpus extends the BrowseComp-Plus (BCP) corpus.",
+      "The BCP-Link evaluation corpus is a static, link-enriched extension of the BrowseComp-Plus (BCP) corpus.",
     );
     expect(container).toHaveTextContent(
       "BCP-Link evaluates not only answer accuracy, but also whether models can recognize useful links",
@@ -82,7 +82,8 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector(".comparison-workspace")?.nextElementSibling).toBe(
       comparisonInsights,
     );
-    expect(screen.getByText(/Key evidence may therefore lie beyond/)).toBeVisible();
+    expect(screen.getByText(/static, link-enriched extension/)).toBeVisible();
+    expect(screen.getByText(/Key evidence can therefore lie beyond/)).toBeVisible();
     expect(screen.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
     expect(screen.getByText(/40,000-character limit · no summarizer/)).toBeVisible();
     expect(screen.getByText("Each run is capped at 50 agent turns.")).toBeVisible();
@@ -180,7 +181,7 @@ describe("LeaderboardApp", () => {
 
   it("switches language and theme while preserving active controls", async () => {
     const user = userEvent.setup();
-    render(<LeaderboardApp csvText={TEST_CSV} />);
+    const { container } = render(<LeaderboardApp csvText={TEST_CSV} />);
 
     await user.click(screen.getByRole("button", { name: "Sort by Visit Calls" }));
     await user.type(screen.getByRole("searchbox", { name: "Search models" }), "a");
@@ -206,8 +207,8 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("list", { name: "BCP 与 BCP-Link 对比的主要结论" })).toHaveTextContent(
       "对于接受过相关工具使用训练的模型，BCP-Link 能以更少的对话轮数取得优于 BCP 的 Accuracy。",
     );
-    expect(screen.getByText(/BCP-Link 的评测语料基于/)).toHaveTextContent(
-      "BCP-Link 的评测语料基于 BrowseComp-Plus（BCP）语料扩充而来。",
+    expect(container).toHaveTextContent(
+      "BCP-Link 的评测语料是基于 BrowseComp-Plus（BCP）固定语料构建的静态链接增强版本。",
     );
     expect(screen.getByRole("button", { name: "数据集，即将开放" })).toBeDisabled();
     expect(

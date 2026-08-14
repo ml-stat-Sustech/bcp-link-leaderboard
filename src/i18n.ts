@@ -209,11 +209,12 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         " is a link-aware search-agent benchmark built on BrowseComp-Plus. It uses a fixed corpus with standardized ",
       bodyOneBetweenTools: " and ",
       bodyOneAfterVisit: " tools so model results remain reproducible and directly comparable.",
-      corpusBodyBeforeLink: "The BCP-Link evaluation corpus extends the ",
+      corpusBodyBeforeLink:
+        "The BCP-Link evaluation corpus is a static, link-enriched extension of the ",
       corpusBodyAfterLink:
-        " (BCP) corpus. The expanded corpus supports direct navigation between related documents, allowing an agent to move from the document it is reading to relevant follow-up documents and continue gathering evidence, reducing repeated searches and result rematching.",
+        " (BCP) corpus. It preserves each document's original text while restoring selected, verified links at their original positions. A link is exposed only when its target resolves to another document in the same fixed corpus, creating a reproducible document graph without live-web variation.",
       bodyThree:
-        "Key evidence may therefore lie beyond the initial search results and require following links across documents. BCP-Link evaluates not only answer accuracy, but also whether models can recognize useful links, navigate across documents, and reach the correct evidence efficiently.",
+        "Key evidence can therefore lie beyond the initial search results. Agents can move directly from a retrieved document to a linked document and continue gathering evidence without issuing another broad search. BCP-Link evaluates not only answer accuracy, but also whether models can recognize useful links, navigate across documents, and reach the correct evidence efficiently.",
       rankingsAction: "View rankings",
       protocolAction: "Review protocol",
       codeAction: "Code",
@@ -445,11 +446,11 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         " 是基于 BrowseComp-Plus 构建的链接感知搜索智能体基准。它使用固定语料，以及标准化的 ",
       bodyOneBetweenTools: " 和 ",
       bodyOneAfterVisit: " 工具，使不同模型的结果可复现、可直接比较。",
-      corpusBodyBeforeLink: "BCP-Link 的评测语料基于 ",
+      corpusBodyBeforeLink: "BCP-Link 的评测语料是基于 ",
       corpusBodyAfterLink:
-        "（BCP）语料扩充而来。扩充后的语料支持相关文档之间的直接跳转，使智能体能够在阅读当前文档时进入后续文档并继续收集证据，从而减少反复搜索与重新匹配的过程。",
+        "（BCP）固定语料构建的静态链接增强版本。它保留每篇文档的原始文本，并在对应位置恢复经筛选与验证的链接；只有当目标 URL 能映射到同一固定语料中的另一篇文档时，链接才会被保留，由此形成不受实时网页变化影响的可复现文档关联网络。",
       bodyThree:
-        "因此，关键证据未必出现在初始搜索结果中，也可能需要沿文档链接进一步获取。BCP-Link 不仅考察答案准确性，还衡量模型能否识别有用链接、完成跨文档导航，并高效找到正确证据。",
+        "因此，关键证据可能位于初始检索结果之外。智能体可以从已检索文档直接进入关联文档，无需再次发起宽泛检索即可继续收集证据。BCP-Link 不仅考察答案准确性，还衡量模型能否识别有用链接、完成跨文档导航并高效抵达正确证据。",
       rankingsAction: "查看排行榜",
       protocolAction: "阅读评测规则",
       codeAction: "Code",
