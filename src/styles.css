@@ -374,12 +374,9 @@ dd {
 }
 
 .brand-mark {
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   overflow: hidden;
-  color: var(--nav-active-text);
-  background: var(--nav-active-bg);
-  border-radius: 7px;
 }
 
 .footer-brand-mark svg {
@@ -388,10 +385,10 @@ dd {
 }
 
 .brand-mark img {
-  width: 138px;
+  width: 166px;
   max-width: none;
   height: auto;
-  transform: translate(-3px, 1px);
+  transform: translate(-3.5px, 2px);
 }
 
 .brand-title {

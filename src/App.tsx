@@ -31,7 +31,7 @@ import {
 } from "recharts";
 import Papa from "papaparse";
 import resultsCsv from "../data/bcp-link-results.csv?raw";
-import brandLogoLight from "./assets/bcp-link-logo-light.svg";
+import brandLogoDark from "./assets/bcp-link-logo-dark.svg";
 import { getAccuracyRanks, parseBenchmarkCsv } from "./data";
 import { EvaluationRules } from "./EvaluationRules";
 import {
@@ -1259,7 +1259,7 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
         <div className="container nav-inner">
           <a className="brand-block" href="#top" aria-label={copy.nav.home}>
             <span className="brand-mark" aria-hidden="true">
-              <img src={brandLogoLight} alt="" />
+              <img src={brandLogoDark} alt="" />
             </span>
             <span className="brand-title">BCP-Link Leaderboard</span>
           </a>
