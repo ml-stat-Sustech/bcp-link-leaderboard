@@ -376,15 +376,22 @@ dd {
 .brand-mark {
   width: 34px;
   height: 34px;
+  overflow: hidden;
   color: var(--nav-active-text);
   background: var(--nav-active-bg);
   border-radius: 7px;
 }
 
-.brand-mark svg,
 .footer-brand-mark svg {
   width: 18px;
   height: 18px;
+}
+
+.brand-mark img {
+  width: 138px;
+  max-width: none;
+  height: auto;
+  transform: translate(-3px, 1px);
 }
 
 .brand-title {
