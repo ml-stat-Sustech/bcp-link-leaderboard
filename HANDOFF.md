@@ -1,6 +1,6 @@
 # BCP-Link Leaderboard Handoff
 
-Last updated: 2026-08-07
+Last updated: 2026-08-14
 
 ## 1. Project Location And Current Status
 
@@ -11,8 +11,8 @@ Last updated: 2026-08-07
 - GitHub private repository: `https://github.com/Samanthe-H/bcp-link-leaderboard`.
 - The local `main` branch tracks `origin/main` over SSH.
 - Cloudflare Pages production site: `https://bcp-link-leaderboard.pages.dev/`.
-- Current deployed UI source commit: `034ee08`.
-- Current immutable deployment: `https://e35b67a8.bcp-link-leaderboard.pages.dev/`.
+- Current deployed UI source commit: `3551bd5`.
+- Current immutable deployment: `https://1bc2e08f.bcp-link-leaderboard.pages.dev/`.
 - The current data, theme, introduction, leaderboard, and comparison-chart work is complete.
   TypeScript, production build, unit/component tests, end-to-end tests, and desktop/mobile visual
   checks pass.
@@ -59,6 +59,11 @@ Last updated: 2026-08-07
   languages. The first `BCP-Link` in the description is emphasized. Disabled Code and Dataset
   placeholders reserve space for future GitHub and Hugging Face URLs without publishing unconfirmed
   destinations.
+- The Intro corpus paragraph now describes BCP-Link as a static, link-enriched extension of the
+  BrowseComp-Plus corpus: original text is preserved, selected verified links are restored at their
+  original positions, and only targets that resolve inside the fixed corpus are exposed. The copy
+  explains the resulting reproducible document graph and why agents can continue evidence gathering
+  through links without live-web variation. English and Chinese versions are kept aligned.
 - The rendered section order is now:
   1. About BCP-Link
   2. Leaderboard
@@ -111,6 +116,9 @@ The current UI upgrade is complete.
 - Every theme supplies a visibly differentiated four-color diagonal field through `--ambient-bg`.
   The fixed viewport background enlarges that field to 400% and moves it from side to side during
   an 18-second cycle; only the color field moves, and `prefers-reduced-motion` disables the animation.
+- The Research Blue ambient gradient uses a softened warm-color transition so the yellow region does
+  not overpower the page. The navigation uses the transparent dark-background brand icon from
+  `src/assets/bcp-link-logo-dark.svg`, cropped to the 42px brand mark without a background tile.
 - The introduction includes compact links to the rankings and evaluation protocol. The leaderboard
   keeps search and internal table scrolling without a separate expanded dialog. Its Model column is
   narrower on desktop, Search Calls and Visit Calls stay on one line, and the long Link-following
@@ -136,6 +144,9 @@ The current UI upgrade is complete.
   and all five palette screenshots.
 - Visual checks cover the single-column benchmark introduction, shared comparison chart, desktop and
   mobile layouts, model-menu containment, and internal chart scrolling.
+- The release README files also document the reproducible document-graph framing:
+  `/data/hs_dev/SearcherKit-BCP-Link-Eval-Release/README.md` and
+  `/data/hs_dev/BCP-Link-Release/README.md`.
 
 ## 5. Screenshot Artifacts
 
@@ -154,17 +165,17 @@ Commands run from `/data/hs_dev/bcp-link-leaderboard`:
 ```text
 npm run typecheck  PASS
 npm run build      PASS
-npm test           PASS: 26 passed
+npm test           PASS: 27 passed
 npm run test:e2e   PASS: 10 passed across desktop and mobile Chromium
 ```
 
-Deployment verification completed on 2026-08-07:
+Deployment verification completed on 2026-08-14:
 
 ```text
 GitHub repository visibility  PRIVATE
 GitHub default branch         main
-Deployed source commit        034ee08
-Immutable deployment          https://e35b67a8.bcp-link-leaderboard.pages.dev/
+Deployed source commit        3551bd5
+Immutable deployment          https://1bc2e08f.bcp-link-leaderboard.pages.dev/
 Production unauthenticated    HTTP 401
 Immutable unauthenticated     HTTP 401
 Authenticated access          HTTP 200 (previously verified; secrets unchanged)
@@ -180,8 +191,8 @@ Comparison rendering          0/1/2/5/9 selected models render 0/2/4/10/18 bars
 - Cloudflare Pages project: `bcp-link-leaderboard`
 - Production branch: `main`
 - Production URL: `https://bcp-link-leaderboard.pages.dev/`
-- Current deployed UI source commit: `034ee08`
-- Current immutable deployment URL: `https://e35b67a8.bcp-link-leaderboard.pages.dev/`
+- Current deployed UI source commit: `3551bd5`
+- Current immutable deployment URL: `https://1bc2e08f.bcp-link-leaderboard.pages.dev/`
 - GitHub stores the private source and version history; the live site is hosted by Cloudflare Pages,
   not GitHub Pages.
 - Production deployments are direct uploads from the current `main` build. Use
