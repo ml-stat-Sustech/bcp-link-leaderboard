@@ -55,11 +55,14 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector(".intro-body p > strong:first-child")).toHaveTextContent(
       "BCP-Link",
     );
+    expect(container).toHaveTextContent(
+      "BrowseComp-Plus-Link (BCP-Link) is a controlled evaluation of link-aware search behavior.",
+    );
     expect(screen.getByRole("button", { name: "Code on GitHub, coming soon" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Dataset, coming soon" })).toBeDisabled();
     expect(screen.queryByText("Tevatron/browsecomp-plus-corpus")).not.toBeInTheDocument();
     expect(container).toHaveTextContent(
-      "The BCP-Link evaluation corpus is a static, link-enriched extension of the BrowseComp-Plus (BCP) corpus.",
+      "The fixed evaluation corpus is a static, link-enriched extension of the BrowseComp-Plus (BCP) corpus.",
     );
     expect(container).toHaveTextContent(
       "BCP-Link evaluates not only answer accuracy, but also whether models can recognize useful links",
@@ -72,10 +75,10 @@ describe("LeaderboardApp", () => {
       name: "Key findings from the BCP and BCP-Link comparison",
     });
     expect(comparisonInsights).toHaveTextContent(
-      "For models trained with the same tools, BCP-Link achieves higher Accuracy than BCP with fewer agent turns.",
+      "Models trained with the same search and visit tools reach higher Accuracy on BCP-Link than on BCP, often with fewer turns. This indicates that they can use link information.",
     );
     expect(comparisonInsights).toHaveTextContent(
-      "For models without relevant tool-use training, or trained with materially different tool interfaces (such as summary-returning Visit tools), the overall performance difference between BCP and BCP-Link is limited.",
+      "For models without matching tool-use training or with materially different interfaces, such as summary-returning Visit tools, the performance gap between BCP and BCP-Link is limited.",
     );
     expect(comparisonInsights.querySelectorAll("strong")).toHaveLength(1);
     expect(comparisonInsights.querySelector("strong")).toHaveTextContent("higher Accuracy");
@@ -205,10 +208,10 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("columnheader", { name: /^Link-following Visit Calls/ })).toBeVisible();
     expect(screen.getByRole("button", { name: "按 Accuracy 排序" })).toBeVisible();
     expect(screen.getByRole("list", { name: "BCP 与 BCP-Link 对比的主要结论" })).toHaveTextContent(
-      "对于使用相同工具训练的模型，BCP-Link 能以更少的对话轮数取得更高的 Accuracy，优于 BCP。",
+      "对于使用相同工具训练的模型，BCP-Link 上的Accuracy 高于 BCP，且往往使用更少的 turns，说明模型能够利用链接信息。",
     );
     expect(container).toHaveTextContent(
-      "BCP-Link 的评测语料是基于 BrowseComp-Plus（BCP）固定语料构建的静态链接增强版本。",
+      "固定评测语料是基于 BrowseComp-Plus（BCP）语料构建的静态链接增强版本。",
     );
     expect(screen.getByRole("button", { name: "数据集，即将开放" })).toBeDisabled();
     expect(

@@ -1294,7 +1294,7 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
               </div>
               <div className="intro-body">
                 <p>
-                  <strong>BCP-Link</strong>{copy.intro.bodyOneAfterName}<code>search</code>
+                  BrowseComp-Plus-Link (<strong>BCP-Link</strong>){copy.intro.bodyOneAfterName}<code>search</code>
                   {copy.intro.bodyOneBetweenTools}<code>visit</code>{copy.intro.bodyOneAfterVisit}
                 </p>
                 <p>

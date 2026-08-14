@@ -23,6 +23,9 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     page.getByRole("heading", { name: "BCP-Link", exact: true, level: 1 }),
   ).toBeVisible();
   await expect(page.locator(".intro-body p > strong").first()).toHaveText("BCP-Link");
+  await expect(page.locator(".intro-body")).toContainText(
+    "BrowseComp-Plus-Link (BCP-Link) is a controlled evaluation of link-aware search behavior.",
+  );
   await expect(page.getByRole("button", { name: "Code on GitHub, coming soon" })).toBeDisabled();
   const browseCompPlusPaper = page.getByRole("link", { name: "BrowseComp-Plus", exact: true });
   await expect(browseCompPlusPaper).toHaveAttribute(
@@ -51,10 +54,10 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   });
   await expect(comparisonInsights.locator("li")).toHaveCount(2);
   await expect(comparisonInsights).toContainText(
-    "BCP-Link achieves higher Accuracy than BCP with fewer agent turns",
+    "Models trained with the same search and visit tools reach higher Accuracy on BCP-Link than on BCP, often with fewer turns",
   );
   await expect(comparisonInsights).toContainText(
-    "or trained with materially different tool interfaces (such as summary-returning Visit tools), the overall performance difference between BCP and BCP-Link is limited",
+    "without matching tool-use training or with materially different interfaces, such as summary-returning Visit tools, the performance gap between BCP and BCP-Link is limited",
   );
   await expect(
     page.getByRole("heading", { name: "One fixed process, two standard tools" }),
@@ -368,7 +371,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.insightBorder).toBe("0px");
   expect(visualDetails.insightBackground).toBe("rgba(0, 0, 0, 0)");
   expect(visualDetails.insightFollowsChart).toBe(true);
-  expect(visualDetails.insightStrongText).toEqual(["higher Accuracy"]);
+  expect(visualDetails.insightStrongText).toEqual(["higher Accuracy on BCP-Link"]);
   expect(Number.parseFloat(visualDetails.principleBodyFont)).toBeGreaterThanOrEqual(15);
   expect(Number.parseFloat(visualDetails.metricSummaryFont)).toBeGreaterThanOrEqual(15);
   expect(visualDetails.valueCells).toEqual(Array(6).fill("left"));

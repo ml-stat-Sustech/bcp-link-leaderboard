@@ -206,13 +206,13 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       heading: "BCP-Link",
       subtitle: "Evaluating whether search agents can find and follow useful links.",
       bodyOneAfterName:
-        " is a link-aware search-agent benchmark built on BrowseComp-Plus. It uses a fixed corpus with standardized ",
+        " is a controlled evaluation of link-aware search behavior. It uses standardized ",
       bodyOneBetweenTools: " and ",
-      bodyOneAfterVisit: " tools so model results remain reproducible and directly comparable.",
+      bodyOneAfterVisit: " tools over a fixed corpus, making model results reproducible and directly comparable.",
       corpusBodyBeforeLink:
-        "The BCP-Link evaluation corpus is a static, link-enriched extension of the ",
+        "The fixed evaluation corpus is a static, link-enriched extension of the ",
       corpusBodyAfterLink:
-        " (BCP) corpus. It preserves each document's original text while restoring selected, verified links at their original positions. A link is exposed only when its target resolves to another document in the same fixed corpus, creating a reproducible document graph without live-web variation.",
+        " (BCP) corpus. It preserves each document's original text while restoring selected, verified links at their original positions. A link is exposed only when its target resolves to another document in the same corpus, creating a reproducible document graph without live-web variation.",
       bodyThree:
         "Key evidence can therefore lie beyond the initial search results. Agents can move directly from a retrieved document to a linked document and continue gathering evidence without issuing another broad search. BCP-Link evaluates not only answer accuracy, but also whether models can recognize useful links, navigate across documents, and reach the correct evidence efficiently.",
       rankingsAction: "View rankings",
@@ -265,11 +265,11 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         `${count} ${count === 1 ? "model" : "models"} with comparable ${metric} data`,
       insightsLabel: "Key findings from the BCP and BCP-Link comparison",
       trainedInsightBefore:
-        "For models trained with the same tools, BCP-Link achieves ",
-      trainedInsightEmphasis: "higher Accuracy",
-      trainedInsightAfter: " than BCP with fewer agent turns.",
+        "Models trained with the same search and visit tools reach ",
+      trainedInsightEmphasis: "higher Accuracy on BCP-Link",
+      trainedInsightAfter: " than on BCP, often with fewer turns. This indicates that they can use link information.",
       untrainedInsight:
-        "For models without relevant tool-use training, or trained with materially different tool interfaces (such as summary-returning Visit tools), the overall performance difference between BCP and BCP-Link is limited.",
+        "For models without matching tool-use training or with materially different interfaces, such as summary-returning Visit tools, the performance gap between BCP and BCP-Link is limited.",
       metricLabel: "Metric",
       selectLabel: "Comparison metric",
       modelsLabel: "Models",
@@ -304,7 +304,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       unpinMetricDetails: (metric) => `Unpin ${metric} details`,
       pinnedStatus: "Pinned",
       footnote:
-        "Accuracy and Recall reward higher values. Tool calls and Turns describe agent behavior and efficiency; lower values are not automatically better.",
+        "Accuracy and Recall are percentages from 0% to 100%; higher values are better. Search Calls, Visit Calls, Link-following Visit Calls, and Turns are non-negative average counts per task. Fewer calls or turns are preferable only when answer quality remains comparable.",
     },
     rules: {
       kicker: "Evaluation rules",
@@ -443,12 +443,12 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       heading: "BCP-Link",
       subtitle: "Evaluating whether search agents can find and follow useful links.",
       bodyOneAfterName:
-        " 是基于 BrowseComp-Plus 构建的链接感知搜索智能体基准。它使用固定语料，以及标准化的 ",
+        " 是面向链接感知搜索行为的受控评测。它使用标准化的 ",
       bodyOneBetweenTools: " 和 ",
-      bodyOneAfterVisit: " 工具，使不同模型的结果可复现、可直接比较。",
-      corpusBodyBeforeLink: "BCP-Link 的评测语料是基于 ",
+      bodyOneAfterVisit: " 工具访问固定语料，使不同模型的结果可复现、可直接比较。",
+      corpusBodyBeforeLink: "固定评测语料是基于 ",
       corpusBodyAfterLink:
-        "（BCP）固定语料构建的静态链接增强版本。它保留每篇文档的原始文本，并在对应位置恢复经筛选与验证的链接；只有当目标 URL 能映射到同一固定语料中的另一篇文档时，链接才会被保留，由此形成不受实时网页变化影响的可复现文档关联网络。",
+        "（BCP）语料构建的静态链接增强版本。它保留每篇文档的原始文本，并在对应位置恢复经筛选与验证的链接；只有当目标 URL 能映射到同一语料中的另一篇文档时，链接才会被保留，由此形成不受实时网页变化影响的可复现文档关联网络。",
       bodyThree:
         "因此，关键证据可能位于初始检索结果之外。智能体可以从已检索文档直接进入关联文档，无需再次发起宽泛检索即可继续收集证据。BCP-Link 不仅考察答案准确性，还衡量模型能否识别有用链接、完成跨文档导航并高效抵达正确证据。",
       rankingsAction: "查看排行榜",
@@ -499,11 +499,11 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       heading: "BCP 与 BCP-Link 对比",
       comparable: (count, metric) => `${count} 个模型具备可比较的${metric}数据`,
       insightsLabel: "BCP 与 BCP-Link 对比的主要结论",
-      trainedInsightBefore: "对于使用相同工具训练的模型，BCP-Link 能以更少的对话轮数取得",
-      trainedInsightEmphasis: "更高的 Accuracy",
-      trainedInsightAfter: "，优于 BCP。",
+      trainedInsightBefore: "对于使用相同工具训练的模型，BCP-Link 上的",
+      trainedInsightEmphasis: "Accuracy 高于 BCP",
+      trainedInsightAfter: "，且往往使用更少的 turns，说明模型能够利用链接信息。",
       untrainedInsight:
-        "对于未接受过相关工具使用训练，或训练时使用的工具形态与本评测存在明显差异（例如 Visit 工具返回摘要）的模型，BCP 与 BCP-Link 的整体表现差异不明显。",
+        "对于缺少相应工具训练，或训练时使用了不同工具接口（如 Visit 返回摘要）的模型，BCP 与 BCP-Link 的表现差距有限。",
       metricLabel: "指标",
       selectLabel: "选择对比指标",
       modelsLabel: "模型",
@@ -538,7 +538,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       unpinMetricDetails: (metric) => `取消固定 ${metric} 详情`,
       pinnedStatus: "已固定",
       footnote:
-        "Accuracy 和 Recall 越高越好。工具调用次数和 Turns 用于描述智能体行为与效率，数值较低并不一定代表表现更好。",
+        "Accuracy 和 Recall 的取值范围是 0%–100%，数值越高越好。Search Calls、Visit Calls、Link-following Visit Calls 和 Turns 是非负的每项任务平均次数；只有在答案质量相近时，较少的调用或 turns 才更理想。",
     },
     rules: {
       kicker: "评测规则",
