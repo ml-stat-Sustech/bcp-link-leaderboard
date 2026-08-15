@@ -1,6 +1,6 @@
 # BCP-Link Leaderboard Handoff
 
-Last updated: 2026-08-14
+Last updated: 2026-08-15
 
 ## 1. Project Location And Current Status
 
@@ -11,8 +11,8 @@ Last updated: 2026-08-14
 - GitHub private repository: `https://github.com/Samanthe-H/bcp-link-leaderboard`.
 - The local `main` branch tracks `origin/main` over SSH.
 - Cloudflare Pages production site: `https://bcp-link-leaderboard.pages.dev/`.
-- Current deployed UI source commit: `3551bd5`.
-- Current immutable deployment: `https://1bc2e08f.bcp-link-leaderboard.pages.dev/`.
+- Current deployed UI source commit: `3101411`.
+- Current immutable deployment: `https://086bc421.bcp-link-leaderboard.pages.dev/`.
 - The current data, theme, introduction, leaderboard, and comparison-chart work is complete.
   TypeScript, production build, unit/component tests, end-to-end tests, and desktop/mobile visual
   checks pass.
@@ -54,16 +54,13 @@ Last updated: 2026-08-14
 
 ### Page Structure And Content
 
-- The About section uses `BCP-Link` as its heading, the English subtitle `Evaluating whether search
-  agents can find and follow useful links.`, and one framed single-column description panel in both
-  languages. The first `BCP-Link` in the description is emphasized. Disabled Code and Dataset
-  placeholders reserve space for future GitHub and Hugging Face URLs without publishing unconfirmed
-  destinations.
-- The Intro corpus paragraph now describes BCP-Link as a static, link-enriched extension of the
-  BrowseComp-Plus corpus: original text is preserved, selected verified links are restored at their
-  original positions, and only targets that resolve inside the fixed corpus are exposed. The copy
-  explains the resulting reproducible document graph and why agents can continue evidence gathering
-  through links without live-web variation. English and Chinese versions are kept aligned.
+- The About section uses `About BCP-Link` as its heading and presents the benchmark definition in one
+  framed description panel in both languages. The copy identifies the offline, fully reproducible
+  environment and reports 100,195 fixed webpages plus 63,371 verified links. A release list records
+  the corpus size, link coverage, document views, standardized tools, and eight Parquet shards.
+- The About resource actions now link to the SearcherKit evaluation code on GitHub and the released
+  BCP-Link corpus on Hugging Face. The BrowseComp-Plus paper remains linked from the benchmark
+  description. No unreleased QA or relevance-judgment data is claimed as part of the corpus release.
 - The rendered section order is now:
   1. About BCP-Link
   2. Leaderboard
@@ -169,13 +166,13 @@ npm test           PASS: 27 passed
 npm run test:e2e   PASS: 10 passed across desktop and mobile Chromium
 ```
 
-Deployment verification completed on 2026-08-14:
+Deployment verification completed on 2026-08-15:
 
 ```text
 GitHub repository visibility  PRIVATE
 GitHub default branch         main
-Deployed source commit        3551bd5
-Immutable deployment          https://1bc2e08f.bcp-link-leaderboard.pages.dev/
+Deployed source commit        3101411
+Immutable deployment          https://086bc421.bcp-link-leaderboard.pages.dev/
 Production unauthenticated    HTTP 401
 Immutable unauthenticated     HTTP 401
 Authenticated access          HTTP 200 (previously verified; secrets unchanged)
@@ -191,8 +188,8 @@ Comparison rendering          0/1/2/5/9 selected models render 0/2/4/10/18 bars
 - Cloudflare Pages project: `bcp-link-leaderboard`
 - Production branch: `main`
 - Production URL: `https://bcp-link-leaderboard.pages.dev/`
-- Current deployed UI source commit: `3551bd5`
-- Current immutable deployment URL: `https://1bc2e08f.bcp-link-leaderboard.pages.dev/`
+- Current deployed UI source commit: `3101411`
+- Current immutable deployment URL: `https://086bc421.bcp-link-leaderboard.pages.dev/`
 - GitHub stores the private source and version history; the live site is hosted by Cloudflare Pages,
   not GitHub Pages.
 - Production deployments are direct uploads from the current `main` build. Use
