@@ -48,25 +48,25 @@ describe("LeaderboardApp", () => {
     expect(browseCompPlusPaper).toHaveAttribute("href", "https://arxiv.org/pdf/2508.06600");
     expect(browseCompPlusPaper).toHaveAttribute("target", "_blank");
     expect(browseCompPlusPaper).toHaveAttribute("rel", "noreferrer");
-    expect(screen.getByRole("heading", { name: "BCP-Link", level: 1 })).toBeVisible();
-    expect(
-      screen.getByText("Evaluating whether search agents can find and follow useful links."),
-    ).toBeVisible();
+    expect(screen.getByRole("heading", { name: "About BCP-Link", level: 1 })).toBeVisible();
     expect(container.querySelector(".intro-body p > strong:first-child")).toHaveTextContent(
-      "BCP-Link",
+      "BrowseComp-Plus-Link (BCP-Link)",
     );
     expect(container).toHaveTextContent(
-      "BrowseComp-Plus-Link (BCP-Link) is a controlled evaluation of link-aware search behavior.",
+      "BrowseComp-Plus-Link (BCP-Link) is a benchmark for evaluating how effectively search agents can use hyperlinks",
     );
-    expect(screen.getByRole("button", { name: "Code on GitHub, coming soon" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Dataset, coming soon" })).toBeDisabled();
-    expect(screen.queryByText("Tevatron/browsecomp-plus-corpus")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "View evaluation code on GitHub" })).toHaveAttribute(
+      "href",
+      "https://github.com/ml-stat-Sustech/SearcherKit",
+    );
+    expect(
+      screen.getByRole("link", { name: "Open the BCP-Link corpus on Hugging Face" }),
+    ).toHaveAttribute("href", "https://huggingface.co/datasets/SUSTech/BCP-Link-corpus");
     expect(container).toHaveTextContent(
-      "The fixed evaluation corpus is a static, link-enriched extension of the BrowseComp-Plus (BCP) corpus.",
+      "it recovers 63,371 verified links among the fixed corpus of 100,195 offline webpages",
     );
-    expect(container).toHaveTextContent(
-      "BCP-Link evaluates not only answer accuracy, but also whether models can recognize useful links",
-    );
+    expect(screen.getByRole("heading", { name: "The current release includes:" })).toBeVisible();
+    expect(container.querySelectorAll(".intro-release-list li")).toHaveLength(7);
     expect(
       screen.getByRole("heading", { name: "One fixed process, two standard tools" }),
     ).toBeVisible();
@@ -85,8 +85,7 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector(".comparison-workspace")?.nextElementSibling).toBe(
       comparisonInsights,
     );
-    expect(screen.getByText(/static, link-enriched extension/)).toBeVisible();
-    expect(screen.getByText(/Key evidence can therefore lie beyond/)).toBeVisible();
+    expect(screen.getByText(/This setup enables controlled analysis/)).toBeVisible();
     expect(screen.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
     expect(screen.getByText(/40,000-character limit · no summarizer/)).toBeVisible();
     expect(screen.getByText("Each run is capped at 50 agent turns.")).toBeVisible();
@@ -138,11 +137,12 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector("thead")).not.toHaveTextContent("Answer quality");
     expect(container.querySelector("thead")).not.toHaveTextContent("Tool behavior");
     expect(container.querySelector("thead")).not.toHaveTextContent("Link following");
-    const datasetSummary = screen.getByLabelText("Dataset summary");
-    expect(datasetSummary).toHaveTextContent("63,371Unique links");
-    expect(datasetSummary).toHaveTextContent("4.59Avg. outgoing links");
-    expect(datasetSummary).toHaveTextContent("84.18%Wikipedia targets");
-    expect(datasetSummary).toHaveTextContent("Unique links targeting en.wikipedia.org");
+    expect(container.querySelector(".intro-release-list")).toHaveTextContent(
+      "100,195 offline webpages in the fixed corpus",
+    );
+    expect(container.querySelector(".intro-release-list")).toHaveTextContent(
+      "63,371 verified in-corpus hyperlinks",
+    );
     expect(screen.getByRole("link", { name: "Download leaderboard results as CSV" })).toHaveAttribute(
       "download",
       "bcp-link-results.csv",
@@ -211,9 +211,11 @@ describe("LeaderboardApp", () => {
       "对于使用相同工具训练的模型，BCP-Link 上的Accuracy 高于 BCP，且往往使用更少的 turns，说明模型能够利用链接信息。",
     );
     expect(container).toHaveTextContent(
-      "固定评测语料是基于 BrowseComp-Plus（BCP）语料构建的静态链接增强版本。",
+      "它构建于 BrowseComp-Plus 之上，从固定的 100,195 个离线网页语料中恢复 63,371 条经验证链接",
     );
-    expect(screen.getByRole("button", { name: "数据集，即将开放" })).toBeDisabled();
+    expect(
+      screen.getByRole("link", { name: "在 Hugging Face 打开 BCP-Link 语料" }),
+    ).toHaveAttribute("href", "https://huggingface.co/datasets/SUSTech/BCP-Link-corpus");
     expect(
       within(screen.getByRole("combobox", { name: "选择对比指标" })).getByRole("option", {
         name: "Link-following Visit Calls",
@@ -278,7 +280,7 @@ describe("LeaderboardApp", () => {
   it("uses accuracy ranking by default and keeps missing values last", () => {
     const { container } = render(<LeaderboardApp csvText={TEST_CSV} />);
     expect(modelNames()).toEqual(["Beta", "Alpha", "Gamma"]);
-    expect(screen.getByLabelText("Dataset summary")).toHaveTextContent("63,371");
+    expect(screen.getByRole("heading", { name: "The current release includes:" })).toBeVisible();
     expect(screen.getByText("1 model with comparable Accuracy data")).toBeInTheDocument();
     expect(container.querySelectorAll(".rank-medal")).toHaveLength(2);
     expect(container.querySelector(".rank-medal.rank-1")).toHaveTextContent("1");

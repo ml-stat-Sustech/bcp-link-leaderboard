@@ -29,6 +29,11 @@ interface RuleFlowStep {
   detail: string;
 }
 
+interface IntroReleaseItem {
+  value: string;
+  label: string;
+}
+
 export interface Translation {
   pageTitle: string;
   nav: {
@@ -55,37 +60,16 @@ export interface Translation {
   intro: {
     heading: string;
     subtitle: string;
-    bodyOneAfterName: string;
-    bodyOneBetweenTools: string;
-    bodyOneAfterVisit: string;
-    corpusBodyBeforeLink: string;
-    corpusBodyAfterLink: string;
-    bodyThree: string;
+    descriptionBeforeLink: string;
+    descriptionAfterLink: string;
+    releaseHeading: string;
+    releaseItems: IntroReleaseItem[];
     rankingsAction: string;
     protocolAction: string;
     codeAction: string;
     datasetAction: string;
-    comingSoon: string;
     codeActionLabel: string;
     datasetActionLabel: string;
-  };
-  stats: {
-    label: string;
-    uniqueLinks: {
-      value: string;
-      label: string;
-      description: string;
-    };
-    averageOutgoingLinks: {
-      value: string;
-      label: string;
-      description: string;
-    };
-    wikipediaTargets: {
-      value: string;
-      label: string;
-      description: string;
-    };
   };
   leaderboard: {
     kicker: string;
@@ -203,43 +187,28 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       selectedLabel: (theme) => `${theme} selected`,
     },
     intro: {
-      heading: "BCP-Link",
-      subtitle: "Evaluating whether search agents can find and follow useful links.",
-      bodyOneAfterName:
-        " is a controlled evaluation of link-aware search behavior. It uses standardized ",
-      bodyOneBetweenTools: " and ",
-      bodyOneAfterVisit: " tools over a fixed corpus, making model results reproducible and directly comparable.",
-      corpusBodyBeforeLink:
-        "The fixed evaluation corpus is a static, link-enriched extension of the ",
-      corpusBodyAfterLink:
-        " (BCP) corpus. It preserves each document's original text while restoring selected, verified links at their original positions. A link is exposed only when its target resolves to another document in the same corpus, creating a reproducible document graph without live-web variation.",
-      bodyThree:
-        "Key evidence can therefore lie beyond the initial search results. Agents can move directly from a retrieved document to a linked document and continue gathering evidence without issuing another broad search. BCP-Link evaluates not only answer accuracy, but also whether models can recognize useful links, navigate across documents, and reach the correct evidence efficiently.",
+      heading: "About BCP-Link",
+      subtitle: "",
+      descriptionBeforeLink:
+        " is a benchmark for evaluating how effectively search agents can use hyperlinks to discover evidence beyond initial search results in an offline, fully reproducible search environment. Built on ",
+      descriptionAfterLink:
+        ", it recovers 63,371 verified links among the fixed corpus of 100,195 offline webpages, which are inserted directly into the document text and exposed through standardized `search` and `visit` tools. This setup enables controlled analysis of whether search agents can recognize useful links, navigate across documents, gather relevant evidence, and reach the correct answer efficiently.",
+      releaseHeading: "The current release includes:",
+      releaseItems: [
+        { value: "100,195", label: "offline webpages in the fixed corpus" },
+        { value: "63,371", label: "verified in-corpus hyperlinks" },
+        { value: "13.77%", label: "of webpages containing at least one hyperlink" },
+        { value: "4.59", label: "average verified links per linked webpage" },
+        { value: "2", label: "document views: `text_raw` and link-enriched `text`" },
+        { value: "2", label: "standardized tools: `search` and `visit`" },
+        { value: "8", label: "Parquet shards in the corpus release" },
+      ],
       rankingsAction: "View rankings",
       protocolAction: "Review protocol",
       codeAction: "Code",
       datasetAction: "Dataset",
-      comingSoon: "Coming soon",
-      codeActionLabel: "Code on GitHub, coming soon",
-      datasetActionLabel: "Dataset, coming soon",
-    },
-    stats: {
-      label: "Dataset summary",
-      uniqueLinks: {
-        value: "63,371",
-        label: "Unique links",
-        description: "Deduplicated links in the BCP-Link corpus",
-      },
-      averageOutgoingLinks: {
-        value: "4.59",
-        label: "Avg. outgoing links",
-        description: "Per document containing at least one link",
-      },
-      wikipediaTargets: {
-        value: "84.18%",
-        label: "Wikipedia targets",
-        description: "Unique links targeting en.wikipedia.org",
-      },
+      codeActionLabel: "View evaluation code on GitHub",
+      datasetActionLabel: "Open the BCP-Link corpus on Hugging Face",
     },
     leaderboard: {
       kicker: "Main results",
@@ -440,42 +409,28 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       selectedLabel: (theme) => `已选择${theme}`,
     },
     intro: {
-      heading: "BCP-Link",
-      subtitle: "Evaluating whether search agents can find and follow useful links.",
-      bodyOneAfterName:
-        " 是面向链接感知搜索行为的受控评测。它使用标准化的 ",
-      bodyOneBetweenTools: " 和 ",
-      bodyOneAfterVisit: " 工具访问固定语料，使不同模型的结果可复现、可直接比较。",
-      corpusBodyBeforeLink: "固定评测语料是基于 ",
-      corpusBodyAfterLink:
-        "（BCP）语料构建的静态链接增强版本。它保留每篇文档的原始文本，并在对应位置恢复经筛选与验证的链接；只有当目标 URL 能映射到同一语料中的另一篇文档时，链接才会被保留，由此形成不受实时网页变化影响的可复现文档关联网络。",
-      bodyThree:
-        "因此，关键证据可能位于初始检索结果之外。智能体可以从已检索文档直接进入关联文档，无需再次发起宽泛检索即可继续收集证据。BCP-Link 不仅考察答案准确性，还衡量模型能否识别有用链接、完成跨文档导航并高效抵达正确证据。",
+      heading: "BCP-Link 简介",
+      subtitle: "",
+      descriptionBeforeLink:
+        " 是用于评估搜索智能体在离线、完全可复现的搜索环境中利用超链接，在初始搜索结果之外高效发现证据的基准。它构建于 ",
+      descriptionAfterLink:
+        " 之上，从固定的 100,195 个离线网页语料中恢复 63,371 条经验证链接，将链接直接插入文档文本，并通过标准化的 `search` 和 `visit` 工具提供给智能体。该设置支持受控分析，评估搜索智能体能否识别有用链接、跨文档导航、收集相关证据并高效得到正确答案。",
+      releaseHeading: "当前版本包括：",
+      releaseItems: [
+        { value: "100,195", label: "个固定语料中的离线网页" },
+        { value: "63,371", label: "条经验证的语料内超链接" },
+        { value: "13.77%", label: "的网页至少包含一条超链接" },
+        { value: "4.59", label: "每个含链接网页的平均验证链接数" },
+        { value: "2", label: "种文档视图：`text_raw` 与链接增强后的 `text`" },
+        { value: "2", label: "种标准化工具：`search` 与 `visit`" },
+        { value: "8", label: "个 corpus Parquet 分片" },
+      ],
       rankingsAction: "查看排行榜",
       protocolAction: "阅读评测规则",
       codeAction: "Code",
       datasetAction: "Dataset",
-      comingSoon: "即将开放",
-      codeActionLabel: "GitHub 上的代码，即将开放",
-      datasetActionLabel: "数据集，即将开放",
-    },
-    stats: {
-      label: "数据概览",
-      uniqueLinks: {
-        value: "63,371",
-        label: "唯一链接数",
-        description: "BCP-Link 语料中的去重链接总数",
-      },
-      averageOutgoingLinks: {
-        value: "4.59",
-        label: "平均出链数",
-        description: "每篇含链接文档的平均出链数",
-      },
-      wikipediaTargets: {
-        value: "84.18%",
-        label: "Wikipedia 目标占比",
-        description: "目标为 en.wikipedia.org 的唯一链接占比",
-      },
+      codeActionLabel: "在 GitHub 打开评测代码",
+      datasetActionLabel: "在 Hugging Face 打开 BCP-Link 语料",
     },
     leaderboard: {
       kicker: "主要结果",

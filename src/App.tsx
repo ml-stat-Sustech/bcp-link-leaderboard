@@ -1,4 +1,12 @@
-import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import {
   AlertTriangle,
   ArrowDown,
@@ -67,6 +75,8 @@ interface LeaderboardAppProps {
 }
 
 const BROWSECOMP_PLUS_PAPER_URL = "https://arxiv.org/pdf/2508.06600";
+const CODE_RELEASE_URL = "https://github.com/ml-stat-Sustech/SearcherKit";
+const DATASET_RELEASE_URL = "https://huggingface.co/datasets/SUSTech/BCP-Link-corpus";
 
 const DEFAULT_COMPARISON_MODEL_NAMES = [
   "Tongyi-DeepResearch-30B-A3B",
@@ -128,6 +138,15 @@ function formatModelDisplayName(model: string): string {
 function formatLeaderboardModelName(model: string): string {
   const displayName = formatModelDisplayName(model);
   return displayName.charAt(0).toLocaleUpperCase() + displayName.slice(1);
+}
+
+function renderInlineCode(text: string): ReactNode {
+  return text.split(/(`[^`]+`)/g).map((part, index) => {
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return <code key={`${part}-${index}`}>{part.slice(1, -1)}</code>;
+    }
+    return part;
+  });
 }
 
 function createLeaderboardCsv(models: ModelResults[], ranks: Map<string, number>): string {
@@ -1290,15 +1309,11 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
             <div className="container intro-inner">
               <div className="intro-heading">
                 <h1 id="about-heading">{copy.intro.heading}</h1>
-                <p className="intro-subtitle">{copy.intro.subtitle}</p>
+                {copy.intro.subtitle && <p className="intro-subtitle">{copy.intro.subtitle}</p>}
               </div>
               <div className="intro-body">
-                <p>
-                  BrowseComp-Plus-Link (<strong>BCP-Link</strong>){copy.intro.bodyOneAfterName}<code>search</code>
-                  {copy.intro.bodyOneBetweenTools}<code>visit</code>{copy.intro.bodyOneAfterVisit}
-                </p>
-                <p>
-                  {copy.intro.corpusBodyBeforeLink}
+                <p className="intro-description">
+                  <strong>BrowseComp-Plus-Link (BCP-Link)</strong>{copy.intro.descriptionBeforeLink}
                   <a
                     className="intro-dataset-link"
                     href={BROWSECOMP_PLUS_PAPER_URL}
@@ -1307,9 +1322,20 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                   >
                     BrowseComp-Plus
                   </a>
-                  {copy.intro.corpusBodyAfterLink}
+                  {renderInlineCode(copy.intro.descriptionAfterLink)}
                 </p>
-                <p>{copy.intro.bodyThree}</p>
+                <div className="intro-release">
+                  <h2>{copy.intro.releaseHeading}</h2>
+                  <ul className="intro-release-list">
+                    {copy.intro.releaseItems.map((item) => (
+                      <li key={`${item.value}-${item.label}`}>
+                        <strong>{item.value}</strong>
+                        {" "}
+                        <span>{renderInlineCode(item.label)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 <div className="intro-actions">
                   <a className="intro-action intro-action-primary" href="#leaderboard">
                     {copy.intro.rankingsAction} <ArrowDownRight aria-hidden="true" />
@@ -1317,40 +1343,25 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                   <a className="intro-action intro-action-secondary" href="#rules">
                     {copy.intro.protocolAction} <ArrowRight aria-hidden="true" />
                   </a>
-                  <button
+                  <a
                     className="intro-action intro-action-resource"
-                    type="button"
-                    disabled
-                    title={`GitHub · ${copy.intro.comingSoon}`}
+                    href={CODE_RELEASE_URL}
+                    target="_blank"
+                    rel="noreferrer"
                     aria-label={copy.intro.codeActionLabel}
                   >
                     <Github aria-hidden="true" /> <span>{copy.intro.codeAction}</span>
-                  </button>
-                  <button
+                  </a>
+                  <a
                     className="intro-action intro-action-resource"
-                    type="button"
-                    disabled
-                    title={`${copy.intro.datasetAction} · ${copy.intro.comingSoon}`}
+                    href={DATASET_RELEASE_URL}
+                    target="_blank"
+                    rel="noreferrer"
                     aria-label={copy.intro.datasetActionLabel}
                   >
                     <Database aria-hidden="true" /> <span>{copy.intro.datasetAction}</span>
-                  </button>
+                  </a>
                 </div>
-                <dl className="dataset-stats" aria-label={copy.stats.label}>
-                  {[
-                    copy.stats.uniqueLinks,
-                    copy.stats.averageOutgoingLinks,
-                    copy.stats.wikipediaTargets,
-                  ].map((stat) => (
-                    <div key={stat.label}>
-                      <dt>{stat.value}</dt>
-                      <dd>
-                        <strong>{stat.label}</strong>
-                        <span>{stat.description}</span>
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
               </div>
             </div>
           </section>

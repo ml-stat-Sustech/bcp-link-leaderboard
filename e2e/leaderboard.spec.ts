@@ -20,13 +20,18 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { name: "BCP-Link", exact: true, level: 1 }),
+    page.getByRole("heading", { name: "About BCP-Link", exact: true, level: 1 }),
   ).toBeVisible();
-  await expect(page.locator(".intro-body p > strong").first()).toHaveText("BCP-Link");
-  await expect(page.locator(".intro-body")).toContainText(
-    "BrowseComp-Plus-Link (BCP-Link) is a controlled evaluation of link-aware search behavior.",
+  await expect(page.locator(".intro-body p > strong").first()).toHaveText(
+    "BrowseComp-Plus-Link (BCP-Link)",
   );
-  await expect(page.getByRole("button", { name: "Code on GitHub, coming soon" })).toBeDisabled();
+  await expect(page.locator(".intro-body")).toContainText(
+    "BrowseComp-Plus-Link (BCP-Link) is a benchmark for evaluating how effectively search agents can use hyperlinks",
+  );
+  await expect(page.getByRole("link", { name: "View evaluation code on GitHub" })).toHaveAttribute(
+    "href",
+    "https://github.com/ml-stat-Sustech/SearcherKit",
+  );
   const browseCompPlusPaper = page.getByRole("link", { name: "BrowseComp-Plus", exact: true });
   await expect(browseCompPlusPaper).toHaveAttribute(
     "href",
@@ -34,16 +39,14 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   );
   await expect(browseCompPlusPaper).toHaveAttribute("target", "_blank");
   await expect(browseCompPlusPaper).toHaveAttribute("rel", "noreferrer");
-  await expect(page.getByRole("button", { name: "Dataset, coming soon" })).toBeDisabled();
-  await expect(page.getByText("Tevatron/browsecomp-plus-corpus")).toHaveCount(0);
-  const datasetSummary = page.getByLabel("Dataset summary");
-  await expect(datasetSummary.locator("dt")).toHaveText(["63,371", "4.59", "84.18%"]);
-  await expect(datasetSummary.locator("dd strong")).toHaveText([
-    "Unique links",
-    "Avg. outgoing links",
-    "Wikipedia targets",
-  ]);
-  await expect(datasetSummary).toContainText("Unique links targeting en.wikipedia.org");
+  await expect(
+    page.getByRole("link", { name: "Open the BCP-Link corpus on Hugging Face" }),
+  ).toHaveAttribute("href", "https://huggingface.co/datasets/SUSTech/BCP-Link-corpus");
+  await expect(page.getByRole("heading", { name: "The current release includes:" })).toBeVisible();
+  await expect(page.locator(".intro-release-list li")).toHaveCount(7);
+  await expect(page.locator(".intro-release-list")).toContainText(
+    "100,195 offline webpages in the fixed corpus",
+  );
   await expect(page.getByTestId("model-name")).toHaveCount(15);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByTestId("model-name").filter({ hasText: "Deepseek-v4-pro" })).toHaveCount(1);
@@ -221,7 +224,6 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       sectionHeadingFont: getFontSize(".section-heading h2"),
       sectionNoteFont: getFontSize(".section-note"),
       searchFont: getFontSize(".search-field input"),
-      introSubtitleFont: getFontSize(".intro-subtitle"),
       introBodyFont: getFontSize(".intro-body p"),
       introActionFont: getFontSize(".intro-action"),
       tableValueFont: getFontSize("tbody .metric-value-cell"),
@@ -338,9 +340,6 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
     testInfo.project.name.startsWith("mobile") ? "15px" : "16px",
   );
   expect(visualDetails.searchFont).toBe("13px");
-  expect(visualDetails.introSubtitleFont).toBe(
-    testInfo.project.name.startsWith("mobile") ? "17px" : "21px",
-  );
   expect(visualDetails.introBodyFont).toBe(
     testInfo.project.name.startsWith("mobile") ? "16px" : "17px",
   );

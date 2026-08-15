@@ -1,49 +1,42 @@
-# BCP-Link Leaderboard Web Copy
-
-This file collects the explanatory paragraphs currently rendered by the leaderboard. Interactive
-labels, table values, model names, and navigation controls are omitted.
-
 ## English
 
 ### About BCP-Link
 
-Evaluating whether search agents can find and follow useful links.
+**BrowseComp-Plus-Link (BCP-Link)** is a benchmark for evaluating how effectively search agents can use hyperlinks to discover evidence beyond initial search results in an offline, fully reproducible search environment. Built on [BrowseComp-Plus](https://arxiv.org/pdf/2508.06600), it recovers 63,371 verified links among the fixed corpus of 100,195 offline webpages, which are inserted directly into the document text and exposed through standardized `search` and `visit` tools. This setup enables controlled analysis of whether search agents can recognize useful links, navigate across documents, gather relevant evidence, and reach the correct answer efficiently.
 
-BrowseComp-Plus-Link (BCP-Link) is a controlled evaluation of link-aware search behavior. It uses standardized `search` and `visit` tools over a fixed corpus, making model results reproducible and directly comparable.
+The current release includes:
 
-The fixed evaluation corpus is a static, link-enriched extension of the [BrowseComp-Plus](https://arxiv.org/pdf/2508.06600) (BCP) corpus. It preserves each document's original text while restoring selected, verified links at their original positions. A link is exposed only when its target resolves to another document in the same corpus, creating a reproducible document graph without live-web variation.
+- **100,195** offline webpages in the fixed corpus
+- **63,371** verified in-corpus hyperlinks
+- **13.77%** of webpages containing at least one hyperlink
+- **4.59** average verified links per linked webpage
+- **2** document views: `text_raw` and link-enriched `text`
+- **2** standardized tools: `search` and `visit`
+- **8** Parquet shards in the corpus release
 
-Key evidence can therefore lie beyond the initial search results. Agents can move directly from a retrieved document to a linked document and continue gathering evidence without issuing another broad search. BCP-Link evaluates not only answer accuracy, but also whether models can recognize useful links, navigate across documents, and reach the correct evidence efficiently.
+[Code](https://github.com/ml-stat-Sustech/SearcherKit) · [Dataset](https://huggingface.co/datasets/SUSTech/BCP-Link-corpus)
 
-Dataset summary: 63,371 deduplicated links; 4.59 average outgoing links per document containing at least one link; 84.18% of unique links target `en.wikipedia.org`.
-
-### Leaderboard
-
-Standard `search` and `visit` tools. Models are ranked by answer accuracy.
 
 ### BCP versus BCP-Link
 
-Models trained with the same `search` and `visit` tools reach higher Accuracy on BCP-Link than on BCP, often with fewer turns. This indicates that they can use link information.
+1. Models trained with the same `search` and `visit` tools reach higher Accuracy on BCP-Link than on BCP, often with fewer turns. This indicates their capability of exploiting link information.
 
-For models without matching tool-use training or with materially different interfaces, such as summary-returning Visit tools, the performance gap between BCP and BCP-Link is limited.
+2. For models without matching tool-use training or with materially different interfaces, such as summary-returning Visit tools, the performance gap between BCP and BCP-Link is limited.
 
 ### Evaluation Rules
 
 Every model is evaluated through the same reproducible pipeline with the same `search` and `visit` interfaces.
 
+#### Reproducibility
 Every run follows one fixed evaluation process: the same corpus, query set, Elasticsearch index, prompts, turn limit, and scoring scripts.
 
+#### Link-aware navigation
 Gold evidence can sit beyond the first search results, so agents must recognize and follow useful text links.
 
+#### Two standard tools
 All models receive the same two tools, `search` and `visit`, with identical inputs and outputs for a fair comparison.
 
-Search uses focused retrieval from the fixed benchmark corpus. Visit opens a result URL or follows a link from a visited document.
-
-Each run is capped at 50 agent turns.
-
 ### Metric Guide
-
-All values are averages across the benchmark evaluation set.
 
 Accuracy and Recall are percentages from 0% to 100%; higher values are better. Search Calls, Visit Calls, Link-following Visit Calls, and Turns are non-negative average counts per task. Fewer calls or turns are preferable only when answer quality remains comparable.
 
@@ -75,15 +68,19 @@ Average number of agent turns per task. Fewer turns can indicate efficiency only
 
 ### BCP-Link 简介
 
-Evaluating whether search agents can find and follow useful links.
+**BrowseComp-Plus-Link（BCP-Link）** 是用于评估搜索智能体在离线、完全可复现的搜索环境中利用超链接，在初始搜索结果之外高效发现证据的基准。它构建于 [BrowseComp-Plus](https://arxiv.org/pdf/2508.06600) 之上，从固定的 100,195 个离线网页语料中恢复 63,371 条经验证链接，将链接直接插入文档文本，并通过标准化的 `search` 和 `visit` 工具提供给智能体。该设置支持受控分析，评估搜索智能体能否识别有用链接、跨文档导航、收集相关证据并高效得到正确答案。
 
-BrowseComp-Plus-Link（BCP-Link）是面向链接感知搜索行为的受控评测。它使用标准化的 `search` 和 `visit` 工具访问固定语料，使不同模型的结果可复现、可直接比较。
+当前版本包括：
 
-固定评测语料是基于 [BrowseComp-Plus](https://arxiv.org/pdf/2508.06600)（BCP）语料构建的静态链接增强版本。它保留每篇文档的原始文本，并在对应位置恢复经筛选与验证的链接；只有当目标 URL 能映射到同一语料中的另一篇文档时，链接才会被保留，由此形成不受实时网页变化影响的可复现文档关联网络。
+- **100,195** 个固定语料中的离线网页
+- **63,371** 条经验证的语料内超链接
+- **13.77%** 的网页至少包含一条超链接
+- **4.59** 个含链接网页的平均验证链接数
+- **2** 种文档视图：`text_raw` 与链接增强后的 `text`
+- **2** 种标准化工具：`search` 与 `visit`
+- **8** 个 corpus Parquet 分片
 
-因此，关键证据可能位于初始检索结果之外。智能体可以从已检索文档直接进入关联文档，无需再次发起宽泛检索即可继续收集证据。BCP-Link 不仅考察答案准确性，还衡量模型能否识别有用链接、完成跨文档导航并高效抵达正确证据。
-
-数据概览：63,371 个去重链接；每篇含链接文档平均 4.59 个出链；84.18% 的唯一链接目标为 `en.wikipedia.org`。
+[Code](https://github.com/ml-stat-Sustech/SearcherKit) · [Dataset](https://huggingface.co/datasets/SUSTech/BCP-Link-corpus)
 
 ### 排行榜
 
