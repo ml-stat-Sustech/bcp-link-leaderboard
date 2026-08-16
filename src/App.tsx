@@ -1324,18 +1324,6 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                   </a>
                   {renderInlineCode(copy.intro.descriptionAfterLink)}
                 </p>
-                <div className="intro-release">
-                  <h2>{copy.intro.releaseHeading}</h2>
-                  <ul className="intro-release-list">
-                    {copy.intro.releaseItems.map((item) => (
-                      <li key={`${item.value}-${item.label}`}>
-                        <strong>{item.value}</strong>
-                        {" "}
-                        <span>{renderInlineCode(item.label)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
                 <div className="intro-actions">
                   <a className="intro-action intro-action-primary" href="#leaderboard">
                     {copy.intro.rankingsAction} <ArrowDownRight aria-hidden="true" />
@@ -1362,6 +1350,21 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                     <Database aria-hidden="true" /> <span>{copy.intro.datasetAction}</span>
                   </a>
                 </div>
+                <dl className="dataset-stats" aria-label={copy.stats.label}>
+                  {[
+                    copy.stats.uniqueLinks,
+                    copy.stats.averageOutgoingLinks,
+                    copy.stats.wikipediaTargets,
+                  ].map((stat) => (
+                    <div key={stat.label}>
+                      <dt>{stat.value}</dt>
+                      <dd>
+                        <strong>{stat.label}</strong>
+                        <span>{stat.description}</span>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
             </div>
           </section>

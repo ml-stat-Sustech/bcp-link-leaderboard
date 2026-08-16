@@ -29,11 +29,6 @@ interface RuleFlowStep {
   detail: string;
 }
 
-interface IntroReleaseItem {
-  value: string;
-  label: string;
-}
-
 export interface Translation {
   pageTitle: string;
   nav: {
@@ -62,14 +57,30 @@ export interface Translation {
     subtitle: string;
     descriptionBeforeLink: string;
     descriptionAfterLink: string;
-    releaseHeading: string;
-    releaseItems: IntroReleaseItem[];
     rankingsAction: string;
     protocolAction: string;
     codeAction: string;
     datasetAction: string;
     codeActionLabel: string;
     datasetActionLabel: string;
+  };
+  stats: {
+    label: string;
+    uniqueLinks: {
+      value: string;
+      label: string;
+      description: string;
+    };
+    averageOutgoingLinks: {
+      value: string;
+      label: string;
+      description: string;
+    };
+    wikipediaTargets: {
+      value: string;
+      label: string;
+      description: string;
+    };
   };
   leaderboard: {
     kicker: string;
@@ -193,22 +204,30 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         " is a benchmark for evaluating how effectively search agents can use hyperlinks to discover evidence beyond initial search results in an offline, fully reproducible search environment. Built on ",
       descriptionAfterLink:
         ", it recovers 63,371 verified links among the fixed corpus of 100,195 offline webpages. These links are inserted directly into the document text and exposed through standardized `search` and `visit` tools, enabling controlled analysis of whether search agents can recognize useful links, navigate across documents, gather relevant evidence, and reach the correct answer efficiently.",
-      releaseHeading: "The current release includes:",
-      releaseItems: [
-        { value: "100,195", label: "offline webpages in the fixed corpus" },
-        { value: "63,371", label: "verified in-corpus hyperlinks" },
-        { value: "13.77%", label: "of webpages containing at least one hyperlink" },
-        { value: "4.59", label: "average verified links per linked webpage" },
-        { value: "2", label: "document views: `text_raw` and link-enriched `text`" },
-        { value: "2", label: "standardized tools: `search` and `visit`" },
-        { value: "8", label: "Parquet shards in the corpus release" },
-      ],
       rankingsAction: "View rankings",
       protocolAction: "Review protocol",
       codeAction: "Code",
       datasetAction: "Dataset",
       codeActionLabel: "View evaluation code on GitHub",
       datasetActionLabel: "Open the BCP-Link corpus on Hugging Face",
+    },
+    stats: {
+      label: "Dataset summary",
+      uniqueLinks: {
+        value: "63,371",
+        label: "Unique links",
+        description: "Deduplicated links in the BCP-Link corpus",
+      },
+      averageOutgoingLinks: {
+        value: "4.59",
+        label: "Avg. outgoing links",
+        description: "Per document containing at least one link",
+      },
+      wikipediaTargets: {
+        value: "84.18%",
+        label: "Wikipedia targets",
+        description: "Unique links targeting en.wikipedia.org",
+      },
     },
     leaderboard: {
       kicker: "Main results",
@@ -415,22 +434,30 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         " 是用于评估搜索智能体在离线、完全可复现的搜索环境中利用超链接，在初始搜索结果之外高效发现证据的基准。它构建于 ",
       descriptionAfterLink:
         " 之上，从固定的 100,195 个离线网页语料中恢复 63,371 条经验证链接。这些链接会直接插入文档文本，并通过标准化的 `search` 和 `visit` 工具提供给智能体，从而支持受控分析，评估搜索智能体能否识别有用链接、跨文档导航、收集相关证据并高效得到正确答案。",
-      releaseHeading: "当前版本包括：",
-      releaseItems: [
-        { value: "100,195", label: "个固定语料中的离线网页" },
-        { value: "63,371", label: "条经验证的语料内超链接" },
-        { value: "13.77%", label: "的网页至少包含一条超链接" },
-        { value: "4.59", label: "每个含链接网页的平均验证链接数" },
-        { value: "2", label: "种文档视图：`text_raw` 与链接增强后的 `text`" },
-        { value: "2", label: "种标准化工具：`search` 与 `visit`" },
-        { value: "8", label: "个 corpus Parquet 分片" },
-      ],
       rankingsAction: "查看排行榜",
       protocolAction: "阅读评测规则",
       codeAction: "Code",
       datasetAction: "Dataset",
       codeActionLabel: "在 GitHub 打开评测代码",
       datasetActionLabel: "在 Hugging Face 打开 BCP-Link 语料",
+    },
+    stats: {
+      label: "数据概览",
+      uniqueLinks: {
+        value: "63,371",
+        label: "唯一链接数",
+        description: "BCP-Link 语料中的去重链接总数",
+      },
+      averageOutgoingLinks: {
+        value: "4.59",
+        label: "平均出链数",
+        description: "每篇含链接文档的平均出链数",
+      },
+      wikipediaTargets: {
+        value: "84.18%",
+        label: "Wikipedia 目标占比",
+        description: "目标为 en.wikipedia.org 的唯一链接占比",
+      },
     },
     leaderboard: {
       kicker: "主要结果",

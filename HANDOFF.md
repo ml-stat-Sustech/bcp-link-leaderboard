@@ -56,8 +56,9 @@ Last updated: 2026-08-15
 
 - The About section uses `About BCP-Link` as its heading and presents the benchmark definition in one
   framed description panel in both languages. The copy identifies the offline, fully reproducible
-  environment and reports 100,195 fixed webpages plus 63,371 verified links. A release list records
-  the corpus size, link coverage, document views, standardized tools, and eight Parquet shards.
+  environment and reports 100,195 fixed webpages plus 63,371 verified links. The original three-item
+  dataset summary remains: 63,371 unique links, 4.59 average outgoing links, and 84.18% Wikipedia
+  targets. The later release heading and seven-item list have been removed.
 - The About resource actions now link to the SearcherKit evaluation code on GitHub and the released
   BCP-Link corpus on Hugging Face. The BrowseComp-Plus paper remains linked from the benchmark
   description. No unreleased QA or relevance-judgment data is claimed as part of the corpus release.

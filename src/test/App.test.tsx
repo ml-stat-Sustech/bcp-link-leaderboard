@@ -65,8 +65,8 @@ describe("LeaderboardApp", () => {
     expect(container).toHaveTextContent(
       "it recovers 63,371 verified links among the fixed corpus of 100,195 offline webpages. These links are inserted directly into the document text and exposed through standardized search and visit tools, enabling controlled analysis",
     );
-    expect(screen.getByRole("heading", { name: "The current release includes:" })).toBeVisible();
-    expect(container.querySelectorAll(".intro-release-list li")).toHaveLength(7);
+    expect(screen.queryByText("The current release includes:")).not.toBeInTheDocument();
+    expect(container.querySelectorAll(".dataset-stats > div")).toHaveLength(3);
     expect(
       screen.getByRole("heading", { name: "One fixed process, two standard tools" }),
     ).toBeVisible();
@@ -139,11 +139,14 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector("thead")).not.toHaveTextContent("Answer quality");
     expect(container.querySelector("thead")).not.toHaveTextContent("Tool behavior");
     expect(container.querySelector("thead")).not.toHaveTextContent("Link following");
-    expect(container.querySelector(".intro-release-list")).toHaveTextContent(
-      "100,195 offline webpages in the fixed corpus",
+    expect(container.querySelector(".dataset-stats")).toHaveTextContent(
+      "63,371Unique linksDeduplicated links in the BCP-Link corpus",
     );
-    expect(container.querySelector(".intro-release-list")).toHaveTextContent(
-      "63,371 verified in-corpus hyperlinks",
+    expect(container.querySelector(".dataset-stats")).toHaveTextContent(
+      "4.59Avg. outgoing linksPer document containing at least one link",
+    );
+    expect(container.querySelector(".dataset-stats")).toHaveTextContent(
+      "84.18%Wikipedia targetsUnique links targeting en.wikipedia.org",
     );
     expect(screen.getByRole("link", { name: "Download leaderboard results as CSV" })).toHaveAttribute(
       "download",
@@ -215,6 +218,13 @@ describe("LeaderboardApp", () => {
     expect(container).toHaveTextContent(
       "它构建于 BrowseComp-Plus 之上，从固定的 100,195 个离线网页语料中恢复 63,371 条经验证链接。这些链接会直接插入文档文本，并通过标准化的 search 和 visit 工具提供给智能体",
     );
+    expect(screen.queryByText("当前版本包括：")).not.toBeInTheDocument();
+    expect(
+      Array.from(container.querySelectorAll(".dataset-stats dt"), (item) => item.textContent),
+    ).toEqual(["63,371", "4.59", "84.18%"]);
+    expect(
+      Array.from(container.querySelectorAll(".dataset-stats dd strong"), (item) => item.textContent),
+    ).toEqual(["唯一链接数", "平均出链数", "Wikipedia 目标占比"]);
     expect(
       screen.getByRole("link", { name: "在 Hugging Face 打开 BCP-Link 语料" }),
     ).toHaveAttribute("href", "https://huggingface.co/datasets/SUSTech/BCP-Link-corpus");
@@ -282,7 +292,7 @@ describe("LeaderboardApp", () => {
   it("uses accuracy ranking by default and keeps missing values last", () => {
     const { container } = render(<LeaderboardApp csvText={TEST_CSV} />);
     expect(modelNames()).toEqual(["Beta", "Alpha", "Gamma"]);
-    expect(screen.getByRole("heading", { name: "The current release includes:" })).toBeVisible();
+    expect(container.querySelectorAll(".dataset-stats > div")).toHaveLength(3);
     expect(screen.getByText("1 model with comparable Accuracy data")).toBeInTheDocument();
     expect(container.querySelectorAll(".rank-medal")).toHaveLength(2);
     expect(container.querySelector(".rank-medal.rank-1")).toHaveTextContent("1");

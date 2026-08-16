@@ -42,11 +42,11 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(
     page.getByRole("link", { name: "Open the BCP-Link corpus on Hugging Face" }),
   ).toHaveAttribute("href", "https://huggingface.co/datasets/SUSTech/BCP-Link-corpus");
-  await expect(page.getByRole("heading", { name: "The current release includes:" })).toBeVisible();
-  await expect(page.locator(".intro-release-list li")).toHaveCount(7);
-  await expect(page.locator(".intro-release-list")).toContainText(
-    "100,195 offline webpages in the fixed corpus",
-  );
+  await expect(page.getByText("The current release includes:")).toHaveCount(0);
+  await expect(page.locator(".dataset-stats > div")).toHaveCount(3);
+  await expect(page.locator(".dataset-stats")).toContainText("63,371");
+  await expect(page.locator(".dataset-stats")).toContainText("4.59");
+  await expect(page.locator(".dataset-stats")).toContainText("84.18%");
   await expect(page.getByTestId("model-name")).toHaveCount(15);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByTestId("model-name").filter({ hasText: "Deepseek-v4-pro" })).toHaveCount(1);
