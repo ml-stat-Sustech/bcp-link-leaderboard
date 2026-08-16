@@ -63,7 +63,7 @@ describe("LeaderboardApp", () => {
       screen.getByRole("link", { name: "Open the BCP-Link corpus on Hugging Face" }),
     ).toHaveAttribute("href", "https://huggingface.co/datasets/SUSTech/BCP-Link-corpus");
     expect(container).toHaveTextContent(
-      "it recovers 63,371 verified links among the fixed corpus of 100,195 offline webpages",
+      "it recovers 63,371 verified links among the fixed corpus of 100,195 offline webpages. These links are inserted directly into the document text and exposed through standardized search and visit tools, enabling controlled analysis",
     );
     expect(screen.getByRole("heading", { name: "The current release includes:" })).toBeVisible();
     expect(container.querySelectorAll(".intro-release-list li")).toHaveLength(7);
@@ -85,7 +85,9 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector(".comparison-workspace")?.nextElementSibling).toBe(
       comparisonInsights,
     );
-    expect(screen.getByText(/This setup enables controlled analysis/)).toBeVisible();
+    expect(container.querySelector(".intro-description")).toHaveTextContent(
+      "These links are inserted directly into the document text and exposed through standardized search and visit tools, enabling controlled analysis",
+    );
     expect(screen.getByText(/Top 5 · highlight enabled · up to 5 fragments/)).toBeVisible();
     expect(screen.getByText(/40,000-character limit · no summarizer/)).toBeVisible();
     expect(screen.getByText("Each run is capped at 50 agent turns.")).toBeVisible();
@@ -211,7 +213,7 @@ describe("LeaderboardApp", () => {
       "对于使用相同工具训练的模型，BCP-Link 上的Accuracy 高于 BCP，且往往使用更少的 turns，说明模型能够利用链接信息。",
     );
     expect(container).toHaveTextContent(
-      "它构建于 BrowseComp-Plus 之上，从固定的 100,195 个离线网页语料中恢复 63,371 条经验证链接",
+      "它构建于 BrowseComp-Plus 之上，从固定的 100,195 个离线网页语料中恢复 63,371 条经验证链接。这些链接会直接插入文档文本，并通过标准化的 search 和 visit 工具提供给智能体",
     );
     expect(
       screen.getByRole("link", { name: "在 Hugging Face 打开 BCP-Link 语料" }),

@@ -192,7 +192,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       descriptionBeforeLink:
         " is a benchmark for evaluating how effectively search agents can use hyperlinks to discover evidence beyond initial search results in an offline, fully reproducible search environment. Built on ",
       descriptionAfterLink:
-        ", it recovers 63,371 verified links among the fixed corpus of 100,195 offline webpages, which are inserted directly into the document text and exposed through standardized `search` and `visit` tools. This setup enables controlled analysis of whether search agents can recognize useful links, navigate across documents, gather relevant evidence, and reach the correct answer efficiently.",
+        ", it recovers 63,371 verified links among the fixed corpus of 100,195 offline webpages. These links are inserted directly into the document text and exposed through standardized `search` and `visit` tools, enabling controlled analysis of whether search agents can recognize useful links, navigate across documents, gather relevant evidence, and reach the correct answer efficiently.",
       releaseHeading: "The current release includes:",
       releaseItems: [
         { value: "100,195", label: "offline webpages in the fixed corpus" },
@@ -414,7 +414,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       descriptionBeforeLink:
         " 是用于评估搜索智能体在离线、完全可复现的搜索环境中利用超链接，在初始搜索结果之外高效发现证据的基准。它构建于 ",
       descriptionAfterLink:
-        " 之上，从固定的 100,195 个离线网页语料中恢复 63,371 条经验证链接，将链接直接插入文档文本，并通过标准化的 `search` 和 `visit` 工具提供给智能体。该设置支持受控分析，评估搜索智能体能否识别有用链接、跨文档导航、收集相关证据并高效得到正确答案。",
+        " 之上，从固定的 100,195 个离线网页语料中恢复 63,371 条经验证链接。这些链接会直接插入文档文本，并通过标准化的 `search` 和 `visit` 工具提供给智能体，从而支持受控分析，评估搜索智能体能否识别有用链接、跨文档导航、收集相关证据并高效得到正确答案。",
       releaseHeading: "当前版本包括：",
       releaseItems: [
         { value: "100,195", label: "个固定语料中的离线网页" },
