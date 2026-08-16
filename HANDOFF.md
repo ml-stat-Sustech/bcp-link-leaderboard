@@ -172,8 +172,8 @@ Deployment verification completed on 2026-08-16:
 ```text
 GitHub repository visibility  PRIVATE
 GitHub default branch         main
-Deployed source commit        bcdd3f6
-Immutable deployment          https://092c7a6e.bcp-link-leaderboard.pages.dev/
+Deployed source commit        e2aacfe
+Immutable deployment          https://616592fa.bcp-link-leaderboard.pages.dev/
 Production unauthenticated    HTTP 401
 Immutable unauthenticated     HTTP 401
 Authenticated access          HTTP 200 (previously verified; secrets unchanged)
@@ -189,8 +189,8 @@ Comparison rendering          0/1/2/5/9 selected models render 0/2/4/10/18 bars
 - Cloudflare Pages project: `bcp-link-leaderboard`
 - Production branch: `main`
 - Production URL: `https://bcp-link-leaderboard.pages.dev/`
-- Current deployed UI source commit: `bcdd3f6`
-- Current immutable deployment URL: `https://092c7a6e.bcp-link-leaderboard.pages.dev/`
+- Current deployed UI source commit: `e2aacfe`
+- Current immutable deployment URL: `https://616592fa.bcp-link-leaderboard.pages.dev/`
 - GitHub stores the private source and version history; the live site is hosted by Cloudflare Pages,
   not GitHub Pages.
 - Production deployments are direct uploads from the current `main` build. Use
