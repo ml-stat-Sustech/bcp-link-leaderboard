@@ -51,6 +51,30 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.locator(".dataset-stats")).toContainText("63,371");
   await expect(page.locator(".dataset-stats")).toContainText("97.5%");
   await expect(page.locator(".dataset-stats")).toContainText("17.60%");
+  const introActionDetails = await page.locator(".intro-action").evaluateAll((actions) =>
+    actions.map((action) => {
+      const style = getComputedStyle(action);
+      return {
+        background: style.backgroundColor,
+        color: style.color,
+        radius: style.borderRadius,
+        iconFirst: action.firstElementChild?.tagName === "svg",
+      };
+    }),
+  );
+  expect(introActionDetails).toHaveLength(4);
+  expect(new Set(introActionDetails.map(({ background }) => background)).size).toBe(1);
+  expect(new Set(introActionDetails.map(({ color }) => color)).size).toBe(1);
+  expect(introActionDetails.every(({ radius }) => radius === "999px")).toBe(true);
+  expect(introActionDetails.every(({ iconFirst }) => iconFirst)).toBe(true);
+  const graphDescriptionLineCount = await page.locator(".dataset-stats dd span").nth(2).evaluate((text) => {
+    const range = document.createRange();
+    range.selectNodeContents(text);
+    return new Set(Array.from(range.getClientRects(), (rect) => Math.round(rect.top))).size;
+  });
+  if (testInfo.project.name.startsWith("desktop")) {
+    expect(graphDescriptionLineCount).toBeLessThanOrEqual(2);
+  }
   await expect(page.getByTestId("model-name")).toHaveCount(15);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByTestId("model-name").filter({ hasText: "Deepseek-v4-pro" })).toHaveCount(1);
@@ -347,7 +371,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.introBodyFont).toBe(
     testInfo.project.name.startsWith("mobile") ? "16px" : "17px",
   );
-  expect(visualDetails.introActionFont).toBe("14px");
+  expect(visualDetails.introActionFont).toBe("15px");
   expect(visualDetails.tableValueFont).toBe("16px");
   expect(visualDetails.tableModelFont).toBe("17px");
   expect(visualDetails.tableHeaderFont).toBe("17px");

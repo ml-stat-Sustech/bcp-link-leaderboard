@@ -651,12 +651,12 @@ dd {
 }
 
 .intro-body {
-  max-width: 1040px;
+  max-width: 1120px;
   margin: 34px auto 0;
-  padding: 29px 34px 13px;
+  padding: 31px 38px 15px;
   background: var(--raised-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 16px;
   box-shadow: var(--raised-shadow);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -695,58 +695,46 @@ dd {
 }
 
 .intro-actions {
-  display: flex;
+  width: min(100%, 880px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 21px;
+  gap: 12px;
+  margin: 24px auto 0;
 }
 
 .intro-action {
-  min-width: 154px;
-  height: 42px;
+  min-width: 0;
+  height: 48px;
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 0 14px;
-  border: 1px solid var(--border-strong);
-  border-radius: 6px;
-  font-size: 14px;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 20px;
+  color: var(--primary-contrast);
+  background: var(--primary-strong);
+  border: 1px solid var(--primary-strong);
+  border-radius: 999px;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--primary-strong) 14%, transparent);
+  font-size: 15px;
   font-weight: 740;
   text-decoration: none;
-  transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+  white-space: nowrap;
+  transition: transform 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
 }
 
 .intro-action svg {
-  width: 16px;
-  height: 16px;
-}
-
-.intro-action-primary {
-  color: var(--primary-contrast);
-  background: var(--primary-strong);
-  border-color: var(--primary-strong);
-  box-shadow: 0 8px 20px color-mix(in srgb, var(--primary-strong) 14%, transparent);
-}
-
-.intro-action-secondary {
-  color: var(--text);
-  background: color-mix(in srgb, var(--surface) 82%, transparent);
-}
-
-.intro-action-resource {
-  justify-content: center;
-  gap: 8px;
-  color: var(--text);
-  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: currentColor;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .intro-action:not(:disabled):hover {
     transform: translateY(-2px);
-    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary-strong) 90%, var(--primary));
+    box-shadow: 0 11px 24px color-mix(in srgb, var(--primary-strong) 20%, transparent);
   }
 }
 
@@ -2341,6 +2329,11 @@ tbody tr:hover .model-column {
     width: min(calc(100% - 28px), 1280px);
   }
 
+  .intro-actions {
+    max-width: 620px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .nav-inner {
     min-height: 60px;
     gap: 12px;
@@ -2550,7 +2543,8 @@ tbody tr:hover .model-column {
 
   .intro-body {
     margin-top: 26px;
-    padding: 21px 18px 8px;
+    padding: 22px 18px 10px;
+    border-radius: 14px;
   }
 
   .intro-body p {
@@ -2559,11 +2553,13 @@ tbody tr:hover .model-column {
   }
 
   .intro-actions {
+    width: 100%;
+    grid-template-columns: 1fr;
     align-items: stretch;
   }
 
   .intro-action {
-    flex: 1 1 180px;
+    width: 100%;
   }
 
   .dataset-stats {

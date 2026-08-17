@@ -10,13 +10,12 @@ import {
 import {
   AlertTriangle,
   ArrowDown,
-  ArrowDownRight,
-  ArrowRight,
   ArrowUp,
   ArrowUpDown,
   BarChart3,
   Check,
   ChevronDown,
+  ClipboardCheck,
   Database,
   Github,
   Info,
@@ -1337,10 +1336,10 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                 </p>
                 <div className="intro-actions">
                   <a className="intro-action intro-action-primary" href="#leaderboard">
-                    {copy.intro.rankingsAction} <ArrowDownRight aria-hidden="true" />
+                    <BarChart3 aria-hidden="true" /> <span>{copy.intro.rankingsAction}</span>
                   </a>
                   <a className="intro-action intro-action-secondary" href="#rules">
-                    {copy.intro.protocolAction} <ArrowRight aria-hidden="true" />
+                    <ClipboardCheck aria-hidden="true" /> <span>{copy.intro.protocolAction}</span>
                   </a>
                   <a
                     className="intro-action intro-action-resource"

@@ -38,11 +38,17 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("link", { name: "Comparison" })).toHaveAttribute("href", "#comparison");
     expect(screen.getByRole("link", { name: "Evaluation Rules" })).toHaveAttribute("href", "#rules");
     expect(screen.getByRole("link", { name: "Metric Guide" })).toHaveAttribute("href", "#metrics");
-    expect(screen.getByRole("link", { name: "View rankings" })).toHaveAttribute(
+    const rankingsAction = screen.getByRole("link", { name: "View rankings" });
+    expect(rankingsAction).toHaveAttribute(
       "href",
       "#leaderboard",
     );
-    expect(screen.getByRole("link", { name: "Review protocol" })).toHaveAttribute("href", "#rules");
+    const protocolAction = screen.getByRole("link", { name: "Review protocol" });
+    expect(protocolAction).toHaveAttribute("href", "#rules");
+    for (const action of [rankingsAction, protocolAction]) {
+      expect(action.firstElementChild?.tagName).toBe("svg");
+      expect(action.lastElementChild?.tagName).toBe("SPAN");
+    }
     expect(screen.getByRole("link", { name: "Back to top" })).toHaveAttribute("href", "#top");
     const browseCompPlusPaper = screen.getByRole("link", { name: "BrowseComp-Plus" });
     expect(browseCompPlusPaper).toHaveAttribute("href", "https://arxiv.org/pdf/2508.06600");
