@@ -11,8 +11,8 @@ Last updated: 2026-08-17
 - GitHub private repository: `https://github.com/Samanthe-H/bcp-link-leaderboard`.
 - The local `main` branch tracks `origin/main` over SSH.
 - Cloudflare Pages production site: `https://bcp-link-leaderboard.pages.dev/`.
-- Current deployed UI source commit: `3101411`.
-- Current immutable deployment: `https://086bc421.bcp-link-leaderboard.pages.dev/`.
+- Current deployed UI source commit: `00c2e04`.
+- Current immutable deployment: `https://ba9d276b.bcp-link-leaderboard.pages.dev/`.
 - The current data, theme, introduction, leaderboard, and comparison-chart work is complete.
   TypeScript, production build, unit/component tests, end-to-end tests, and desktop/mobile visual
   checks pass.
@@ -168,17 +168,17 @@ npm test           PASS: 27 passed
 npm run test:e2e   PASS: 10 passed across desktop and mobile Chromium
 ```
 
-Deployment verification completed on 2026-08-16:
+Deployment verification completed on 2026-08-17:
 
 ```text
 GitHub repository visibility  PRIVATE
 GitHub default branch         main
-Deployed source commit        e2aacfe
-Immutable deployment          https://616592fa.bcp-link-leaderboard.pages.dev/
+Deployed source commit        00c2e04
+Immutable deployment          https://ba9d276b.bcp-link-leaderboard.pages.dev/
 Production unauthenticated    HTTP 401
 Immutable unauthenticated     HTTP 401
-Authenticated access          HTTP 200 (previously verified; secrets unchanged)
-Production HTML               current BCP-Link dashboard assets loaded
+Authenticated access          Not rechecked; local credentials unavailable
+Production build              official mark asset and accessible BCP-Link heading included
 Production data               9 models; WebSailor-32B included
 Comparison picker             9 models available; 4 selected by default; select-all/clear supported
 Comparison rendering          0/1/2/5/9 selected models render 0/2/4/10/18 bars
@@ -190,8 +190,8 @@ Comparison rendering          0/1/2/5/9 selected models render 0/2/4/10/18 bars
 - Cloudflare Pages project: `bcp-link-leaderboard`
 - Production branch: `main`
 - Production URL: `https://bcp-link-leaderboard.pages.dev/`
-- Current deployed UI source commit: `e2aacfe`
-- Current immutable deployment URL: `https://616592fa.bcp-link-leaderboard.pages.dev/`
+- Current deployed UI source commit: `00c2e04`
+- Current immutable deployment URL: `https://ba9d276b.bcp-link-leaderboard.pages.dev/`
 - GitHub stores the private source and version history; the live site is hosted by Cloudflare Pages,
   not GitHub Pages.
 - Production deployments are direct uploads from the current `main` build. Use
