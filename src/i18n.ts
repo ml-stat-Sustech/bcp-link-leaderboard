@@ -226,7 +226,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       graphParticipation: {
         value: "17.60%",
         label: "Graph participation",
-        description: "17,633 documents with at least one incoming or outgoing link",
+        description: "17,633 documents with an incoming or outgoing link",
       },
     },
     leaderboard: {
@@ -456,7 +456,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       graphParticipation: {
         value: "17.60%",
         label: "图谱参与率",
-        description: "17,633 篇文档至少有一条入链或出链",
+        description: "17,633 篇文档含入链或出链",
       },
     },
     leaderboard: {

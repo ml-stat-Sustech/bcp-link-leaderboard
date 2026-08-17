@@ -67,13 +67,38 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(new Set(introActionDetails.map(({ color }) => color)).size).toBe(1);
   expect(introActionDetails.every(({ radius }) => radius === "999px")).toBe(true);
   expect(introActionDetails.every(({ iconFirst }) => iconFirst)).toBe(true);
-  const graphDescriptionLineCount = await page.locator(".dataset-stats dd span").nth(2).evaluate((text) => {
-    const range = document.createRange();
-    range.selectNodeContents(text);
-    return new Set(Array.from(range.getClientRects(), (rect) => Math.round(rect.top))).size;
-  });
+  const statDescriptionLineCounts = await page.locator(".dataset-stats dd span").evaluateAll((texts) =>
+    texts.map((text) => {
+      const range = document.createRange();
+      range.selectNodeContents(text);
+      return new Set(Array.from(range.getClientRects(), (rect) => Math.round(rect.top))).size;
+    }),
+  );
   if (testInfo.project.name.startsWith("desktop")) {
-    expect(graphDescriptionLineCount).toBeLessThanOrEqual(2);
+    expect(statDescriptionLineCounts).toEqual([1, 1, 1]);
+    const introCenterDelta = await page.evaluate(() => {
+      const heading = document.querySelector(".intro-brand-heading")!.getBoundingClientRect();
+      const panel = document.querySelector(".intro-body")!.getBoundingClientRect();
+      return Math.abs(heading.left + heading.width / 2 - (panel.left + panel.width / 2));
+    });
+    expect(introCenterDelta).toBeLessThanOrEqual(1);
+
+    const panel = page.locator(".intro-body");
+    const panelBeforeHover = await panel.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return { transform: style.transform, borderColor: style.borderColor, boxShadow: style.boxShadow };
+    });
+    await panel.hover({ position: { x: 12, y: 12 } });
+    await page.waitForTimeout(200);
+    const panelAfterHover = await panel.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return { transform: style.transform, borderColor: style.borderColor, boxShadow: style.boxShadow };
+    });
+    expect(panelAfterHover).toEqual(panelBeforeHover);
+
+    const firstAction = page.locator(".intro-action").first();
+    await firstAction.hover();
+    await expect.poll(() => firstAction.evaluate((element) => getComputedStyle(element).transform)).not.toBe("none");
   }
   await expect(page.getByTestId("model-name")).toHaveCount(15);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);

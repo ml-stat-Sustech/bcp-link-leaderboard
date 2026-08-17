@@ -159,7 +159,7 @@ describe("LeaderboardApp", () => {
       "97.5%Source-page recovery97,682 of 100,195 pages usable for link reconstruction",
     );
     expect(container.querySelector(".dataset-stats")).toHaveTextContent(
-      "17.60%Graph participation17,633 documents with at least one incoming or outgoing link",
+      "17.60%Graph participation17,633 documents with an incoming or outgoing link",
     );
     expect(screen.getByRole("link", { name: "Download leaderboard results as CSV" })).toHaveAttribute(
       "download",

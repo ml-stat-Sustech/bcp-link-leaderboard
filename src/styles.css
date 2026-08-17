@@ -613,7 +613,14 @@ dd {
   min-width: 0;
 }
 
+.intro-inner {
+  display: grid;
+  justify-items: center;
+}
+
 .intro-heading {
+  width: 100%;
+  max-width: 1120px;
   text-align: center;
 }
 
@@ -651,8 +658,9 @@ dd {
 }
 
 .intro-body {
+  width: 100%;
   max-width: 1120px;
-  margin: 34px auto 0;
+  margin: 34px 0 0;
   padding: 31px 38px 15px;
   background: var(--raised-bg);
   border: 1px solid var(--border);
@@ -2276,7 +2284,6 @@ tbody tr:hover .model-column {
 }
 
 
-.intro-body,
 .comparison-workspace,
 .rule-principles article,
 .tool-panel {
@@ -2287,7 +2294,6 @@ tbody tr:hover .model-column {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .intro-body:hover,
   .comparison-workspace:hover,
   .rule-principles article:hover,
   .tool-panel:hover {
