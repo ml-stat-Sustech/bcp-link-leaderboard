@@ -40,6 +40,7 @@ import {
 import Papa from "papaparse";
 import resultsCsv from "../data/bcp-link-results.csv?raw";
 import brandLogoDark from "./assets/bcp-link-logo-dark.svg";
+import brandMarkLight from "./assets/bcp-link-mark-light.png";
 import { getAccuracyRanks, parseBenchmarkCsv } from "./data";
 import { EvaluationRules } from "./EvaluationRules";
 import {
@@ -1308,7 +1309,17 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
           >
             <div className="container intro-inner">
               <div className="intro-heading">
-                <h1 id="about-heading">{copy.intro.heading}</h1>
+                <h1 id="about-heading" className="intro-brand-heading">
+                  <img
+                    className="intro-brand-mark"
+                    src={brandMarkLight}
+                    width={221}
+                    height={155}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                  <span>{copy.intro.heading}</span>
+                </h1>
                 {copy.intro.subtitle && <p className="intro-subtitle">{copy.intro.subtitle}</p>}
               </div>
               <div className="intro-body">

@@ -48,7 +48,14 @@ describe("LeaderboardApp", () => {
     expect(browseCompPlusPaper).toHaveAttribute("href", "https://arxiv.org/pdf/2508.06600");
     expect(browseCompPlusPaper).toHaveAttribute("target", "_blank");
     expect(browseCompPlusPaper).toHaveAttribute("rel", "noreferrer");
-    expect(screen.getByRole("heading", { name: "About BCP-Link", level: 1 })).toBeVisible();
+    const introHeading = screen.getByRole("heading", { name: "BCP-Link", level: 1 });
+    expect(introHeading).toBeVisible();
+    expect(introHeading).toHaveClass("intro-brand-heading");
+    const introBrandMark = introHeading.querySelector("img.intro-brand-mark");
+    expect(introBrandMark).toHaveAttribute("alt", "");
+    expect(introBrandMark).toHaveAttribute("aria-hidden", "true");
+    expect(introBrandMark).toHaveAttribute("width", "221");
+    expect(introBrandMark).toHaveAttribute("height", "155");
     expect(container.querySelector(".intro-body p > strong:first-child")).toHaveTextContent(
       "BrowseComp-Plus-Link (BCP-Link)",
     );

@@ -19,9 +19,13 @@ async function clickAtCurrentPosition(page: Page, locator: Locator, useTouch: bo
 test("renders real leaderboard data without page-level overflow", async ({ page }, testInfo) => {
   await page.goto("/");
 
-  await expect(
-    page.getByRole("heading", { name: "About BCP-Link", exact: true, level: 1 }),
-  ).toBeVisible();
+  const introHeading = page.getByRole("heading", { name: "BCP-Link", exact: true, level: 1 });
+  await expect(introHeading).toBeVisible();
+  const introBrandMark = introHeading.locator("img.intro-brand-mark");
+  await expect(introBrandMark).toBeVisible();
+  await expect(introBrandMark).toHaveAttribute("alt", "");
+  await expect(introBrandMark).toHaveAttribute("aria-hidden", "true");
+  await expect(introBrandMark).toHaveJSProperty("naturalWidth", 221);
   await expect(page.locator(".intro-body p > strong").first()).toHaveText(
     "BrowseComp-Plus-Link (BCP-Link)",
   );

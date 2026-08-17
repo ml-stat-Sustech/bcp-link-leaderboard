@@ -1,6 +1,6 @@
 # BCP-Link Leaderboard Handoff
 
-Last updated: 2026-08-15
+Last updated: 2026-08-17
 
 ## 1. Project Location And Current Status
 
@@ -22,7 +22,7 @@ Last updated: 2026-08-15
 - BCP-Link leaderboard table with Accuracy ranking, search, sortable metric columns, missing-value handling, sticky headers, and horizontal scrolling.
 - BCP versus BCP-Link comparison chart with selectable metrics, tooltips, responsive width, and empty states.
 - English and Chinese translations with browser-language detection and `localStorage` persistence.
-- About BCP-Link, Evaluation Rules, `search(query)`, `visit(document_id, goal)`, and Metric Guide content.
+- BCP-Link introduction, Evaluation Rules, `search(query)`, `visit(document_id, goal)`, and Metric Guide content.
 - CSV parsing for BOM, two-row headers, inherited model names, percentage conversion, null values, and BCP/BCP-Link pairing.
 - Cloudflare Pages Basic Auth middleware, `_routes.json`, private deployment instructions, and public-mode switch.
 - Before the latest upgrade, unit/component/Auth tests and Playwright tests were passing.
@@ -54,8 +54,9 @@ Last updated: 2026-08-15
 
 ### Page Structure And Content
 
-- The About section uses `About BCP-Link` as its heading and presents the benchmark definition in one
-  framed description panel in both languages. The copy identifies the offline, fully reproducible
+- The About section combines the official book-and-link brand mark with an accessible, theme-aware
+  `BCP-Link` text heading and presents the benchmark definition in one framed description panel in
+  both languages. The copy identifies the offline, fully reproducible
   environment and reports 100,195 fixed webpages plus 63,371 verified links. The original three-item
   dataset summary remains: 63,371 unique links, 4.59 average outgoing links, and 84.18% Wikipedia
   targets. The later release heading and seven-item list have been removed.
@@ -63,7 +64,7 @@ Last updated: 2026-08-15
   BCP-Link corpus on Hugging Face. The BrowseComp-Plus paper remains linked from the benchmark
   description. No unreleased QA or relevance-judgment data is claimed as part of the corpus release.
 - The rendered section order is now:
-  1. About BCP-Link
+  1. BCP-Link
   2. Leaderboard
   3. BCP vs. BCP-Link comparison
   4. Evaluation Rules

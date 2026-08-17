@@ -198,7 +198,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       selectedLabel: (theme) => `${theme} selected`,
     },
     intro: {
-      heading: "About BCP-Link",
+      heading: "BCP-Link",
       subtitle: "",
       descriptionBeforeLink:
         " is a benchmark for evaluating how effectively search agents can use hyperlinks to discover evidence beyond initial search results in an offline, fully reproducible search environment. Built on ",
@@ -428,7 +428,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       selectedLabel: (theme) => `已选择${theme}`,
     },
     intro: {
-      heading: "BCP-Link 简介",
+      heading: "BCP-Link",
       subtitle: "",
       descriptionBeforeLink:
         " 是用于评估搜索智能体在离线、完全可复现的搜索环境中利用超链接，在初始搜索结果之外高效发现证据的基准。它构建于 ",
