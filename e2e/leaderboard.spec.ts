@@ -34,7 +34,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   );
   await expect(page.getByRole("link", { name: "View evaluation code on GitHub" })).toHaveAttribute(
     "href",
-    "https://github.com/ml-stat-Sustech/SearcherKit",
+    "https://github.com/ml-stat-Sustech/BCP-Link.git",
   );
   const browseCompPlusPaper = page.getByRole("link", { name: "BrowseComp-Plus", exact: true });
   await expect(browseCompPlusPaper).toHaveAttribute(

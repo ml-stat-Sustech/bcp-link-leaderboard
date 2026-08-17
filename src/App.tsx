@@ -76,7 +76,7 @@ interface LeaderboardAppProps {
 }
 
 const BROWSECOMP_PLUS_PAPER_URL = "https://arxiv.org/pdf/2508.06600";
-const CODE_RELEASE_URL = "https://github.com/ml-stat-Sustech/SearcherKit";
+const CODE_RELEASE_URL = "https://github.com/ml-stat-Sustech/BCP-Link.git";
 const DATASET_RELEASE_URL = "https://huggingface.co/datasets/SUSTech/BCP-Link-corpus";
 
 const DEFAULT_COMPARISON_MODEL_NAMES = [

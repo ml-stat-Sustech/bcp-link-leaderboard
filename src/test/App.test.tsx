@@ -64,7 +64,7 @@ describe("LeaderboardApp", () => {
     );
     expect(screen.getByRole("link", { name: "View evaluation code on GitHub" })).toHaveAttribute(
       "href",
-      "https://github.com/ml-stat-Sustech/SearcherKit",
+      "https://github.com/ml-stat-Sustech/BCP-Link.git",
     );
     expect(
       screen.getByRole("link", { name: "Open the BCP-Link corpus on Hugging Face" }),

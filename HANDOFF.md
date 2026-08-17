@@ -1,6 +1,6 @@
 # BCP-Link Leaderboard Handoff
 
-Last updated: 2026-08-17
+Last updated: 2026-08-18
 
 ## 1. Project Location And Current Status
 
@@ -8,11 +8,10 @@ Last updated: 2026-08-17
 - Stack: Vite, React 18, TypeScript, Recharts, Papa Parse, Vitest, Playwright
 - Data source: `data/bcp-link-results.csv`
 - Latest imported source: `/data/hs_dev/bcp-link测评结果汇总 - Sheet1.csv`; it now contains 9 fully comparable models, including WebSailor-32B.
-- GitHub private repository: `https://github.com/Samanthe-H/bcp-link-leaderboard`.
+- GitHub public repository: `https://github.com/ml-stat-Sustech/bcp-link-leaderboard`.
 - The local `main` branch tracks `origin/main` over SSH.
-- Cloudflare Pages production site: `https://bcp-link-leaderboard.pages.dev/`.
-- Current deployed UI source commit: `00c2e04`.
-- Current immutable deployment: `https://ba9d276b.bcp-link-leaderboard.pages.dev/`.
+- GitHub Pages production site: `https://ml-stat-sustech.github.io/bcp-link-leaderboard/`.
+- Pushes to `main` are deployed by `.github/workflows/deploy-pages.yml`.
 - The current data, theme, introduction, leaderboard, and comparison-chart work is complete.
   TypeScript, production build, unit/component tests, end-to-end tests, and desktop/mobile visual
   checks pass.
@@ -24,8 +23,8 @@ Last updated: 2026-08-17
 - English and Chinese translations with browser-language detection and `localStorage` persistence.
 - BCP-Link introduction, Evaluation Rules, `search(query)`, `visit(document_id, goal)`, and Metric Guide content.
 - CSV parsing for BOM, two-row headers, inherited model names, percentage conversion, null values, and BCP/BCP-Link pairing.
-- Cloudflare Pages Basic Auth middleware, `_routes.json`, private deployment instructions, and public-mode switch.
-- Before the latest upgrade, unit/component/Auth tests and Playwright tests were passing.
+- GitHub Pages build and deployment workflow for the public project site.
+- Before the latest upgrade, unit/component tests and Playwright tests were passing.
 
 ## 3. Latest Upgrade Work Already Implemented
 
@@ -60,7 +59,7 @@ Last updated: 2026-08-17
   environment and reports 100,195 fixed webpages plus 63,371 verified links. The original three-item
   dataset summary remains: 63,371 unique links, 4.59 average outgoing links, and 84.18% Wikipedia
   targets. The later release heading and seven-item list have been removed.
-- The About resource actions now link to the SearcherKit evaluation code on GitHub and the released
+- The About resource actions now link to the BCP-Link evaluation code on GitHub and the released
   BCP-Link corpus on Hugging Face. The BrowseComp-Plus paper remains linked from the benchmark
   description. No unreleased QA or relevance-judgment data is claimed as part of the corpus release.
 - The rendered section order is now:
@@ -164,45 +163,31 @@ Commands run from `/data/hs_dev/bcp-link-leaderboard`:
 ```text
 npm run typecheck  PASS
 npm run build      PASS
-npm test           PASS: 27 passed
+npm test           PASS: 23 passed
 npm run test:e2e   PASS: 10 passed across desktop and mobile Chromium
 ```
 
-Deployment verification completed on 2026-08-17:
+Public deployment target configured on 2026-08-18:
 
 ```text
-GitHub repository visibility  PRIVATE
+GitHub repository visibility  PUBLIC
 GitHub default branch         main
-Deployed source commit        00c2e04
-Immutable deployment          https://ba9d276b.bcp-link-leaderboard.pages.dev/
-Production unauthenticated    HTTP 401
-Immutable unauthenticated     HTTP 401
-Authenticated access          Not rechecked; local credentials unavailable
+Deployment workflow           .github/workflows/deploy-pages.yml
+Production URL                https://ml-stat-sustech.github.io/bcp-link-leaderboard/
 Production build              official mark asset and accessible BCP-Link heading included
-Production data               9 models; WebSailor-32B included
+Production data               15 leaderboard models; WebSailor-32B included
 Comparison picker             9 models available; 4 selected by default; select-all/clear supported
 Comparison rendering          0/1/2/5/9 selected models render 0/2/4/10/18 bars
 ```
 
 ## 7. Current Deployment
 
-- GitHub repository: `https://github.com/Samanthe-H/bcp-link-leaderboard`
-- Cloudflare Pages project: `bcp-link-leaderboard`
+- GitHub repository: `https://github.com/ml-stat-Sustech/bcp-link-leaderboard`
 - Production branch: `main`
-- Production URL: `https://bcp-link-leaderboard.pages.dev/`
-- Current deployed UI source commit: `00c2e04`
-- Current immutable deployment URL: `https://ba9d276b.bcp-link-leaderboard.pages.dev/`
-- GitHub stores the private source and version history; the live site is hosted by Cloudflare Pages,
-  not GitHub Pages.
-- Production deployments are direct uploads from the current `main` build. Use
-  `npx wrangler@3.114.17 pages deployment list --project-name bcp-link-leaderboard` to inspect the
-  latest source commit and immutable deployment URL without relying on stale handoff metadata.
-- The initial production release was deployed with Wrangler direct upload from `dist`; the root
-  `functions/` middleware and `_routes.json` were included.
-- `SITE_USERNAME` and `SITE_PASSWORD` are encrypted Cloudflare production secrets. Their values are
-  intentionally not stored in this repository or this handoff document.
-- Future result changes require `npm run build`, a Git push, and a new Pages deployment unless a
-  GitHub-based automatic deployment is configured later.
+- Production URL: `https://ml-stat-sustech.github.io/bcp-link-leaderboard/`
+- GitHub Actions runs tests, builds `dist/`, and deploys the Pages artifact after every push to
+  `main`. The workflow can also be started manually.
+- Future result changes require updating the CSV and pushing the resulting commit to `main`.
 
 ## 8. Palette References
 
@@ -222,4 +207,4 @@ Comparison rendering          0/1/2/5/9 selected models render 0/2/4/10/18 bars
 - The comparison picker must expose every parsed leaderboard model, support selecting or clearing
   all models, and render all selected models in one chart.
 - Chinese explanatory prose remains Chinese, while leaderboard columns and metric names remain English.
-- Existing CSV parsing, ranking behavior, Cloudflare Basic Auth, and private deployment behavior should not change.
+- Existing CSV parsing, ranking behavior, GitHub Pages base path, and public deployment behavior should not change.

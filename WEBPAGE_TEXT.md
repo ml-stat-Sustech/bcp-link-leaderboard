@@ -6,7 +6,7 @@
 
 Dataset summary: **63,371** unique links; **4.59** average outgoing links per document containing at least one link; **84.18%** of unique links target `en.wikipedia.org`.
 
-[Code](https://github.com/ml-stat-Sustech/SearcherKit) · [Dataset](https://huggingface.co/datasets/SUSTech/BCP-Link-corpus)
+[Code](https://github.com/ml-stat-Sustech/BCP-Link.git) · [Dataset](https://huggingface.co/datasets/SUSTech/BCP-Link-corpus)
 
 
 ### BCP versus BCP-Link
@@ -64,7 +64,7 @@ Average number of agent turns per task. Fewer turns can indicate efficiency only
 
 数据概览：**63,371** 个唯一链接；每篇含链接文档平均 **4.59** 个出链；**84.18%** 的唯一链接目标为 `en.wikipedia.org`。
 
-[Code](https://github.com/ml-stat-Sustech/SearcherKit) · [Dataset](https://huggingface.co/datasets/SUSTech/BCP-Link-corpus)
+[Code](https://github.com/ml-stat-Sustech/BCP-Link.git) · [Dataset](https://huggingface.co/datasets/SUSTech/BCP-Link-corpus)
 
 ### 排行榜
 
