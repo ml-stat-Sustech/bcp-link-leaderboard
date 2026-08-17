@@ -49,8 +49,8 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.getByText("The current release includes:")).toHaveCount(0);
   await expect(page.locator(".dataset-stats > div")).toHaveCount(3);
   await expect(page.locator(".dataset-stats")).toContainText("63,371");
-  await expect(page.locator(".dataset-stats")).toContainText("4.59");
-  await expect(page.locator(".dataset-stats")).toContainText("84.18%");
+  await expect(page.locator(".dataset-stats")).toContainText("97.5%");
+  await expect(page.locator(".dataset-stats")).toContainText("17.60%");
   await expect(page.getByTestId("model-name")).toHaveCount(15);
   await expect(page.getByTestId("model-name").filter({ hasText: "WebSailor-32B" })).toHaveCount(1);
   await expect(page.getByTestId("model-name").filter({ hasText: "Deepseek-v4-pro" })).toHaveCount(1);

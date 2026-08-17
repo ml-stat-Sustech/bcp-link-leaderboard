@@ -147,13 +147,13 @@ describe("LeaderboardApp", () => {
     expect(container.querySelector("thead")).not.toHaveTextContent("Tool behavior");
     expect(container.querySelector("thead")).not.toHaveTextContent("Link following");
     expect(container.querySelector(".dataset-stats")).toHaveTextContent(
-      "63,371Unique linksDeduplicated links in the BCP-Link corpus",
+      "63,371Unique linksVerified, deduplicated in-corpus hyperlinks",
     );
     expect(container.querySelector(".dataset-stats")).toHaveTextContent(
-      "4.59Avg. outgoing linksPer document containing at least one link",
+      "97.5%Source-page recovery97,682 of 100,195 pages usable for link reconstruction",
     );
     expect(container.querySelector(".dataset-stats")).toHaveTextContent(
-      "84.18%Wikipedia targetsUnique links targeting en.wikipedia.org",
+      "17.60%Graph participation17,633 documents with at least one incoming or outgoing link",
     );
     expect(screen.getByRole("link", { name: "Download leaderboard results as CSV" })).toHaveAttribute(
       "download",
@@ -228,10 +228,10 @@ describe("LeaderboardApp", () => {
     expect(screen.queryByText("当前版本包括：")).not.toBeInTheDocument();
     expect(
       Array.from(container.querySelectorAll(".dataset-stats dt"), (item) => item.textContent),
-    ).toEqual(["63,371", "4.59", "84.18%"]);
+    ).toEqual(["63,371", "97.5%", "17.60%"]);
     expect(
       Array.from(container.querySelectorAll(".dataset-stats dd strong"), (item) => item.textContent),
-    ).toEqual(["唯一链接数", "平均出链数", "Wikipedia 目标占比"]);
+    ).toEqual(["唯一链接数", "源页面恢复率", "图谱参与率"]);
     expect(
       screen.getByRole("link", { name: "在 Hugging Face 打开 BCP-Link 语料" }),
     ).toHaveAttribute("href", "https://huggingface.co/datasets/SUSTech/BCP-Link-corpus");

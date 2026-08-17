@@ -71,12 +71,12 @@ export interface Translation {
       label: string;
       description: string;
     };
-    averageOutgoingLinks: {
+    sourcePageRecovery: {
       value: string;
       label: string;
       description: string;
     };
-    wikipediaTargets: {
+    graphParticipation: {
       value: string;
       label: string;
       description: string;
@@ -216,17 +216,17 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       uniqueLinks: {
         value: "63,371",
         label: "Unique links",
-        description: "Deduplicated links in the BCP-Link corpus",
+        description: "Verified, deduplicated in-corpus hyperlinks",
       },
-      averageOutgoingLinks: {
-        value: "4.59",
-        label: "Avg. outgoing links",
-        description: "Per document containing at least one link",
+      sourcePageRecovery: {
+        value: "97.5%",
+        label: "Source-page recovery",
+        description: "97,682 of 100,195 pages usable for link reconstruction",
       },
-      wikipediaTargets: {
-        value: "84.18%",
-        label: "Wikipedia targets",
-        description: "Unique links targeting en.wikipedia.org",
+      graphParticipation: {
+        value: "17.60%",
+        label: "Graph participation",
+        description: "17,633 documents with at least one incoming or outgoing link",
       },
     },
     leaderboard: {
@@ -446,17 +446,17 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       uniqueLinks: {
         value: "63,371",
         label: "唯一链接数",
-        description: "BCP-Link 语料中的去重链接总数",
+        description: "经验证、去重后的语料内超链接",
       },
-      averageOutgoingLinks: {
-        value: "4.59",
-        label: "平均出链数",
-        description: "每篇含链接文档的平均出链数",
+      sourcePageRecovery: {
+        value: "97.5%",
+        label: "源页面恢复率",
+        description: "100,195 个页面中有 97,682 个可用于链接重建",
       },
-      wikipediaTargets: {
-        value: "84.18%",
-        label: "Wikipedia 目标占比",
-        description: "目标为 en.wikipedia.org 的唯一链接占比",
+      graphParticipation: {
+        value: "17.60%",
+        label: "图谱参与率",
+        description: "17,633 篇文档至少有一条入链或出链",
       },
     },
     leaderboard: {

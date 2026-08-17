@@ -1364,8 +1364,8 @@ export function LeaderboardApp({ csvText = resultsCsv }: LeaderboardAppProps) {
                 <dl className="dataset-stats" aria-label={copy.stats.label}>
                   {[
                     copy.stats.uniqueLinks,
-                    copy.stats.averageOutgoingLinks,
-                    copy.stats.wikipediaTargets,
+                    copy.stats.sourcePageRecovery,
+                    copy.stats.graphParticipation,
                   ].map((stat) => (
                     <div key={stat.label}>
                       <dt>{stat.value}</dt>
