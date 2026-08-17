@@ -82,6 +82,17 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
       return Math.abs(heading.left + heading.width / 2 - (panel.left + panel.width / 2));
     });
     expect(introCenterDelta).toBeLessThanOrEqual(1);
+    const introGeometry = await page.evaluate(() => {
+      const panel = document.querySelector(".intro-body")!.getBoundingClientRect();
+      const description = document.querySelector(".intro-description")!.getBoundingClientRect();
+      return {
+        panelWidth: panel.width,
+        leftInset: description.left - panel.left,
+        rightInset: panel.right - description.right,
+      };
+    });
+    expect(introGeometry.panelWidth).toBe(1080);
+    expect(Math.abs(introGeometry.leftInset - introGeometry.rightInset)).toBeLessThanOrEqual(1);
 
     const panel = page.locator(".intro-body");
     const panelBeforeHover = await panel.evaluate((element) => {

@@ -620,7 +620,7 @@ dd {
 
 .intro-heading {
   width: 100%;
-  max-width: 1120px;
+  max-width: 1080px;
   text-align: center;
 }
 
@@ -659,7 +659,7 @@ dd {
 
 .intro-body {
   width: 100%;
-  max-width: 1120px;
+  max-width: 1080px;
   margin: 34px 0 0;
   padding: 31px 38px 15px;
   background: var(--raised-bg);
@@ -683,7 +683,7 @@ dd {
 }
 
 .intro-description {
-  max-width: 980px;
+  max-width: none;
 }
 
 .intro-dataset-link {
@@ -774,7 +774,7 @@ dd {
   align-content: start;
   justify-items: center;
   gap: 5px;
-  padding: 17px 18px 15px;
+  padding: 17px 12px 15px;
   text-align: center;
 }
 
