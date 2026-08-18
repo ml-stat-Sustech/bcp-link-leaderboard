@@ -50,7 +50,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   await expect(page.locator(".dataset-stats > div")).toHaveCount(3);
   await expect(page.locator(".dataset-stats")).toContainText("63,371");
   await expect(page.locator(".dataset-stats")).toContainText("97.5%");
-  await expect(page.locator(".dataset-stats")).toContainText("17.60%");
+  await expect(page.locator(".dataset-stats")).toContainText("17.6%");
   const introActionDetails = await page.locator(".intro-action").evaluateAll((actions) =>
     actions.map((action) => {
       const style = getComputedStyle(action);

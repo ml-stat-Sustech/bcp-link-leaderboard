@@ -224,7 +224,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         description: "97,682 of 100,195 pages usable for link reconstruction",
       },
       graphParticipation: {
-        value: "17.60%",
+        value: "17.6%",
         label: "Graph participation",
         description: "17,633 documents with an incoming or outgoing link",
       },
@@ -454,7 +454,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
         description: "100,195 个页面中有 97,682 个可用于链接重建",
       },
       graphParticipation: {
-        value: "17.60%",
+        value: "17.6%",
         label: "图谱参与率",
         description: "17,633 篇文档含入链或出链",
       },
