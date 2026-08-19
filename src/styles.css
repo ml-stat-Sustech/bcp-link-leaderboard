@@ -1318,8 +1318,8 @@ tbody tr:hover .model-column {
 
 .comparison-insights-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 52px;
+  grid-template-columns: 1fr;
+  gap: 28px;
   margin: 0;
   padding: 0;
   list-style: none;
