@@ -481,7 +481,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       insightsHeading: "BCP‑link 能够凸显模型经训练后在搜索能力上的实质性提升。",
       insights: [
         "搜索‑访问能力经过专门增强的模型取得了更优表现，说明其跳转链接利用能力更强。",
-        "未进行强化优化的通用模型在 BCP‑link 上不仅未体现出优势，其表现甚至不优于无链接场景，反映出通用模型尚难有效消化链接信息。",
+        "未进行强化优化的通用模型在 BCP‑link 上不仅未体现出优势，其表现甚至不优于无链接场景，反映出通用模型尚难消化链接信息。",
       ],
       metricLabel: "指标",
       selectLabel: "选择对比指标",
