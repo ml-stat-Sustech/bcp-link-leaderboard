@@ -1037,22 +1037,14 @@ function ComparisonChart({
         </div>
 
         <ol className="comparison-insights" aria-label={copy.comparison.insightsLabel}>
-          <li>
-            <span className="comparison-insight-index" aria-hidden="true">
-              01
-            </span>
-            <p>
-              {copy.comparison.trainedInsightBefore}
-              <strong>{copy.comparison.trainedInsightEmphasis}</strong>
-              {copy.comparison.trainedInsightAfter}
-            </p>
-          </li>
-          <li>
-            <span className="comparison-insight-index" aria-hidden="true">
-              02
-            </span>
-            <p>{copy.comparison.untrainedInsight}</p>
-          </li>
+          {copy.comparison.insights.map((insight, index) => (
+            <li key={insight}>
+              <span className="comparison-insight-index" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <p>{insight}</p>
+            </li>
+          ))}
         </ol>
       </div>
     </section>

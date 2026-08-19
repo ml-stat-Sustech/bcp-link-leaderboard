@@ -119,12 +119,15 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   const comparisonInsights = page.getByRole("list", {
     name: "Key findings from the BCP and BCP-Link comparison",
   });
-  await expect(comparisonInsights.locator("li")).toHaveCount(2);
+  await expect(comparisonInsights.locator("li")).toHaveCount(3);
   await expect(comparisonInsights).toContainText(
-    "Models trained with the same search and visit tools reach higher Accuracy on BCP-Link than on BCP, often with fewer turns",
+    "BCP‑link serves as an effective indicator of substantial gains in search capability in training.",
   );
   await expect(comparisonInsights).toContainText(
-    "without matching tool-use training or with materially different interfaces, such as summary-returning Visit tools, the performance gap between BCP and BCP-Link is limited",
+    "Models with enhanced search‑and‑visit capabilities exhibit superior performance, demonstrating a stronger proficiency in leveraging jump links;",
+  );
+  await expect(comparisonInsights).toContainText(
+    "General‑purpose models without such reinforcement optimization not only fail to show advantages on BCP‑link, but even perform no better than in BCP (the no‑link setting), reflecting that general models still struggle to effectively process link information.",
   );
   await expect(
     page.getByRole("heading", { name: "One fixed process, two standard tools" }),
@@ -434,7 +437,7 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   expect(visualDetails.insightBorder).toBe("0px");
   expect(visualDetails.insightBackground).toBe("rgba(0, 0, 0, 0)");
   expect(visualDetails.insightFollowsChart).toBe(true);
-  expect(visualDetails.insightStrongText).toEqual(["higher Accuracy on BCP-Link"]);
+  expect(visualDetails.insightStrongText).toEqual([]);
   expect(Number.parseFloat(visualDetails.principleBodyFont)).toBeGreaterThanOrEqual(15);
   expect(Number.parseFloat(visualDetails.metricSummaryFont)).toBeGreaterThanOrEqual(15);
   expect(visualDetails.valueCells).toEqual(Array(6).fill("left"));

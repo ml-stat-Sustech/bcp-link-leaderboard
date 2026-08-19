@@ -88,13 +88,15 @@ describe("LeaderboardApp", () => {
       name: "Key findings from the BCP and BCP-Link comparison",
     });
     expect(comparisonInsights).toHaveTextContent(
-      "Models trained with the same search and visit tools reach higher Accuracy on BCP-Link than on BCP, often with fewer turns. This indicates that they can use link information.",
+      "BCP‑link serves as an effective indicator of substantial gains in search capability in training.",
     );
     expect(comparisonInsights).toHaveTextContent(
-      "For models without matching tool-use training or with materially different interfaces, such as summary-returning Visit tools, the performance gap between BCP and BCP-Link is limited.",
+      "Models with enhanced search‑and‑visit capabilities exhibit superior performance, demonstrating a stronger proficiency in leveraging jump links;",
     );
-    expect(comparisonInsights.querySelectorAll("strong")).toHaveLength(1);
-    expect(comparisonInsights.querySelector("strong")).toHaveTextContent("higher Accuracy");
+    expect(comparisonInsights).toHaveTextContent(
+      "General‑purpose models without such reinforcement optimization not only fail to show advantages on BCP‑link, but even perform no better than in BCP (the no‑link setting), reflecting that general models still struggle to effectively process link information.",
+    );
+    expect(comparisonInsights.querySelectorAll("li")).toHaveLength(3);
     expect(container.querySelector(".comparison-workspace")?.nextElementSibling).toBe(
       comparisonInsights,
     );
@@ -226,7 +228,7 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("columnheader", { name: /^Link-following Visit Calls/ })).toBeVisible();
     expect(screen.getByRole("button", { name: "按 Accuracy 排序" })).toBeVisible();
     expect(screen.getByRole("list", { name: "BCP 与 BCP-Link 对比的主要结论" })).toHaveTextContent(
-      "对于使用相同工具训练的模型，BCP-Link 上的Accuracy 高于 BCP，且往往使用更少的 turns，说明模型能够利用链接信息。",
+      "BCP‑link 能够凸显模型经训练后在搜索能力上的实质性提升。",
     );
     expect(container).toHaveTextContent(
       "它构建于 BrowseComp-Plus 之上，从固定的 100,195 个离线网页语料中恢复 63,371 条经验证链接。这些链接会直接插入文档文本，并通过标准化的 search 和 visit 工具提供给智能体",

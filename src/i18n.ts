@@ -103,10 +103,7 @@ export interface Translation {
     heading: string;
     comparable: (count: number, metric: string) => string;
     insightsLabel: string;
-    trainedInsightBefore: string;
-    trainedInsightEmphasis: string;
-    trainedInsightAfter: string;
-    untrainedInsight: string;
+    insights: string[];
     metricLabel: string;
     selectLabel: string;
     modelsLabel: string;
@@ -252,12 +249,11 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       comparable: (count, metric) =>
         `${count} ${count === 1 ? "model" : "models"} with comparable ${metric} data`,
       insightsLabel: "Key findings from the BCP and BCP-Link comparison",
-      trainedInsightBefore:
-        "Models trained with the same search and visit tools reach ",
-      trainedInsightEmphasis: "higher Accuracy on BCP-Link",
-      trainedInsightAfter: " than on BCP, often with fewer turns. This indicates that they can use link information.",
-      untrainedInsight:
-        "For models without matching tool-use training or with materially different interfaces, such as summary-returning Visit tools, the performance gap between BCP and BCP-Link is limited.",
+      insights: [
+        "BCP‑link serves as an effective indicator of substantial gains in search capability in training.",
+        "Models with enhanced search‑and‑visit capabilities exhibit superior performance, demonstrating a stronger proficiency in leveraging jump links;",
+        "General‑purpose models without such reinforcement optimization not only fail to show advantages on BCP‑link, but even perform no better than in BCP (the no‑link setting), reflecting that general models still struggle to effectively process link information.",
+      ],
       metricLabel: "Metric",
       selectLabel: "Comparison metric",
       modelsLabel: "Models",
@@ -481,11 +477,11 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       heading: "BCP 与 BCP-Link 对比",
       comparable: (count, metric) => `${count} 个模型具备可比较的${metric}数据`,
       insightsLabel: "BCP 与 BCP-Link 对比的主要结论",
-      trainedInsightBefore: "对于使用相同工具训练的模型，BCP-Link 上的",
-      trainedInsightEmphasis: "Accuracy 高于 BCP",
-      trainedInsightAfter: "，且往往使用更少的 turns，说明模型能够利用链接信息。",
-      untrainedInsight:
-        "对于缺少相应工具训练，或训练时使用了不同工具接口（如 Visit 返回摘要）的模型，BCP 与 BCP-Link 的表现差距有限。",
+      insights: [
+        "BCP‑link 能够凸显模型经训练后在搜索能力上的实质性提升。",
+        "搜索‑访问能力经过专门增强的模型取得了更优表现，说明其跳转链接利用能力更强。",
+        "未进行强化优化的通用模型在 BCP‑link 上不仅未体现出优势，其表现甚至不优于无链接场景，反映出通用模型尚难有效消化链接信息。",
+      ],
       metricLabel: "指标",
       selectLabel: "选择对比指标",
       modelsLabel: "模型",
