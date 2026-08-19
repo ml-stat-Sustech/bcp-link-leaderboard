@@ -87,18 +87,16 @@ describe("LeaderboardApp", () => {
     const comparisonInsights = screen.getByRole("list", {
       name: "Key findings from the BCP and BCP-Link comparison",
     });
-    expect(comparisonInsights).toHaveTextContent(
-      "BCP‑link serves as an effective indicator of substantial gains in search capability in training.",
-    );
+    expect(screen.getByRole("heading", { name: "BCP‑link serves as an effective indicator of substantial gains in search capability in training.", level: 3 })).toBeVisible();
     expect(comparisonInsights).toHaveTextContent(
       "Models with enhanced search‑and‑visit capabilities exhibit superior performance, demonstrating a stronger proficiency in leveraging jump links;",
     );
     expect(comparisonInsights).toHaveTextContent(
       "General‑purpose models without such reinforcement optimization not only fail to show advantages on BCP‑link, but even perform no better than in BCP (the no‑link setting), reflecting that general models still struggle to effectively process link information.",
     );
-    expect(comparisonInsights.querySelectorAll("li")).toHaveLength(3);
+    expect(comparisonInsights.querySelectorAll("li")).toHaveLength(2);
     expect(container.querySelector(".comparison-workspace")?.nextElementSibling).toBe(
-      comparisonInsights,
+      container.querySelector(".comparison-insights"),
     );
     expect(container.querySelector(".intro-description")).toHaveTextContent(
       "These links are inserted directly into the document text and exposed through standardized search and visit tools, enabling controlled analysis",
@@ -227,9 +225,7 @@ describe("LeaderboardApp", () => {
     expect(screen.getByRole("columnheader", { name: /^Accuracy/ })).toBeVisible();
     expect(screen.getByRole("columnheader", { name: /^Link-following Visit Calls/ })).toBeVisible();
     expect(screen.getByRole("button", { name: "按 Accuracy 排序" })).toBeVisible();
-    expect(screen.getByRole("list", { name: "BCP 与 BCP-Link 对比的主要结论" })).toHaveTextContent(
-      "BCP‑link 能够凸显模型经训练后在搜索能力上的实质性提升。",
-    );
+    expect(screen.getByRole("heading", { name: "BCP‑link 能够凸显模型经训练后在搜索能力上的实质性提升。", level: 3 })).toBeVisible();
     expect(container).toHaveTextContent(
       "它构建于 BrowseComp-Plus 之上，从固定的 100,195 个离线网页语料中恢复 63,371 条经验证链接。这些链接会直接插入文档文本，并通过标准化的 search 和 visit 工具提供给智能体",
     );

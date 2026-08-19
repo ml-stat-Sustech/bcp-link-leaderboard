@@ -119,10 +119,8 @@ test("renders real leaderboard data without page-level overflow", async ({ page 
   const comparisonInsights = page.getByRole("list", {
     name: "Key findings from the BCP and BCP-Link comparison",
   });
-  await expect(comparisonInsights.locator("li")).toHaveCount(3);
-  await expect(comparisonInsights).toContainText(
-    "BCP‑link serves as an effective indicator of substantial gains in search capability in training.",
-  );
+  await expect(comparisonInsights.locator("li")).toHaveCount(2);
+  await expect(page.getByRole("heading", { name: "BCP‑link serves as an effective indicator of substantial gains in search capability in training.", level: 3 })).toBeVisible();
   await expect(comparisonInsights).toContainText(
     "Models with enhanced search‑and‑visit capabilities exhibit superior performance, demonstrating a stronger proficiency in leveraging jump links;",
   );

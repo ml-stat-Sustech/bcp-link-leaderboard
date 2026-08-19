@@ -1036,16 +1036,19 @@ function ComparisonChart({
           )}
         </div>
 
-        <ol className="comparison-insights" aria-label={copy.comparison.insightsLabel}>
-          {copy.comparison.insights.map((insight, index) => (
-            <li key={insight}>
-              <span className="comparison-insight-index" aria-hidden="true">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <p>{insight}</p>
-            </li>
-          ))}
-        </ol>
+        <div className="comparison-insights">
+          <h3 className="comparison-insights-heading">{copy.comparison.insightsHeading}</h3>
+          <ol className="comparison-insights-list" aria-label={copy.comparison.insightsLabel}>
+            {copy.comparison.insights.map((insight, index) => (
+              <li key={insight}>
+                <span className="comparison-insight-index" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <p>{insight}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );

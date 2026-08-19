@@ -103,6 +103,7 @@ export interface Translation {
     heading: string;
     comparable: (count: number, metric: string) => string;
     insightsLabel: string;
+    insightsHeading: string;
     insights: string[];
     metricLabel: string;
     selectLabel: string;
@@ -249,8 +250,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       comparable: (count, metric) =>
         `${count} ${count === 1 ? "model" : "models"} with comparable ${metric} data`,
       insightsLabel: "Key findings from the BCP and BCP-Link comparison",
+      insightsHeading: "BCP‑link serves as an effective indicator of substantial gains in search capability in training.",
       insights: [
-        "BCP‑link serves as an effective indicator of substantial gains in search capability in training.",
         "Models with enhanced search‑and‑visit capabilities exhibit superior performance, demonstrating a stronger proficiency in leveraging jump links;",
         "General‑purpose models without such reinforcement optimization not only fail to show advantages on BCP‑link, but even perform no better than in BCP (the no‑link setting), reflecting that general models still struggle to effectively process link information.",
       ],
@@ -477,8 +478,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       heading: "BCP 与 BCP-Link 对比",
       comparable: (count, metric) => `${count} 个模型具备可比较的${metric}数据`,
       insightsLabel: "BCP 与 BCP-Link 对比的主要结论",
+      insightsHeading: "BCP‑link 能够凸显模型经训练后在搜索能力上的实质性提升。",
       insights: [
-        "BCP‑link 能够凸显模型经训练后在搜索能力上的实质性提升。",
         "搜索‑访问能力经过专门增强的模型取得了更优表现，说明其跳转链接利用能力更强。",
         "未进行强化优化的通用模型在 BCP‑link 上不仅未体现出优势，其表现甚至不优于无链接场景，反映出通用模型尚难有效消化链接信息。",
       ],
